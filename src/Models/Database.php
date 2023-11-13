@@ -5,8 +5,8 @@ namespace App\Models;
 class Database
 {
     private static $parametros = "mysql:host=localhost;dbname=datos";
-    private static $usuario = "vladi";
-    private static $clave = "21AnimewapK";
+    private static $usuario = "root";
+    private static $clave = "";
 
     public function conectar()
     {

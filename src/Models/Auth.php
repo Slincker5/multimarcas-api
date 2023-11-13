@@ -150,7 +150,7 @@ class Auth extends Database
 
     public function loginWithGoogle($username, $email, $photo)
     {
-        $key = getenv('JWT_KEY');
+        $key = "hola";
 
         if ($this->emailStock($email)) {
             $data = $this->getDataUser($email);

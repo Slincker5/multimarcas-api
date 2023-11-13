@@ -2,7 +2,9 @@
 
 use App\Controllers\AuthController;
 use App\Controllers\LabelController;
-use App\Controllers\NotificationController;
+use App\Controllers\PosterController;
+use App\Controllers\EmailController;
+use App\Controllers\UserController;
 use App\Controllers\SearchController;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
@@ -101,4 +103,32 @@ $app->group('/search', function($group) {
     
 })->add($validateJwtMiddleware);
 
+
+$app->group('/poster', function ($group) {
+
+    $group->post('/create', PosterController::class . ':createPoster');
+    $group->get('/list', PosterController::class . ':listPoster');
+    $group->post('/build', PosterController::class . ':buildPosterDocument');
+
+})->add($validateJwtMiddleware);
+
+$app->group('/poster-small', function ($group) {
+
+    $group->post('/create', PosterController::class . ':createPosterSmall');
+    $group->get('/list', PosterController::class . ':listPosterSmall');
+    $group->post('/build', PosterController::class . ':buildPosterDocumentSmall');
+
+})->add($validateJwtMiddleware);
+
+$app->group('/email', function ($group) {
+
+    $group->get('/list', EmailController::class . ':listEmail');
+
+})->add($validateJwtMiddleware);
+
+$app->group('/user', function ($group) {
+
+    $group->get('/stats', UserController::class . ':userStat');
+
+})->add($validateJwtMiddleware);
 $app->run();

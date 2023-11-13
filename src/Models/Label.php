@@ -3,14 +3,14 @@
 namespace App\Models;
 
 use App\Models\Database;
-use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidFactory;
 
 class Label extends Database
 {
     private $response;
     protected $plantilla;
 
-    public function __construct($barra = '', $descripcion = '', $cantidad = '', $precio = '', $username = '', $uuid = '', $user_uuid = '')
+    public function __construct($barra = '', $descripcion = '', $cantidad = '', $precio = '', $username = '', $user_uuid = '')
     {
         $this->plantilla = $_SERVER['DOCUMENT_ROOT'] . '/public/documentos/PLANTILLA2.xlsx';
         $this->barra = $barra;
@@ -18,7 +18,6 @@ class Label extends Database
         $this->cantidad = $cantidad;
         $this->precio = $precio;
         $this->username = $username;
-        $this->uuid = $uuid;
         $this->user_uuid = $user_uuid;
     }
 
@@ -32,25 +31,36 @@ class Label extends Database
 
     public function addLabel()
     {
+        date_default_timezone_set("America/El_Salvador");
         if ($this->cantidad > 448) {
+            $this->response['status'] = 'error';
             $this->response['message'] = 'El maximo de cintillos que puedes generar es de 448.';
             return $this->response;
         } else if (empty($this->cantidad) || empty($this->precio)) {
+            $this->response['status'] = 'error';
             $this->response['message'] = 'Debes completar todos los campos';
             return $this->response;
         } else if (!is_numeric($this->cantidad)) {
+            $this->response['status'] = 'error';
             $this->response['message'] = 'La cantidad de cintillos debe ser en numeros';
             return $this->response;
         } else if (!is_numeric($this->precio)) {
+            $this->response['status'] = 'error';
             $this->response['message'] = 'El campo precio solo admite numeros';
             return $this->response;
         } else {
+
+            #CREAR UUID PARA CADA ROTULO
+            $uuidFactory = new UuidFactory();
+            $uuid = $uuidFactory->uuid4();
+            $label_uuid = $uuid->toString();
+
             for ($i = 1; $i <= $this->cantidad; $i++) {
-                if ($this->barra == '') {
-                    $this->barra = ' ';
-                }
+
+                $this->barra = $this->barra === '' ? ' ' : $this->barra;
+
                 $sql = 'INSERT INTO codigos (barra, descripcion, cantidad, precio, username, uuid, user_uuid) VALUES (?, ?, ?, ?, ?, ?, ?)';
-                $crear = $this->ejecutarConsulta($sql, [$this->barra, $this->descripcion, $this->cantidad, $this->precio, $this->username, $this->uuid, $this->user_uuid]);
+                $crear = $this->ejecutarConsulta($sql, [$this->barra, $this->descripcion, $this->cantidad, $this->precio, $this->username, $label_uuid, $this->user_uuid]);
                 if (!$crear) {
                     $this->response['status'] = 'error';
                     $this->response['message'] = 'Hubo un error al crear el cintillo.';
@@ -86,13 +96,20 @@ class Label extends Database
         return $datos;
     }
 
-    public function guardarGenerados($path, $path_name, $path_uuid, $autor)
+    public function saveGenerated($path, $path_name, $path_uuid, $user_uuid, $comment, $code)
     {
-        $sql = 'INSERT INTO generados (path, path_name, path_uuid, user_uuid) VALUES (?,?,?,?)';
-        $this->ejecutarConsulta($sql, [$path, $path_name, $path_uuid, $autor]);
+        $regex = '/^[\p{L}\p{N}\s.,;:!?\'"áéíóúÁÉÍÓÚñÑ]+$/u';
+        if(preg_match($regex, $comment)){
+            $sql = 'INSERT INTO generados (path, path_name, path_uuid, user_uuid, comentario, code) VALUES (?, ?, ?, ?, ?, ?)';
+            $this->ejecutarConsulta($sql, [$path, $path_name, $path_uuid, $user_uuid, $comment, $code]);
+        }else{
+            $sql = 'INSERT INTO generados (path, path_name, path_uuid, user_uuid, comentario, code) VALUES (?, ?, ?, ?, ?, ?)';
+            $this->ejecutarConsulta($sql, [$path, $path_name, $path_uuid, $user_uuid, NULL, $code]);
+        }
+        
     }
 
-    public function asignarDocumento($path_uuid, $user_uuid)
+    public function assignDocument($path_uuid, $user_uuid)
     {
         $sql = 'UPDATE codigos SET path_uuid = ? WHERE user_uuid = ? AND path_uuid IS NULL';
         $this->ejecutarConsulta($sql, [$path_uuid, $user_uuid]);

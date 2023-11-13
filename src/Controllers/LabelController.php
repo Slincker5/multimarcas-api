@@ -14,8 +14,9 @@ class LabelController
     function createLabel($request, $response, $args)
     {
         $user_uuid = $request->getAttribute('payload')->data->user_uuid;
+        $username = $request->getAttribute('payload')->data->username;
         $body = $request->getParsedBody();
-        $classLabel = new Label($body['barra'], $body['descripcion'], $body['cantidad'], $body['precio'], $body['username'], $body['uuid'], $user_uuid);
+        $classLabel = new Label($body['barra'], $body['descripcion'], $body['cantidad'], $body['precio'], $username, $user_uuid);
         $crear = $classLabel->addLabel();
         $response->getBody()->write(json_encode($crear));
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
@@ -72,29 +73,34 @@ class LabelController
     function build ($request, $response, $args){
 
         $user_uuid = $request->getAttribute('payload')->data->user_uuid;
+        $username = $request->getAttribute('payload')->data->username;
         $jwt = $request->getAttribute('jwt');
         $body = $request->getParsedBody();
 
-        $claseCintillo = new Label();
-        $claseCorreo = new Email();
-        $generar = shell_exec("python3 cintillo.py http://localhost/api/label/list $jwt $user_uuid");
+        $classLabel = new Label();
+        $classEmail = new Email();
+        $generar = shell_exec("/test http://localhost/api/label/list $jwt $user_uuid");
         $res = json_decode(trim($generar));
+        $random_id = mt_rand(100000, 999999);
+        $res->code = $random_id;
 
         sleep(4);
         $ruta = escapeshellarg($res->path_complete);
         if ($res->status === 'OK') {
-
-            $guardarDocumento = $claseCintillo->guardarGenerados($res->path_complete, $res->path_name, $res->path_uuid, $res->user_uuid);
-            $asignarDocumento = $claseCintillo->asignarDocumento($res->path_uuid, $res->user_uuid);
+            $guardarDocumento = $classLabel->saveGenerated($res->path_complete, $res->path_name, $res->path_uuid, $res->user_uuid, $body['comentarios'], $random_id);
+            $asignarDocumento = $classLabel->assignDocument($res->path_uuid, $res->user_uuid);
         }
 
         if ($body !== null) {
             if (isset($res->path_complete)) {
                 sleep(4);
-                $correo = $claseCorreo->enviarCorreo($body['receptor'], $body['nombreReceptor'], $res->path_tmp_full, $body['asuntoEmisor']);
-                $claseNotificacion = new Notificacion();
-                $cuerpo = '✅ Se envio correo a ' . $body['nombreReceptor'];
-                $content = $claseNotificacion->crearNotificacion('ENVIO DE CORREO', $cuerpo);
+                $asunto = 'CINTILLOS #' . $random_id;
+                $regex = '/^[\p{L}\p{N}\s.,;:!?\'"áéíóúÁÉÍÓÚñÑ]+$/u';
+                $comment = $body['comentarios'];
+                if(!preg_match($regex, $comment)){
+                    $comment = '---';
+                }
+                $correo = $classEmail->sendMailLabel($body['receptor'], $body['nombreReceptor'], $res->path_tmp_full, $asunto, $comment, $res->cantidad, $username);
             }
         }
         $response->getBody()->write(json_encode($res));
