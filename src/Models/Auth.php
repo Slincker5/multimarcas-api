@@ -13,6 +13,7 @@ class Auth extends Database
 
     private $expReg = '/^[a-zA-Z0-9 ñÑ ]+$/';
     private $response = [];
+    private $key = "eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTY5OTg2MDkxMSwiaWF0IjoxNjk5ODYwOTExfQ.hpVDfjVNufASIGOSMEM46o26CaXxsyjzh_Z104a_DQw";
 
     #METODOS CLASE
     private function usernameStock($user)
@@ -104,15 +105,13 @@ class Auth extends Database
 
         if (count($accountData) === 1) {
             if (password_verify($pass, $accountData[0]['pass'])) {
-
-                $key = "hola";
+                
                 // Crear un token
                 $payload = array(
                     "iss" => "multimarcas",
                     "aud" => $accountData[0]['user_uuid'],
                     "iat" => time(),
                     "nbf" => time(),
-                    "exp" => time() + 259200,
                     "data" => array(
                         "user_uuid" => $accountData[0]['user_uuid'],
                         "username" => $accountData[0]['username'],
@@ -125,7 +124,7 @@ class Auth extends Database
                     ),
                 );
                 $alg = "HS256";
-                $token = JWT::encode($payload, $key, $alg);
+                $token = JWT::encode($payload, $this->key, $alg);
 
                 $this->response['status'] = 'OK';
                 $this->response['message'] = 'Sesión exitosa.';
@@ -161,7 +160,6 @@ class Auth extends Database
                 "aud" => $data[0]['user_uuid'],
                 "iat" => time(),
                 "nbf" => time(),
-                "exp" => time() + 259200,
                 "data" => array(
                     "user_uuid" => $data[0]['user_uuid'],
                     "username" => $data[0]['username'],
@@ -174,7 +172,7 @@ class Auth extends Database
                 ),
             );
             $alg = "HS256";
-            $token = JWT::encode($payload, $key, $alg);
+            $token = JWT::encode($payload, $this->key, $alg);
 
             $this->response['status'] = 'OK';
             $this->response['message'] = 'Sesión exitosa.';
@@ -203,7 +201,6 @@ class Auth extends Database
                     "aud" => $profile_uuid,
                     "iat" => time(),
                     "nbf" => time(),
-                    "exp" => time() + 259200,
                     "data" => array(
                         "user_uuid" => $profile_uuid,
                         "username" => $username,
@@ -214,7 +211,7 @@ class Auth extends Database
                     ),
                 );
                 $alg = "HS256";
-                $token = JWT::encode($payload, $key, $alg);
+                $token = JWT::encode($payload, $this->key, $alg);
 
                 $this->response['status'] = 'OK';
                 $this->response['message'] = 'Registro exitoso.';
