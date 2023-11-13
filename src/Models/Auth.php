@@ -13,7 +13,7 @@ class Auth extends Database
 
     private $expReg = '/^[a-zA-Z0-9 ñÑ ]+$/';
     private $response = [];
-    private $key = "eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTY5OTg2MDkxMSwiaWF0IjoxNjk5ODYwOTExfQ.hpVDfjVNufASIGOSMEM46o26CaXxsyjzh_Z104a_DQw";
+    public $key = "georginalissethyvladi";
 
     #METODOS CLASE
     private function usernameStock($user)
@@ -149,7 +149,6 @@ class Auth extends Database
 
     public function loginWithGoogle($username, $email, $photo)
     {
-        $key = "hola";
 
         if ($this->emailStock($email)) {
             $data = $this->getDataUser($email);
@@ -228,6 +227,29 @@ class Auth extends Database
             }
         }
 
+    }
+
+    public function generatedToken ($user_uuid, $username, $email, $photo) {
+        $payload = array(
+            "iss" => "multimarcas",
+            "aud" => $user_uuid,
+            "iat" => time(),
+            "nbf" => time(),
+            "data" => array(
+                "user_uuid" => $user_uuid,
+                "username" => $username,
+                "email" => $email,
+                "photo" => $photo,
+                "rol" => 'User'
+
+            ),
+        );
+        $alg = "HS256";
+        $token = JWT::encode($payload, $this->key, $alg);
+        $this->response['status'] = 'OK';
+        $this->response['message'] = 'token generado con exito.';
+        $this->response['token'] = $token;
+        return $this->response;
     }
 
 }

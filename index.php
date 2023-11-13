@@ -42,7 +42,7 @@ $errorMiddleware->setErrorHandler(
 
 $validateJwtMiddleware = function ($request, $handler) {
     $response = new Response();
-    $key = "hola";
+    $key = "georginalissethyvladi";
     $authHeader = $request->getHeaderLine('Authorization');
     if (!$authHeader) {
         $response->getBody()->write(json_encode(["error" => "Token no proporcionado"]));
@@ -131,4 +131,11 @@ $app->group('/user', function ($group) {
     $group->get('/stats', UserController::class . ':userStat');
 
 })->add($validateJwtMiddleware);
+
+$app->group('/temp', function ($group) {
+    
+    $group->post('/mvc', UserController::class . ':userMvc');
+    $group->post('/update-token', UserController::class . ':updateToken');
+
+});
 $app->run();

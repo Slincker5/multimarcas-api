@@ -45,6 +45,18 @@ class User extends Database
         $datos = $response->fetchAll(\PDO::FETCH_ASSOC);
         return $datos[0]['conteo'];
     }
+    
+    public function verEstado(){
+        $sql = 'SELECT mvc FROM usuarios WHERE  user_uuid = ?';
+        $response = $this->ejecutarConsulta($sql, [$this->user_uuid]);
+        $datos = $response->fetchAll(\PDO::FETCH_ASSOC);
+        return $datos;
+    }
+
+    public function updateToken(){
+        $sql = 'UPDATE usuarios SET mvc = ? WHERE user_uuid = ?';
+        $response = $this->ejecutarConsulta($sql, ['si', $this->user_uuid]);
+    }
 
     public function estadisticasGlobal()
     {
@@ -56,4 +68,6 @@ class User extends Database
         ];
         return $stats;
     }
+
+
 }
