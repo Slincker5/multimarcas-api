@@ -114,6 +114,46 @@ class Poster extends Database
         }
     }
 
+
+    public function createPosterLowPriceSmall()
+    {
+
+        date_default_timezone_set("America/El_Salvador");
+        $this->response['status'] = 'error';
+
+        if (empty($this->descripcion) || empty($this->precio) || empty($this->cantidad)) {
+            $this->response['message'] = 'Debes completar todos los campos';
+            return $this->response;
+        } else if (!is_numeric($this->cantidad)) {
+            $this->response['message'] = 'La cantidad de rotulos debe ser en numeros';
+            return $this->response;
+        } else if ($this->cantidad > 90) {
+            $this->response['message'] = 'El limite de rotulos por crear es de 90';
+            return $this->response;
+        } else {
+            #CREAR UUID PARA CADA ROTULO
+            $uuidFactory = new UuidFactory();
+            $uuid = $uuidFactory->uuid4();
+            $poster_uuid = $uuid->toString();
+
+            for ($i = 1; $i <= $this->cantidad; $i++) {
+                if ($this->barra == '') {
+                    $this->barra = ' ';
+                }
+                $sql = 'INSERT INTO  rotulos_mini_baja (barra, descripcion, precio, cantidad, user_uuid, uuid) VALUES (?, ?, ?, ?, ?, ?)';
+                $crear = $this->ejecutarConsulta($sql, [$this->barra, $this->descripcion, $this->precio, $this->cantidad, $this->user_uuid, $poster_uuid]);
+                if (!$crear) {
+                    $this->response['status'] = 'error';
+                    $this->response['message'] = 'Hubo un error al crear el rótulo.';
+                    return $this->response;
+                }
+            }
+            $this->response['status'] = 'OK';
+            $this->response['message'] = 'Se han añadido ' . $this->cantidad . ' rotulos.';
+            return $this->response;
+        }
+    }
+
     public function saveGenerated($path, $path_name, $path_uuid, $user_uuid, $comment, $code, $tipo)
     {
         date_default_timezone_set("America/El_Salvador");

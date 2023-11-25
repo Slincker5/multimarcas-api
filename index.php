@@ -120,6 +120,12 @@ $app->group('/poster-small', function ($group) {
 
 })->add($validateJwtMiddleware);
 
+$app->group('/poster-small-low-price', function ($group) {
+
+    $group->post('/create', PosterController::class . ':createPosterLowPriceSmall');
+
+})->add($validateJwtMiddleware);
+
 $app->group('/email', function ($group) {
 
     $group->get('/list', EmailController::class . ':listEmail');
