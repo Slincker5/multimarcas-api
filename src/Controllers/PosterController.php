@@ -118,8 +118,7 @@ class PosterController
         $response->getBody()->write(json_encode($create));
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
     }
-}
-
+    
     function createPosterLowPriceSmall($request, $response, $args) {
         $user_uuid = $request->getAttribute('payload')->data->user_uuid;
         $body = $request->getParsedBody();
@@ -128,4 +127,6 @@ class PosterController
         $response->getBody()->write(json_encode($create));
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
     }
+}
+
     
