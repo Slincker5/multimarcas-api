@@ -128,3 +128,4 @@ class PosterController
         $response->getBody()->write(json_encode($create));
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
     }
+    
