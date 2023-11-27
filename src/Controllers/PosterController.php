@@ -39,7 +39,7 @@ class PosterController
         $body = $request->getParsedBody();
         $classEmail = new Email();
         $classPoster = new Poster();
-        $generar = shell_exec('python3 rotulos.py http://localhost/api/poster/list ' . $jwt . ' ' . $user_uuid);
+        $generar = shell_exec('python3 rotulos.py https://procter.work/api/poster/list ' . $jwt . ' ' . $user_uuid);
         $res = json_decode(trim($generar));
         $random_id = mt_rand(100000, 999999);
         $res->code = $random_id;
@@ -73,7 +73,7 @@ class PosterController
         $body = $request->getParsedBody();
         $classEmail = new Email();
         $classPoster = new Poster();
-        $generar = shell_exec('python3 rotulos_mini.py http://localhost/api/poster-small/list ' . $jwt . ' ' . $user_uuid);
+        $generar = shell_exec('python3 rotulos_mini.py https://procter.work/api/poster-small/list ' . $jwt . ' ' . $user_uuid);
         $res = json_decode(trim($generar));
         $random_id = mt_rand(100000, 999999);
         $res->code = $random_id;
