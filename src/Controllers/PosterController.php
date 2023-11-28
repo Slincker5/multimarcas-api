@@ -122,7 +122,7 @@ class PosterController
     function createPosterLowPriceSmall($request, $response, $args) {
         $user_uuid = $request->getAttribute('payload')->data->user_uuid;
         $body = $request->getParsedBody();
-        $classPoster = new Poster($body['barra'], $body['descripcion'], $body['precio'], $body['cantidad'], $user_uuid);
+        $classPoster = new Poster($body['barra'], $body['descripcion'], $body['precio'], null, null, $body['cantidad'], $user_uuid);
         $create = $classPoster->createPosterLowPriceSmall();
         $response->getBody()->write(json_encode($create));
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
