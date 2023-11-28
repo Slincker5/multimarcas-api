@@ -82,7 +82,7 @@ class Poster extends Database
         $this->response['status'] = 'error';
 
         if (empty($this->descripcion) || empty($this->precio) || empty($this->cantidad)) {
-            $this->response['message'] = 'Debes completar todos los campos';
+            $this->response['message'] = $this->descripcion;
             return $this->response;
         } else if (!is_numeric($this->cantidad)) {
             $this->response['message'] = 'La cantidad de cintillos debe ser en numeros';
