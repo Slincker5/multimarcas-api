@@ -122,7 +122,7 @@ class Poster extends Database
         $this->response['status'] = 'error';
 
         if (empty($this->descripcion) || empty($this->precio) || empty($this->cantidad)) {
-            $this->response['message'] = $this->descripcion;
+            $this->response['message'] = $this->descripcion . $this->precio . $this->cantidad;
             return $this->response;
         } else if (!is_numeric($this->cantidad)) {
             $this->response['message'] = 'La cantidad de rotulos debe ser en numeros';
