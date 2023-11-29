@@ -36,6 +36,14 @@ class Poster extends Database
         return $datos;
     }
 
+    public function listPosterLowPriceSmall($user_uuid)
+    {
+        $sql = 'SELECT * FROM rotulos_mini_baja WHERE user_uuid = ?  AND path_uuid IS NULL ORDER BY id DESC';
+        $registrar = $this->ejecutarConsulta($sql, [$user_uuid]);
+        $datos = $registrar->fetchAll(\PDO::FETCH_ASSOC);
+        return $datos;
+    }
+
     public function createPoster()
     {
 

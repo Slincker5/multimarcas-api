@@ -65,6 +65,36 @@ class PosterController
 
     }
 
+    function createPosterSmall($request, $response, $args)
+    {
+        $user_uuid = $request->getAttribute('payload')->data->user_uuid;
+        $body = $request->getParsedBody();
+        $classPoster = new Poster($body['barra'], $body['descripcion'], $body['precio'], $body['f_inicio'], $body['f_fin'], $body['cantidad'], $user_uuid);
+        $create = $classPoster->createPosterSmall();
+        $response->getBody()->write(json_encode($create));
+        return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
+    }
+
+    function listPosterSmall($request, $response, $args)
+    {
+        $user_uuid = $request->getAttribute('payload')->data->user_uuid;
+        $body = $request->getParsedBody();
+        $classPoster = new Poster();
+        $create = $classPoster->listPosterSmall($user_uuid);
+        $response->getBody()->write(json_encode($create));
+        return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
+    }
+
+    function listPosterLowPriceSmall($request, $response, $args)
+    {
+        $user_uuid = $request->getAttribute('payload')->data->user_uuid;
+        $body = $request->getParsedBody();
+        $classPoster = new Poster();
+        $create = $classPoster->listPosterLowPriceSmall($user_uuid);
+        $response->getBody()->write(json_encode($create));
+        return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
+    }
+
     function buildPosterDocumentSmall ($request, $response, $args)
     {
         $user_uuid = $request->getAttribute('payload')->data->user_uuid;
@@ -97,26 +127,6 @@ class PosterController
         $response->getBody()->write(json_encode($res));
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
 
-    }
-
-    function createPosterSmall($request, $response, $args)
-    {
-        $user_uuid = $request->getAttribute('payload')->data->user_uuid;
-        $body = $request->getParsedBody();
-        $classPoster = new Poster($body['barra'], $body['descripcion'], $body['precio'], $body['f_inicio'], $body['f_fin'], $body['cantidad'], $user_uuid);
-        $create = $classPoster->createPosterSmall();
-        $response->getBody()->write(json_encode($create));
-        return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
-    }
-
-    function listPosterSmall($request, $response, $args)
-    {
-        $user_uuid = $request->getAttribute('payload')->data->user_uuid;
-        $body = $request->getParsedBody();
-        $classPoster = new Poster();
-        $create = $classPoster->listPosterSmall($user_uuid);
-        $response->getBody()->write(json_encode($create));
-        return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
     }
     
     function createPosterLowPriceSmall($request, $response, $args) {
