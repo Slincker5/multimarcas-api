@@ -79,12 +79,12 @@ class LabelController
 
         $classLabel = new Label();
         $classEmail = new Email();
-        $generar = shell_exec("./test https://procter.work/api/label/list $jwt $user_uuid");
+        $generar = shell_exec("python3 cintillo.py https://procter.work/api/label/list $jwt $user_uuid");
         $res = json_decode(trim($generar));
         $random_id = mt_rand(100000, 999999);
         $res->code = $random_id;
 
-        sleep(4);
+        
         $ruta = escapeshellarg($res->path_complete);
         if ($res->status === 'OK') {
             $guardarDocumento = $classLabel->saveGenerated($res->path_complete, $res->path_name, $res->path_uuid, $res->user_uuid, $body['comentarios'], $random_id);
@@ -93,14 +93,13 @@ class LabelController
 
         if ($body !== null) {
             if (isset($res->path_complete)) {
-                sleep(4);
                 $asunto = 'CINTILLOS #' . $random_id;
                 $regex = '/^[\p{L}\p{N}\s.,;:!?\'"áéíóúÁÉÍÓÚñÑ]+$/u';
                 $comment = $body['comentarios'];
                 if(!preg_match($regex, $comment)){
                     $comment = '---';
                 }
-                $correo = $classEmail->sendMailLabel($body['receptor'], $body['nombreReceptor'], $res->path_tmp_full, $asunto, $comment, $res->cantidad, $username);
+                $correo = $classEmail->sendMailLabel($body['receptor'], $body['nombreReceptor'], $res->path_complete, $asunto, $comment, $res->cantidad, $username);
             }
         }
         $response->getBody()->write(json_encode($res));
