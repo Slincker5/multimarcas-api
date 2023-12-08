@@ -61,6 +61,7 @@ def main():
         "path_tmp_full": tmp_file_path,
         "path_uuid": path_uuid,
         "user_uuid": user_uuid,
+        "cantidad": len(resultados)
     }
 
     print(json.dumps(response))

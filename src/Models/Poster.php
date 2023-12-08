@@ -187,5 +187,10 @@ class Poster extends Database
         $this->ejecutarConsulta($sql, [$path_uuid, $user_uuid]);
     }
 
+    public function assignDocumentLowPriceSmall($path_uuid, $user_uuid)
+    {
+        $sql = 'UPDATE rotulos_mini_baja SET path_uuid = ? WHERE user_uuid = ? AND path_uuid IS NULL';
+        $this->ejecutarConsulta($sql, [$path_uuid, $user_uuid]);
+    }
 }
 
