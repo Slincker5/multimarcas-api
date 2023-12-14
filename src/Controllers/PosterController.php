@@ -128,6 +128,40 @@ class PosterController
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
 
     }
+
+    function buildPosterLowPriceDocumentSmall ($request, $response, $args)
+    {
+        $user_uuid = $request->getAttribute('payload')->data->user_uuid;
+        $username = $request->getAttribute('payload')->data->username;
+        $jwt = $request->getAttribute('jwt');
+        $body = $request->getParsedBody();
+        $classEmail = new Email();
+        $classPoster = new Poster();
+        $generar = shell_exec('python3 rotulos_mini_baja_small.py https://procter.work/api/poster-low-price-small/list ' . $jwt . ' ' . $user_uuid);
+        $res = json_decode(trim($generar));
+        $random_id = mt_rand(100000, 999999);
+        $res->code = $random_id;
+
+        if ($res->status === 'OK') {
+            $guardarDocumento = $classPoster->saveGenerated($res->path_complete, $res->path_name, $res->path_uuid, $res->user_uuid, $body['comentarios'], $random_id, 'super_oferta_3x9');
+            $asignarDocumento = $classPoster->assignDocumentLowPriceSmall($res->path_uuid, $res->user_uuid);
+        }
+
+        if ($body !== null) {
+            if (isset($res->path_complete)) {
+                $asunto = 'AFICHES #' . $random_id;
+                $regex = '/^[\p{L}\p{N}\s.,;:!?\'"áéíóúÁÉÍÓÚñÑ]+$/u';
+                $comment = $body['comentarios'];
+                if(!preg_match($regex, $comment)){
+                    $comment = '---';
+                }
+                $correo = $classEmail->sendMailPosterLowPriceSmall($body['receptor'], $body['nombreReceptor'], $res->path_complete, $asunto, $comment, $res->cantidad, $username);
+            }
+        }
+        $response->getBody()->write(json_encode($res));
+        return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
+
+    }
     
     function createPosterLowPriceSmall($request, $response, $args) {
         $user_uuid = $request->getAttribute('payload')->data->user_uuid;

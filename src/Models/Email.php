@@ -154,6 +154,47 @@ class Email extends Database
         }
     }
 
+    public function sendMailPosterLowPriceSmall($receptor, $nombreReceptor, $documentoEmisor, $asunto, $comentarios, $cantidad, $username)
+    {
+        try {
+            $this->mail->addAddress($receptor, $nombreReceptor);
+            $this->mail->addAttachment($documentoEmisor);
+            $this->mail->isHTML(true);
+            $this->mail->Subject = $asunto;
+            $this->mail->Body = '
+      <div style="border: 1px solid #ddd; font-size: 1.2rem; font-family: Arial;">
+      <div style="padding: 1rem;">
+        <h1 style="font-weight: 600; font-size: 1.3rem; color: #252525; display: flex; align-items: center;">
+         Estimado(a) operador o contralor de ' . $nombreReceptor . '
+        </h1>
+        Nos complace confirmarte que hemos recibido y procesado exitosamente los afiches del usuario <b>' . $username . '</b> a través de nuestra aplicación multimarcas. A continuacion le muestro mas detalles del documento compartido.
+      </div>
+      <div style="padding: 1rem; border-top: 1px solid #ddd; border-bottom: 1px solid #ddd;">
+        <div style="font-size: 14px "><span style="font-weight: 600; ">CANTIDAD DE ROTULOS:</span> ' . $cantidad . ' </div>
+        <div style="font-size: 14px; padding: 1rem 0"><span style="font-weight: 600;  margin-right: .5rem">COMENTARIOS:</span><div style="font-size: 1.1rem;">' . $comentarios . '</div></div>
+        <div style="display: flex; align-items: start; font-size: 14px "><span style="font-weight: 600; margin-right: .5rem">TIPO DE ROTULO:</span> Baja de Precios 3x9</div>
+      </div>
+      <div style="padding: 1rem;">
+        Agradecemos la confianza que nos tienen por usar nuestros servicios, cualquier duda puede contactar con nosotros.
+      </div>
+    </div>';
+            $this->mail->AltBody = '';
+            $this->mail->CharSet = 'UTF-8';
+            $this->mail->send();
+
+            return [
+                "status" => "OK",
+                "message" => "Correo enviado con exito.",
+            ];
+        } catch (Exception $e) {
+            return [
+                "status" => "error",
+                "msg" => "No se pudo enviar el correo.",
+                "error" => $this->mail->ErrorInfo,
+            ];
+        }
+    }
+
     public function listEmails()
     {
         $sql = 'SELECT * FROM correos';
