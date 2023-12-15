@@ -42,8 +42,6 @@ def editar_celdas_desde_json(archivo_excel, json_data, user_uuid):
         # Obtener los valores del elemento actual
         barra = item.get('barra')
         descripcion = item.get('descripcion')
-        f_inicio = item.get('f_inicio')
-        f_fin = item.get('f_fin')
         precio = item.get('precio')
         # ... y asÃ­ sucesivamente con los demÃ¡s campos
 
@@ -63,7 +61,7 @@ def editar_celdas_desde_json(archivo_excel, json_data, user_uuid):
     os.makedirs(ruta_directorio, exist_ok=True)
 
     fecha_hora_actual = datetime.now()
-    nombre_archivo = 'AFICHES-BAJA-DE-PRECIOS' + fecha_hora_actual.strftime("%d-%m-%Y-%H%M%S") + '.xlsx'
+    nombre_archivo = 'AFICHES-BAJA-DE-PRECIOS-' + fecha_hora_actual.strftime("%d-%m-%Y-%H%M%S") + '.xlsx'
     ruta_guardado = os.path.join(ruta_directorio, nombre_archivo)
 
     # Guardar los cambios en el archivo
