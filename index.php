@@ -26,7 +26,7 @@ $errorMiddleware = $app->addErrorMiddleware(true, true, true);
 $app->add(function ($request, $handler) {
     $response = $handler->handle($request);
     return $response
-            ->withHeader('Access-Control-Allow-Origin', 'cintillos-plazamundo.netlify.app')
+            ->withHeader('Access-Control-Allow-Origin', 'https://cintillos-plazamundo.netlify.app')
             ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
             ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
 });
