@@ -116,7 +116,7 @@ $app->group('/poster-small', function ($group) {
 
     $group->post('/create', PosterController::class . ':createPosterSmall');
     $group->get('/list', PosterController::class . ':listPosterSmall');
-    $group->post('/remove', PosterController::class . ':removePosterSmall');
+    $group->delete('/remove', PosterController::class . ':removePosterSmall');
     $group->post('/build', PosterController::class . ':buildPosterDocumentSmall');
 
 })->add($validateJwtMiddleware);
