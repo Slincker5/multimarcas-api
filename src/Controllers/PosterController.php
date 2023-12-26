@@ -171,6 +171,19 @@ class PosterController
         $response->getBody()->write(json_encode($create));
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
     }
+
+    function removePosterSmall($request, $response, $args)
+    {
+
+        $user_uuid = $request->getAttribute('payload')->data->user_uuid;
+
+        $body = $request->getParsedBody();
+        $classLabel = new Poster();
+        $content = $classLabel->removePosterSmall($body['uuid'], $user_uuid);
+        $response->withHeader('Content-Type', 'application/json');
+        $response->getBody()->write(json_encode($content));
+        return $response;
+    }
 }
 
     

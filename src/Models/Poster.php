@@ -162,6 +162,17 @@ class Poster extends Database
         }
     }
 
+
+    public function removePosterSmall($uuid, $user_uuid)
+    {
+        $sql = 'DELETE FROM rotulos_mini WHERE uuid = ? AND user_uuid = ?';
+        $eliminar = $this->ejecutarConsulta($sql, [$uuid, $user_uuid]);
+        if ($eliminar) {
+            $this->response['status'] = 'OK';
+            $this->response['message'] = 'Se elimino el rotulo correctamente';
+            return $this->response;
+        }
+    }
     public function saveGenerated($path, $path_name, $path_uuid, $user_uuid, $comment, $code, $tipo)
     {
         date_default_timezone_set("America/El_Salvador");
