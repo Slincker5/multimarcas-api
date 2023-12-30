@@ -33,7 +33,7 @@ class Post extends Database
             $uuidFactory = new UuidFactory();
             $uuid = $uuidFactory->uuid4();
             $post_uuid = $uuid->toString();
-            $sql = 'INSERT INTO publicaciones (post_uuid, user_uuid, username, message) VALUES (?, ?, ?, ?)';
+            $sql = 'INSERT INTO publicaciones (post_uuid, user_uuid, username, post) VALUES (?, ?, ?, ?)';
             $publicar = $this->ejecutarConsulta($sql, [$post_uuid, $this->user_uuid, $this->username, $message]);
             if ($publicar) {
                 $this->response['status'] = 'OK';
