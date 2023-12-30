@@ -42,4 +42,12 @@ class Post extends Database
             }
         }
     }
+
+    public function listPost(){
+      $sql = 'SELECT * FROM publicaciones ORDER BY fecha DESC';
+      $list = $this->ejecutarConsulta($sql);
+      $posts = $list->fetchAll(\PDO::FETCH_ASSOC);
+      return $posts;
+
+    }
 }

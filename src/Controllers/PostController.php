@@ -20,4 +20,13 @@ class PostController
         $response->getBody()->write(json_encode($createPost));
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
     }
+
+    function listPost ($request, $response, $args){
+        $user_uuid = $request->getAttribute('payload')->data->user_uuid;
+        $username = $request->getAttribute('payload')->data->username;
+        $classPost = new Post($user_uuid, $username);
+        $listPost = $classPost->listPost();
+        $response->getBody()->write(json_encode($listPost));
+        return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
+    }
 }
