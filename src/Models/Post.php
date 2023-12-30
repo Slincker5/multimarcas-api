@@ -17,7 +17,7 @@ class Post extends Database
         $this->username = $username;
     }
 
-    public function newPost($photo = '', $message)
+    public function newPost($message)
     {
         $message = trim(strip_tags($message));
         if (empty($message) || strlen($message) <= 0) {
