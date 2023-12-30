@@ -6,6 +6,7 @@ use App\Controllers\PosterController;
 use App\Controllers\EmailController;
 use App\Controllers\UserController;
 use App\Controllers\SearchController;
+use App\Controllers\PostController;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Psr\Http\Message\ServerRequestInterface;
@@ -138,6 +139,12 @@ $app->group('/email', function ($group) {
 $app->group('/user', function ($group) {
 
     $group->get('/stats', UserController::class . ':userStat');
+
+})->add($validateJwtMiddleware);
+
+$app->group('/post', function ($group) {
+
+    $group->get('/create', PostController::class . ':newPost');
 
 })->add($validateJwtMiddleware);
 
