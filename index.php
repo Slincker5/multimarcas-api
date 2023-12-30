@@ -144,7 +144,7 @@ $app->group('/user', function ($group) {
 
 $app->group('/post', function ($group) {
 
-    $group->get('/create', PostController::class . ':newPost');
+    $group->post('/create', PostController::class . ':newPost');
 
 })->add($validateJwtMiddleware);
 
