@@ -17,7 +17,7 @@ class Post extends Database
         $this->username = $username;
     }
 
-    public function newPost($message)
+    public function newPost($message, $photo)
     {
         $message = trim(strip_tags($message));
         if (empty($message) || strlen($message) <= 0) {
@@ -33,8 +33,8 @@ class Post extends Database
             $uuidFactory = new UuidFactory();
             $uuid = $uuidFactory->uuid4();
             $post_uuid = $uuid->toString();
-            $sql = 'INSERT INTO publicaciones (post_uuid, user_uuid, username, post) VALUES (?, ?, ?, ?)';
-            $publicar = $this->ejecutarConsulta($sql, [$post_uuid, $this->user_uuid, $this->username, $message]);
+            $sql = 'INSERT INTO publicaciones (post_uuid, user_uuid, username, post, photo) VALUES (?, ?, ?, ?, ?)';
+            $publicar = $this->ejecutarConsulta($sql, [$post_uuid, $this->user_uuid, $this->username, $message, $photo]);
             if ($publicar) {
                 $this->response['status'] = 'OK';
                 $this->response['message'] = 'Publicación exitosa';
