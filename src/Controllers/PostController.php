@@ -43,4 +43,16 @@ class PostController
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
 
     }
+
+    function likePost($request, $response, $args)
+    {
+        $user_uuid = $request->getAttribute('payload')->data->user_uuid;
+        $username = $request->getAttribute('payload')->data->username;
+        $body = $request->getParsedBody();
+        $classPost = new Post($user_uuid, $username);
+        $likePost = $classPost->likePost($body["post_uuid"]);
+        $response->getBody()->write(json_encode($likePost));
+        return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
+
+    }
 }

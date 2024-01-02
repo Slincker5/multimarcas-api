@@ -29,7 +29,7 @@ class Post extends Database
             $this->response['message'] = 'Tu publicación excede el límite de 2000 caracteres.';
             return $this->response;
         } else {
-            #CREAR UUID PARA CADA ROTULO
+            #CREAR UUID PARA CADA POST
             $uuidFactory = new UuidFactory();
             $uuid = $uuidFactory->uuid4();
             $post_uuid = $uuid->toString();
@@ -65,5 +65,24 @@ class Post extends Database
         $this->response['status'] = 'OK';
         $this->response['message'] = 'Se elimino tu publicacion con exito.';
         return $this->response;
+    }
+
+    public function likePost($post_uuid)
+    {
+        $sqlBuscar = 'SELECT post_uuid, user_uuid FROM likes WHERE post_uuid = ? AND user_uuid = ?';
+        $searchLike = $this->ejecutarConsulta($sqlBuscar, [$post_uuid, $this->user_uuid]);
+        $verify = $searchLike->fetchAll(\PDO::FETCH_ASSOC);
+        if (count($verify) === 0) {
+            #CREAR UUID PARA CADA LIKE
+            $uuidFactory = new UuidFactory();
+            $uuid = $uuidFactory->uuid4();
+            $like_uuid = $uuid->toString();
+            $sql = 'INSERT INTO likes (like_uuid, post_uuid, user_uuid) VALUES (?, ?, ?)';
+            $like = $this->ejecutarConsulta($sql, [$like_uuid, $post_uuid, $this->user_uuid]);
+            $this->response['status'] = 'OK';
+            $this->response['message'] = 'Te gusta esta publicacion.';
+            return $this->response;
+        }
+
     }
 }
