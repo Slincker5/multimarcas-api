@@ -55,20 +55,12 @@ class Post extends Database
     public function removePost($post_uuid)
     {
         $admin_uuid = "2c62e966-63d8-4bfd-832e-89094ae47eec";
-        $sql = 'DELETE FROM publicaciones WHERE post_uuid = ? AND user_uuid = ?';
-        $remove = $this->ejecutarConsulta($sql, [$post_uuid, $this->user_uuid]);
-        if ($remove) {
-            $this->response['status'] = 'OK';
-            $this->response['message'] = 'Se elimino tu publicacion con exito.';
-            return $this->response;
+        if ($this->user_uuid === $admin_uuid) {
+            $sql = 'DELETE FROM publicaciones WHERE post_uuid';
+            $remove = $this->ejecutarConsulta($sql, [$post_uuid]);
         } else {
-            if ($this->user_uuid === $admin_uuid) {
-                $removeForAdmin = $this->ejecutarConsulta($sql, [$post_uuid, $this->user_uuid]);
-                $this->response['status'] = 'OK';
-                $this->response['message'] = 'Se elimino la publicacion en modo admin.';
-                return $this->response;
-            }
-
+            $sql = 'DELETE FROM publicaciones WHERE post_uuid = ? AND user_uuid = ?';
+            $remove = $this->ejecutarConsulta($sql, [$post_uuid, $this->user_uuid]);
         }
     }
 }
