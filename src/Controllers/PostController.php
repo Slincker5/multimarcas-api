@@ -35,8 +35,9 @@ class PostController
     function removePost($request, $response, $args)
     {
         $user_uuid = $request->getAttribute('payload')->data->user_uuid;
+        $body = $request->getParsedBody();
         $classPost = new Post($user_uuid, $username);
-        $removePost = $classPost->removePost($user_uuid);
+        $removePost = $classPost->removePost($body["post_uuid"]);
         $response->getBody()->write(json_encode($removePost));
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
 
