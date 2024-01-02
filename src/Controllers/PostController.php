@@ -22,12 +22,23 @@ class PostController
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
     }
 
-    function listPost ($request, $response, $args){
+    function listPost($request, $response, $args)
+    {
         $user_uuid = $request->getAttribute('payload')->data->user_uuid;
         $username = $request->getAttribute('payload')->data->username;
         $classPost = new Post($user_uuid, $username);
         $listPost = $classPost->listPost();
         $response->getBody()->write(json_encode($listPost));
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
+    }
+
+    function removePost($request, $response, $args)
+    {
+        $user_uuid = $request->getAttribute('payload')->data->user_uuid;
+        $classPost = new Post($user_uuid, $username);
+        $removePost = $classPost->removePost($user_uuid);
+        $response->getBody()->write(json_encode($removePost));
+        return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
+
     }
 }

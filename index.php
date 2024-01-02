@@ -146,6 +146,7 @@ $app->group('/post', function ($group) {
 
     $group->post('/create', PostController::class . ':newPost');
     $group->get('/list', PostController::class . ':listPost');
+    $group->delete('/remove', PostController::class . ':removePost');
 
 })->add($validateJwtMiddleware);
 
