@@ -45,7 +45,12 @@ class Post extends Database
 
     public function listPost()
     {
-        $sql = 'SELECT * FROM publicaciones ORDER BY fecha DESC';
+        #$sql = 'SELECT * FROM publicaciones ORDER BY fecha DESC';
+        $sql = 'SELECT p.*, COUNT(l.id) AS num_likes 
+            FROM publicaciones p 
+            LEFT JOIN likes l ON p.post_uuid = l.post_uuid 
+            GROUP BY p.post_uuid 
+            ORDER BY p.fecha DESC';
         $list = $this->ejecutarConsulta($sql);
         $posts = $list->fetchAll(\PDO::FETCH_ASSOC);
         return $posts;
