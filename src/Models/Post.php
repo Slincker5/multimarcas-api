@@ -46,10 +46,10 @@ class Post extends Database
     public function listPost()
     {
         #$sql = 'SELECT * FROM publicaciones ORDER BY fecha DESC';
-        $sql = 'SELECT p.*, COUNT(l.id) AS num_likes 
-            FROM publicaciones p 
-            LEFT JOIN likes l ON p.post_uuid = l.post_uuid 
-            GROUP BY p.post_uuid 
+        $sql = 'SELECT p.*, COUNT(l.id) AS num_likes
+            FROM publicaciones p
+            LEFT JOIN likes l ON p.post_uuid = l.post_uuid
+            GROUP BY p.post_uuid
             ORDER BY p.fecha DESC';
         $list = $this->ejecutarConsulta($sql);
         $posts = $list->fetchAll(\PDO::FETCH_ASSOC);
@@ -88,6 +88,14 @@ class Post extends Database
             $this->response['message'] = 'Te gusta esta publicacion.';
             return $this->response;
         }
+
+    }
+    public function listLikePost()
+    {
+        $sql = 'SELECT * FROM likes';
+        $likes = $this->ejecutarConsulta($sqlBuscar, []);
+        $list = $likes->fetchAll(\PDO::FETCH_ASSOC);
+        return $list;
 
     }
 }

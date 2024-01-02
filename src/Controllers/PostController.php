@@ -55,4 +55,15 @@ class PostController
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
 
     }
+
+    function listLikePost($request, $response, $args)
+    {
+        $user_uuid = $request->getAttribute('payload')->data->user_uuid;
+        $username = $request->getAttribute('payload')->data->username;
+        $body = $request->getParsedBody();
+        $classPost = new Post($user_uuid, $username);
+        $listLikePost = $classPost->listLikePost();
+        $response->getBody()->write(json_encode($listLikePost));
+        return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
+    }
 }

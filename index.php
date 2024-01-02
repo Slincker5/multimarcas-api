@@ -148,6 +148,7 @@ $app->group('/post', function ($group) {
     $group->get('/list', PostController::class . ':listPost');
     $group->delete('/remove', PostController::class . ':removePost');
     $group->post('/like', PostController::class . ':likePost');
+    $group->get('/list-like', PostController::class . ':listLikePost');
 
 })->add($validateJwtMiddleware);
 
