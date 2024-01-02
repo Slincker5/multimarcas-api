@@ -93,7 +93,7 @@ class Post extends Database
     public function listLikePost()
     {
         $sql = 'SELECT * FROM likes';
-        $likes = $this->ejecutarConsulta($sqlBuscar, []);
+        $likes = $this->ejecutarConsulta($sql, []);
         $list = $likes->fetchAll(\PDO::FETCH_ASSOC);
         return $list;
 
