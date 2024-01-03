@@ -71,9 +71,9 @@ class PostController
     {
         $user_uuid = $request->getAttribute('payload')->data->user_uuid;
         $username = $request->getAttribute('payload')->data->username;
-        $body = $request->getParsedBody();
+        $post_uuid = $args['post_uuid'];
         $classPost = new Post($user_uuid, $username);
-        $selectPost = $classPost->selectPost($body["post_uuid"]);
+        $selectPost = $classPost->selectPost($post_uuid);
         $response->getBody()->write(json_encode($selectPost));
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
     }
