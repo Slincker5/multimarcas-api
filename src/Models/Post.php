@@ -85,18 +85,13 @@ class Post extends Database
 
     public function selectPost($post_uuid)
     {
-        $sql = 'SELECT p.*, COUNT(l.id) AS num_likes, 
-                COUNT(c.id) AS num_comments
-            FROM publicaciones p
-            LEFT JOIN likes l ON p.post_uuid = l.post_uuid
-            LEFT JOIN (
-                SELECT post_uuid, COUNT(id) AS id
-                FROM comentarios
-                GROUP BY post_uuid
-            ) c ON p.post_uuid = c.post_uuid
-            WHERE p.post_uuid = ?
-            GROUP BY p.post_uuid
-            ORDER BY p.fecha DESC';
+        'SELECT p.*, COUNT(l.id) AS num_likes, COUNT(c.id) AS num_comments
+        FROM publicaciones p
+        LEFT JOIN likes l ON p.post_uuid = l.post_uuid
+        LEFT JOIN comentarios c ON p.post_uuid = c.post_uuid
+        WHERE p.post_uuid = ?
+        GROUP BY p.post_uuid
+        ORDER BY p.fecha DESC';
 
         $list = $this->ejecutarConsulta($sql, [$post_uuid]);
         $posts = $list->fetchAll(\PDO::FETCH_ASSOC);
