@@ -98,6 +98,14 @@ class Post extends Database
         return $posts;
     }
 
+    public function listComment($post_uuid)
+    {
+        $sql = 'SELECT * FROM comentarios WHERE post_uuid = ?';
+        $list = $this->ejecutarConsulta($sql, [$post_uuid]);
+        $posts = $list->fetchAll(\PDO::FETCH_ASSOC);
+        return $posts;
+    }
+
     public function removePost($post_uuid)
     {
         $admin_uuid = "2c62e966-63d8-4bfd-832e-89094ae47eec";

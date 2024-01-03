@@ -156,6 +156,7 @@ $app->group('/post', function ($group) {
 $app->group('/comment', function ($group) {
 
     $group->post('/create', PostController::class . ':newComment');
+    $group->get('/list/{post_uuid}', PostController::class . ':listComment');
 
 })->add($validateJwtMiddleware);
 

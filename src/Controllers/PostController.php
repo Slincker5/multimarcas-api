@@ -44,6 +44,17 @@ class PostController
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
     }
 
+    function listComment($request, $response, $args)
+    {
+        $user_uuid = $request->getAttribute('payload')->data->user_uuid;
+        $username = $request->getAttribute('payload')->data->username;
+        $post_uuid = $args['post_uuid'];
+        $classPost = new Post($user_uuid, $username);
+        $listComment = $classPost->listComment($post_uuid);
+        $response->getBody()->write(json_encode($listComment));
+        return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
+    }
+
     function removePost($request, $response, $args)
     {
         $user_uuid = $request->getAttribute('payload')->data->user_uuid;
