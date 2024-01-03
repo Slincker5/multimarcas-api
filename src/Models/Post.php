@@ -100,7 +100,7 @@ class Post extends Database
 
     public function listComment($post_uuid)
     {
-        $sql = 'SELECT * FROM comentarios WHERE post_uuid = ?';
+        $sql = 'SELECT * FROM comentarios WHERE post_uuid = ? ORDER BY fecha DESC';
         $list = $this->ejecutarConsulta($sql, [$post_uuid]);
         $posts = $list->fetchAll(\PDO::FETCH_ASSOC);
         return $posts;
