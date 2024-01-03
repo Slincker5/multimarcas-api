@@ -65,7 +65,7 @@ class Post extends Database
         WHERE p.post_uuid = ?
         GROUP BY p.post_uuid
         ORDER BY p.fecha DESC';
-        $list = $this->ejecutarConsulta($sql);
+        $list = $this->ejecutarConsulta($sql, [$post_uuid]);
         $posts = $list->fetchAll(\PDO::FETCH_ASSOC);
         return $posts;
 
