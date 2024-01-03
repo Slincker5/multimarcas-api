@@ -66,4 +66,15 @@ class PostController
         $response->getBody()->write(json_encode($listLikePost));
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
     }
+
+    function selectPost($request, $response, $args)
+    {
+        $user_uuid = $request->getAttribute('payload')->data->user_uuid;
+        $username = $request->getAttribute('payload')->data->username;
+        $body = $request->getParsedBody();
+        $classPost = new Post($user_uuid, $username);
+        $selectPost = $classPost->selectPost();
+        $response->getBody()->write(json_encode($selectPost));
+        return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
+    }
 }
