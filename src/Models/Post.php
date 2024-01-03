@@ -43,6 +43,32 @@ class Post extends Database
         }
     }
 
+    public function newComment($message, $photo, $post_uuid)
+    {
+        $message = trim(strip_tags($message));
+        if (empty($message) || strlen($message) <= 0) {
+            $this->response['status'] = 'error';
+            $this->response['message'] = 'Tu publicación no puede estar vacía';
+            return $this->response;
+        } else if (strlen($message) > 2000) {
+            $this->response['status'] = 'error';
+            $this->response['message'] = 'Tu publicación excede el límite de 2000 caracteres.';
+            return $this->response;
+        } else {
+            #CREAR UUID PARA CADA POST
+            $uuidFactory = new UuidFactory();
+            $uuid = $uuidFactory->uuid4();
+            $comment_uuid = $uuid->toString();
+            $sql = 'INSERT INTO comentarios (comment_uuid, post_uuid, user_uuid, username, post, photo) VALUES (?. ?, ?, ?, ?, ?)';
+            $publicar = $this->ejecutarConsulta($sql, [$comment_uuid, $post_uuid, $this->user_uuid, $this->username, $message, $photo]);
+            if ($publicar) {
+                $this->response['status'] = 'OK';
+                $this->response['message'] = 'comentario agregado';
+                return $this->response;
+            }
+        }
+    }
+
     public function listPost()
     {
         #$sql = 'SELECT * FROM publicaciones ORDER BY fecha DESC';

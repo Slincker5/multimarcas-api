@@ -153,6 +153,12 @@ $app->group('/post', function ($group) {
 
 })->add($validateJwtMiddleware);
 
+$app->group('/comment', function ($group) {
+
+    $group->post('/create', PostController::class . ':newComment');
+
+})->add($validateJwtMiddleware);
+
 $app->group('/temp', function ($group) {
     
     $group->post('/mvc', UserController::class . ':userMvc');
