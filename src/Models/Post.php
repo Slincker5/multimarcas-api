@@ -85,7 +85,9 @@ class Post extends Database
 
     public function selectPost($post_uuid)
     {
-        'SELECT p.*, COUNT(l.id) AS num_likes, COUNT(c.id) AS num_comments
+        $sql = 'SELECT p.*,
+                COUNT(DISTINCT l.id) AS num_likes,
+                COUNT(DISTINCT c.id) AS num_comments
         FROM publicaciones p
         LEFT JOIN likes l ON p.post_uuid = l.post_uuid
         LEFT JOIN comentarios c ON p.post_uuid = c.post_uuid
