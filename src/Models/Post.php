@@ -59,7 +59,7 @@ class Post extends Database
             $uuidFactory = new UuidFactory();
             $uuid = $uuidFactory->uuid4();
             $comment_uuid = $uuid->toString();
-            $sql = 'INSERT INTO comentarios (comment_uuid, post_uuid, user_uuid, username, post, photo) VALUES (?. ?, ?, ?, ?, ?)';
+            $sql = 'INSERT INTO comentarios (comment_uuid, post_uuid, user_uuid, username, post, photo) VALUES (?, ?, ?, ?, ?, ?)';
             $publicar = $this->ejecutarConsulta($sql, [$comment_uuid, $post_uuid, $this->user_uuid, $this->username, $message, $photo]);
             if ($publicar) {
                 $this->response['status'] = 'OK';
