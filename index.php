@@ -149,7 +149,7 @@ $app->group('/post', function ($group) {
     $group->delete('/remove', PostController::class . ':removePost');
     $group->post('/like', PostController::class . ':likePost');
     $group->get('/list-like', PostController::class . ':listLikePost');
-    $group->post('/select-post/{post_uuid}', PostController::class . ':selectPost');
+    $group->get('/select-post/{post_uuid}', PostController::class . ':selectPost');
 
 })->add($validateJwtMiddleware);
 
