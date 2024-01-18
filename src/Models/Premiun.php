@@ -59,34 +59,34 @@ class Premiun extends Database
 
     public function agregarCupon($cupon_limite, $cupon)
     {
-        if ($cupon_limite >= 41 || $cupon_limite <= 0) {
-            $this->response['status'] = 'error';
-            $this->response['message'] = 'Debes cumplir con el rango de uso, >1 o <40';
-            return $this->response;
-        } else if (!filter_var($cupon_limite, FILTER_VALIDATE_INT)) {
-            $this->response['status'] = 'error';
-            $this->response['message'] = 'El limite del cupon solo acepta numeros enteros.';
-            return $this->response;
-        } else if (!filter_var($cupon, FILTER_VALIDATE_INT)) {
-            $this->response['status'] = 'error';
-            $this->response['message'] = 'El cupon solo debe contener numeros.';
-            return $this->response;
-        } else if (strlen($cupon) > 8 || strlen($cupon) < 8) {
-            $this->response['status'] = 'error';
-            $this->response['message'] = 'El cupon solo debe contener 8 caracteres.';
-            return $this->response;
-        } else if ($this->validarCuponExistencia($cupon)) {
-            $this->response['status'] = 'error';
-            $this->response['message'] = 'El cupon ya existe, crea otro diferente';
-            return $this->response;
-        } else {
+        $admin_uuid = "2c62e966-63d8-4bfd-832e-89094ae47eec";
+        if ($this->user_uuid === $admin_uuid) {
+            if ($cupon_limite >= 41 || $cupon_limite <= 0) {
+                $this->response['status'] = 'error';
+                $this->response['message'] = 'Debes cumplir con el rango de uso, >1 o <40';
+                return $this->response;
+            } else if (!filter_var($cupon_limite, FILTER_VALIDATE_INT)) {
+                $this->response['status'] = 'error';
+                $this->response['message'] = 'El limite del cupon solo acepta numeros enteros.';
+                return $this->response;
+            } else if (!filter_var($cupon, FILTER_VALIDATE_INT)) {
+                $this->response['status'] = 'error';
+                $this->response['message'] = 'El cupon solo debe contener numeros.';
+                return $this->response;
+            } else if (strlen($cupon) > 8 || strlen($cupon) < 8) {
+                $this->response['status'] = 'error';
+                $this->response['message'] = 'El cupon solo debe contener 8 caracteres.';
+                return $this->response;
+            } else if ($this->validarCuponExistencia($cupon)) {
+                $this->response['status'] = 'error';
+                $this->response['message'] = 'El cupon ya existe, crea otro diferente';
+                return $this->response;
+            } else {
 
-            #CREAR UUID PARA CUPON
-            $uuidFactory = new UuidFactory();
-            $uuid = $uuidFactory->uuid4();
-            $cupon_uuid = $uuid->toString();
-            $admin_uuid = "2c62e966-63d8-4bfd-832e-89094ae47eec";
-            if ($this->user_uuid === $admin_uuid) {
+                #CREAR UUID PARA CUPON
+                $uuidFactory = new UuidFactory();
+                $uuid = $uuidFactory->uuid4();
+                $cupon_uuid = $uuid->toString();
                 $sql = 'INSERT INTO cupones (cupon_uuid, cupon_limite, cupon) VALUES (?, ?, ?)';
                 $guardarCupon = $this->ejecutarConsulta($sql, [$cupon_uuid, $cupon_limite, $cupon]);
                 if (!$guardarCupon) {
@@ -100,12 +100,12 @@ class Premiun extends Database
                     return $this->response;
                 }
 
-            } else {
-                $this->response['status'] = 'error';
-                $this->response['message'] = 'No estas autorizado para crear cupones.';
-                return $this->response;
             }
 
+        } else {
+            $this->response['status'] = 'error';
+            $this->response['message'] = 'No estas autorizado para crear cupones.';
+            return $this->response;
         }
 
     }
