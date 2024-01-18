@@ -137,7 +137,7 @@ class Premiun extends Database
         } else{
             $sql = 'SELECT cupon_uuid, cupon_limite, cupon FROM cupones WHERE cupon = ?';
             $datos = $this->ejecutarConsulta($sql, [$cupon]);
-            $listar = $response->fetchAll(\PDO::FETCH_ASSOC);
+            $listar = $datos->fetchAll(\PDO::FETCH_ASSOC);
             return $listar;
         }
     }
