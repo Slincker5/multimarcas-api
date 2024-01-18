@@ -42,7 +42,7 @@ class PremiunController
         $body = $request->getParsedBody();
         $classPremiun = new Premiun($user_uuid);
         $cupon = $classPremiun->canjearCupon($body['cupon']);
-        $response->getBody()->write(json_encode($vip));
+        $response->getBody()->write(json_encode($cupon));
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
     }
 }
