@@ -19,8 +19,8 @@ trait Cupones
 class Premiun extends Database
 {
     use Cupones;
-    private $user_uuid;
-    private $response;
+    public $user_uuid;
+    public $response;
 
     public function __constructor($user_uuid)
     {
