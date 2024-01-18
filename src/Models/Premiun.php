@@ -46,7 +46,8 @@ class Premiun extends Database
     private function hacerPremiun()
     {
         $sql = 'UPDATE usuarios SET suscripcion = true, fin_suscripcion = ? WHERE user_uuid = ?';
-        $guardarVip = $this->ejecutarConsulta($sql, [$this->fechaFinSuscripcion(), $this->user_uuid]);
+        $fecha = $this->fechaFinSuscripcion();
+        $guardarVip = $this->ejecutarConsulta($sql, [$fecha, $this->user_uuid]);
         if (!$guardarVip) {
             $this->response['status'] = 'error';
             $this->response['message'] = 'Hubo un error al realizar tu suscripcion.';
