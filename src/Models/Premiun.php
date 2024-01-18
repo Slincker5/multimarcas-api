@@ -53,7 +53,7 @@ class Premiun extends Database
             return $this->response;
         } else {
             $this->response['status'] = 'OK';
-            $this->response['message'] = '¡En hora buena!, ahora eres usuario premiun.' . $this->generarCupon();
+            $this->response['message'] = '¡En hora buena!, ahora eres usuario premiun.';
             return $this->response;
         }
     }
