@@ -118,15 +118,7 @@ class Premiun extends Database
     }
 
     private function datosCupon($cupon){
-        if ($cupon_limite >= 41 || $cupon_limite <= 0) {
-            $this->response['status'] = 'error';
-            $this->response['message'] = 'Debes cumplir con el rango de uso, >1 o <40';
-            return $this->response;
-        } else if (!filter_var($cupon_limite, FILTER_VALIDATE_INT)) {
-            $this->response['status'] = 'error';
-            $this->response['message'] = 'El limite del cupon solo acepta numeros enteros.';
-            return $this->response;
-        } else if (!filter_var($cupon, FILTER_VALIDATE_INT)) {
+        if (!filter_var($cupon, FILTER_VALIDATE_INT)) {
             $this->response['status'] = 'error';
             $this->response['message'] = 'El cupon solo debe contener numeros.';
             return $this->response;
