@@ -114,8 +114,10 @@ class Premiun extends Database
     public function canjearCupon($cupon){
 
         $datosCupon = $this->datosCupon($cupon);
-        $n = $this->totalCanjeos($datosCupon['cupon_uuid']);
-        return $n;
+        $nCanjeos = $this->totalCanjeos($datosCupon['cupon_uuid']);
+        if($datosCupon[0]['limite_cupon'] < $nCanjeos[0]['cantidad']){
+            return $nCanjeos;
+        }
     }
 
     private function datosCupon($cupon){
