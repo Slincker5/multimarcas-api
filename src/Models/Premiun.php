@@ -45,7 +45,7 @@ class Premiun extends Database
 
     private function hacerPremiun()
     {
-        $sql = 'UPDATE usuarios SET suscripcion = true, fin_suscripcion = ? WHERE user_uuid = ?';
+        $sql = 'UPDATE usuarios SET suscripcion = 1, fin_suscripcion = ? WHERE user_uuid = ?';
         $guardarVip = $this->ejecutarConsulta($sql, [self::fechaFinSuscripcion(), $this->user_uuid]);
         if (!$guardarVip) {
             $this->response['status'] = 'error';
@@ -127,7 +127,7 @@ class Premiun extends Database
                 $sql = 'INSERT INTO canjeados (cupon_uuid, user_uuid) VALUES (?, ?)';
                 $canjear = $this->ejecutarConsulta($sql, [$datosCupon[0]['cupon_uuid'], $this->user_uuid]);
                 if($canjear){
-                    $this->hacerPremiun();
+                    return $this->hacerPremiun();
                 }
             }
         } else {
