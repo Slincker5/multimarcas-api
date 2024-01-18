@@ -21,12 +21,10 @@ class PremiunController
     function generarCupon($request, $response, $args)
     {
         $user_uuid = $request->getAttribute('payload')->data->user_uuid;
-        if ($user_uuid === '2c62e966-63d8-4bfd-832e-89094ae47eec') {
-            $classPremiun = new Premiun($user_uuid);
-            $cupon = $classPremiun->generarCupon();
-            $response->getBody()->write(json_encode($cupon));
-            return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
-        }
+        $classPremiun = new Premiun($user_uuid);
+        $cupon = $classPremiun->generarCupon();
+        $response->getBody()->write(json_encode($cupon));
+        return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
     }
 
     function crearCupon($request, $response, $args)

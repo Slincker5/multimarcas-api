@@ -85,18 +85,27 @@ class Premiun extends Database
             $uuidFactory = new UuidFactory();
             $uuid = $uuidFactory->uuid4();
             $cupon_uuid = $uuid->toString();
-            $sql = 'INSERT INTO cupones (cupon_uuid, cupon_limite, cupon) VALUES (?, ?, ?)';
-            $guardarCupon = $this->ejecutarConsulta($sql, [$cupon_uuid, $cupon_limite, $cupon]);
-            if (!$guardarCupon) {
-                $this->response['status'] = 'error';
-                $this->response['message'] = 'Hubo un error al crear tu cupon.';
-                return $this->response;
+            $admin_uuid = "2c62e966-63d8-4bfd-832e-89094ae47eec";
+            if ($this->user_uuid === $admin_uuid) {
+                $sql = 'INSERT INTO cupones (cupon_uuid, cupon_limite, cupon) VALUES (?, ?, ?)';
+                $guardarCupon = $this->ejecutarConsulta($sql, [$cupon_uuid, $cupon_limite, $cupon]);
+                if (!$guardarCupon) {
+                    $this->response['status'] = 'error';
+                    $this->response['message'] = 'Hubo un error al crear tu cupon.';
+                    return $this->response;
+                } else {
+                    $this->response['status'] = 'OK';
+                    $this->response['message'] = 'Cupon generado con exito';
+                    $this->response['cupon'] = $cupon;
+                    return $this->response;
+                }
+
             } else {
-                $this->response['status'] = 'OK';
-                $this->response['message'] = 'Cupon generado con exito';
-                $this->response['cupon'] = $cupon;
+                $this->response['status'] = 'error';
+                $this->response['message'] = 'No estas autorizado para crear cupones.';
                 return $this->response;
             }
+
         }
 
     }
