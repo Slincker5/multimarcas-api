@@ -7,6 +7,8 @@ use App\Controllers\EmailController;
 use App\Controllers\UserController;
 use App\Controllers\SearchController;
 use App\Controllers\PostController;
+use App\Controllers\PremiunController;
+use App\Controllers\TransaccionController;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Psr\Http\Message\ServerRequestInterface;
@@ -27,7 +29,7 @@ $errorMiddleware = $app->addErrorMiddleware(true, true, true);
 $app->add(function ($request, $handler) {
     $response = $handler->handle($request);
     return $response
-            ->withHeader('Access-Control-Allow-Origin', 'https://cintillos-plazamundo.netlify.app')
+            ->withHeader('Access-Control-Allow-Origin', '*')
             ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
             ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
 });
@@ -166,5 +168,15 @@ $app->group('/temp', function ($group) {
     $group->post('/update-token', UserController::class . ':updateToken');
 
 });
+
+$app->group('/premiun', function ($group) {
+    $group->put('/update', PremiunController::class . ':hacerPremiun');
+    $group->get('/cupon', PremiunController::class . ':generarCupon');
+    $group->post('/nuevo-cupon', PremiunController::class . ':crearCupon');
+})->add($validateJwtMiddleware);
+
+$app->group('/pagos', function ($group) {
+    $group->post('/webhook', TransaccionController::class . ':savedTransaction');
+})->add($validateJwtMiddleware);
 $app->run();
 
