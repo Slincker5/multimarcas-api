@@ -127,7 +127,7 @@ class Premiun extends Database
                 $sql = 'INSERT INTO canjeados (cupon_uuid, user_uuid) VALUES (?, ?)';
                 $canjear = $this->ejecutarConsulta($sql, [$datosCupon[0]['cupon_uuid'], $this->user_uuid]);
                 if($canjear){
-                    return $this->hacerPremiun();
+                    $this->hacerPremiun();
                 }
             }
         } else {
