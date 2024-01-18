@@ -138,6 +138,7 @@ class Premiun extends Database
     private function totalCanjeos($cupon_uuid){
         $sql = 'SELECT COUNT(*) AS cantidad FROM canjeados WHERE cupon_uuid = ?';
         $datos = $this->ejecutarConsulta($sql, [$cupon_uuid]);
-        return $datos;
+        $listar = $datos->fetchAll(\PDO::FETCH_ASSOC);
+        return $listar;
     }
 }
