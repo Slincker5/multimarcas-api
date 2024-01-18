@@ -115,7 +115,7 @@ class Premiun extends Database
     {
 
         $datosCupon = $this->datosCupon($cupon);
-        $nCanjeos = $this->totalCanjeos($datosCupon['cupon_uuid']);
+        $nCanjeos = $this->totalCanjeos($datosCupon[0]['cupon_uuid']);
         if ($nCanjeos[0]['cantidad'] < $datosCupon[0]['cupon_limite']) {
             $verificar = $this->validarUnaVez($datosCupon[0]['cupon_uuid']);
 
@@ -125,7 +125,7 @@ class Premiun extends Database
                 return $this->response;
             } else {
                 $sql = 'INSERT INTO canjeados (cupon_uuid, user_uuid) VALUES (?, ?)';
-                $canjear = $this->ejecutarConsulta($sql, [$datosCupon['cupon_uuid'], $this->user_uuid]);
+                $canjear = $this->ejecutarConsulta($sql, [$datosCupon[0]['cupon_uuid'], $this->user_uuid]);
                 if($canjear){
                     return $this->hacerPremiun();
                 }
