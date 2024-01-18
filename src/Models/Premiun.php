@@ -104,7 +104,7 @@ class Premiun extends Database
 
         } else {
             $this->response['status'] = 'error';
-            $this->response['message'] = 'No estas autorizado para crear cupones.';
+            $this->response['message'] = 'No estas autorizado para crear cupones.' . $this->user_uuid;
             return $this->response;
         }
 
