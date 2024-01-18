@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Controllers;
 
 use Psr\Http\Message\ServerRequestInterface;
@@ -7,9 +6,11 @@ use Slim\Exception\HttpNotFoundException;
 use Slim\Factory\AppFactory;
 use App\Models\Premiun;
 
-class PremiunController {
+class PremiunController
+{
 
-    function hacerPremiun($request, $response, $args){
+    function hacerPremiun($request, $response, $args)
+    {
         $user_uuid = $request->getAttribute('payload')->data->user_uuid;
         $classPremiun = new Premiun($user_uuid);
         $vip = $classPremiun->hacerPremiun();
@@ -17,15 +18,19 @@ class PremiunController {
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
     }
 
-    function generarCupon($request, $response, $args){
+    function generarCupon($request, $response, $args)
+    {
         $user_uuid = $request->getAttribute('payload')->data->user_uuid;
-        $classPremiun = new Premiun($user_uuid);
-        $cupon = $classPremiun->generarCupon();
-        $response->getBody()->write(json_encode($cupon));
-        return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
+        if ($user_uuid === '2c62e966-63d8-4bfd-832e-89094ae47eec') {
+            $classPremiun = new Premiun($user_uuid);
+            $cupon = $classPremiun->generarCupon();
+            $response->getBody()->write(json_encode($cupon));
+            return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
+        }
     }
 
-    function crearCupon($request, $response, $args) {
+    function crearCupon($request, $response, $args)
+    {
         $user_uuid = $request->getAttribute('payload')->data->user_uuid;
         $body = $request->getParsedBody();
         $classPremiun = new Premiun($user_uuid);
