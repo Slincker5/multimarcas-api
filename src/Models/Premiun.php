@@ -115,7 +115,7 @@ class Premiun extends Database
 
         $datosCupon = $this->datosCupon($cupon);
         $nCanjeos = $this->totalCanjeos($datosCupon['cupon_uuid']);
-        if($datosCupon[0]['cupon_limite'] < $nCanjeos[0]['cantidad']){
+        if($nCanjeos[0]['cantidad'] < $datosCupon[0]['cupon_limite']){
             return $nCanjeos;
         }else{
             return $datosCupon;
