@@ -118,7 +118,7 @@ class Premiun extends Database
         if($datosCupon[0]['cupon_limite'] < $nCanjeos[0]['cantidad']){
             return $nCanjeos;
         }else{
-            return "no";
+            return $datosCupon;
         }
     }
 
