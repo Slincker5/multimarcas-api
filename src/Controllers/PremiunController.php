@@ -36,4 +36,13 @@ class PremiunController
         $response->getBody()->write(json_encode($vip));
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
     }
+
+    function canjearCupon($request, $response, $args){
+        $user_uuid = $request->getAttribute('payload')->data->user_uuid;
+        $body = $request->getParsedBody();
+        $classPremiun = new Premiun($user_uuid);
+        $cupon = $classPremiun->canjearCupon($body['cupon']);
+        $response->getBody()->write(json_encode($vip));
+        return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
+    }
 }

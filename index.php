@@ -173,6 +173,7 @@ $app->group('/premiun', function ($group) {
     $group->put('/update', PremiunController::class . ':hacerPremiun');
     $group->get('/cupon', PremiunController::class . ':generarCupon');
     $group->post('/nuevo-cupon', PremiunController::class . ':crearCupon');
+    $group->get('/canjear-cupon', PremiunController::class . ':canjearCupon');
 })->add($validateJwtMiddleware);
 
 $app->group('/pagos', function ($group) {
