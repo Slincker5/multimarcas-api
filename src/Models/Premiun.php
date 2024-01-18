@@ -127,8 +127,13 @@ class Premiun extends Database
             } else {
                 $sql = 'INSERT INTO canjeados (cupon_uuid, user_uuid) VALUES (?, ?)';
                 $canjear = $this->ejecutarConsulta($sql, [$datosCupon[0]['cupon_uuid'], $this->user_uuid]);
-                if($canjear){
-                    return $this->hacerPremiun();
+                if ($canjear) {
+                    $sql_vip = 'UPDATE usuarios SET suscripcion = true, fin_suscripcion = ? WHERE user_uuid = ?';
+                    $fecha = $this->fechaFinSuscripcion();
+                    $guardarVip = $this->ejecutarConsulta($sql_vip, [$fecha, $this->user_uuid]);
+                    $this->response['status'] = 'OK';
+                    $this->response['message'] = 'Suscripcion exitosa.';
+                    return $this->response;
                 }
             }
         } else {
