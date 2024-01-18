@@ -28,7 +28,7 @@ class Premiun extends Database
         $this->user_uuid = $user_uuid;
     }
 
-    private static function fechaFinSuscripcion()
+    private function fechaFinSuscripcion()
     {
         $fecha_inicio = date('Y-m-d');
         $fecha_vencimiento = date('Y-m-d', strtotime($fecha_inicio . ' +1 month'));
@@ -46,7 +46,7 @@ class Premiun extends Database
     private function hacerPremiun()
     {
         $sql = 'UPDATE usuarios SET suscripcion = 1, fin_suscripcion = ? WHERE user_uuid = ?';
-        $guardarVip = $this->ejecutarConsulta($sql, [self::fechaFinSuscripcion(), $this->user_uuid]);
+        $guardarVip = $this->ejecutarConsulta($sql, [$this->fechaFinSuscripcion(), $this->user_uuid]);
         if (!$guardarVip) {
             $this->response['status'] = 'error';
             $this->response['message'] = 'Hubo un error al realizar tu suscripcion.';
