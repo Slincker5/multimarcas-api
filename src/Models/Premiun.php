@@ -22,7 +22,7 @@ class Premiun extends Database
     public $user_uuid;
     public $response;
 
-    public function __constructor($user_uuid)
+    public function __construct($user_uuid)
     {
         $this->user_uuid = $user_uuid;
     }
