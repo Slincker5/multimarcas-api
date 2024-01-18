@@ -19,8 +19,9 @@ trait Cupones
 class Premiun extends Database
 {
     use Cupones;
-    public $user_uuid;
-    public $response;
+    private $user_uuid;
+    private $response;
+    private $admin_uuid = '2c62e966-63d8-4bfd-832e-89094ae47eec';
 
     public function __construct($user_uuid)
     {
@@ -59,8 +60,8 @@ class Premiun extends Database
 
     public function agregarCupon($cupon_limite, $cupon)
     {
-        $admin_uuid = "2c62e966-63d8-4bfd-832e-89094ae47eec";
-        if ($this->user_uuid == $admin_uuid) {
+        
+        if ($this->user_uuid === $this->admin_uuid) {
             if ($cupon_limite >= 41 || $cupon_limite <= 0) {
                 $this->response['status'] = 'error';
                 $this->response['message'] = 'Debes cumplir con el rango de uso, >1 o <40';
@@ -104,7 +105,7 @@ class Premiun extends Database
 
         } else {
             $this->response['status'] = 'error';
-            $this->response['message'] = 'No estas autorizado para crear cupones.' . $this->user_uuid;
+            $this->response['message'] = 'No estas autorizado para crear cupones.';
             return $this->response;
         }
 
