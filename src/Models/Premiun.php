@@ -43,10 +43,10 @@ class Premiun extends Database
         return $total;
     }
 
-    public function hacerPremiun()
+    private function hacerPremiun()
     {
-        $sql = 'UPDATE usuarios SET suscripcion = true, fin_suscripcion = ?';
-        $guardarVip = $this->ejecutarConsulta($sql, [self::fechaFinSuscripcion()]);
+        $sql = 'UPDATE usuarios SET suscripcion = true, fin_suscripcion = ? WHERE user_uuid = ?';
+        $guardarVip = $this->ejecutarConsulta($sql, [self::fechaFinSuscripcion(), $this->user_uuid]);
         if (!$guardarVip) {
             $this->response['status'] = 'error';
             $this->response['message'] = 'Hubo un error al realizar tu suscripcion.';
@@ -60,7 +60,7 @@ class Premiun extends Database
 
     public function agregarCupon($cupon_limite, $cupon)
     {
-        
+
         if ($this->user_uuid === $this->admin_uuid) {
             if ($cupon_limite >= 41 || $cupon_limite <= 0) {
                 $this->response['status'] = 'error';
@@ -111,18 +111,34 @@ class Premiun extends Database
 
     }
 
-    public function canjearCupon($cupon){
+    public function canjearCupon($cupon)
+    {
 
         $datosCupon = $this->datosCupon($cupon);
         $nCanjeos = $this->totalCanjeos($datosCupon['cupon_uuid']);
-        if($nCanjeos[0]['cantidad'] < $datosCupon[0]['cupon_limite']){
-            return $nCanjeos;
-        }else{
-            return $datosCupon;
+        if ($nCanjeos[0]['cantidad'] < $datosCupon[0]['cupon_limite']) {
+            $verificar = $this->validarUnaVez($datosCupon[0]['cupon_uuid']);
+
+            if ($verificar[0]['cantidad'] > 1) {
+                $this->response['status'] = 'error';
+                $this->response['message'] = 'Este cupon ya no es valido para tu cuenta.';
+                return $this->response;
+            } else {
+                $sql = 'INSERT INTO canjeados (cupon_uuid, user_uuid) VALUES (?, ?)';
+                $canjear = $this->ejecutarConsulta($sql, [$datosCupon['cupon_uuid'], $this->user_uuid]);
+                if($canjear){
+                    return $this->hacerPremiun();
+                }
+            }
+        } else {
+            $this->response['status'] = 'error';
+            $this->response['message'] = 'El cupon ha excedido su limite.';
+            return $this->response;
         }
     }
 
-    private function datosCupon($cupon){
+    private function datosCupon($cupon)
+    {
         if (!filter_var($cupon, FILTER_VALIDATE_INT)) {
             $this->response['status'] = 'error';
             $this->response['message'] = 'El cupon solo debe contener numeros.';
@@ -131,7 +147,7 @@ class Premiun extends Database
             $this->response['status'] = 'error';
             $this->response['message'] = 'El cupon solo debe contener 8 caracteres.';
             return $this->response;
-        } else{
+        } else {
             $sql = 'SELECT cupon_uuid, cupon_limite, cupon FROM cupones WHERE cupon = ?';
             $datos = $this->ejecutarConsulta($sql, [$cupon]);
             $listar = $datos->fetchAll(\PDO::FETCH_ASSOC);
@@ -139,9 +155,18 @@ class Premiun extends Database
         }
     }
 
-    private function totalCanjeos($cupon_uuid){
+    private function totalCanjeos($cupon_uuid)
+    {
         $sql = 'SELECT COUNT(*) AS cantidad FROM canjeados WHERE cupon_uuid = ?';
         $datos = $this->ejecutarConsulta($sql, [$cupon_uuid]);
+        $listar = $datos->fetchAll(\PDO::FETCH_ASSOC);
+        return $listar;
+    }
+
+    private function validarUnaVez($cupon_uuid)
+    {
+        $sql = 'SELECT COUNT(*) AS cantidad FROM canjeados WHERE cupon_uuid = ? AND user_uuid = ?';
+        $datos = $this->ejecutarConsulta($sql, [$cupon_uuid, $this->user_uuid]);
         $listar = $datos->fetchAll(\PDO::FETCH_ASSOC);
         return $listar;
     }
