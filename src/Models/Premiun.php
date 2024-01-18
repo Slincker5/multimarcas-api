@@ -114,7 +114,8 @@ class Premiun extends Database
     public function canjearCupon($cupon){
 
         $datosCupon = $this->datosCupon($cupon);
-        return $datosCupon;
+        $n = $this->totalCanjeos($datosCupon['cupon_uuid']);
+        return $n;
     }
 
     private function datosCupon($cupon){
@@ -132,5 +133,11 @@ class Premiun extends Database
             $listar = $datos->fetchAll(\PDO::FETCH_ASSOC);
             return $listar;
         }
+    }
+
+    private function totalCanjeos($cupon_uuid){
+        $sql = 'SELECT COUNT(*) AS cantidad FROM canjeados WHERE cupon_uuid = ?';
+        $datos = $this->ejecutarConsulta($sql, [$cupon_uuid]);
+        return $datos;
     }
 }
