@@ -145,7 +145,7 @@ class Premiun extends Database
                         $token = $this->generarTokenVip($user[0]['username'], $user[0]['email'], $user[0]['photo'], $user[0]['rol'], $user[0]['fecha'], $user[0]['ip'], $user[0]['suscripcion'], $user[0]['fin_suscripcion']);
                         $this->response['status'] = 'OK';
                         $this->response['message'] = 'Suscripcion exitosa.';
-                        $this->response['token'] = 'Suscripcion exitosa.';
+                        $this->response['token'] = $token;
                         return $this->response;
                     }
                 }
