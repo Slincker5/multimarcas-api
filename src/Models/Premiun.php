@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Database;
+use Firebase\JWT\JWT;
 use Ramsey\Uuid\UuidFactory;
 
 trait Cupones
@@ -22,10 +23,19 @@ class Premiun extends Database
     private $user_uuid;
     private $response;
     private $admin_uuid = '2c62e966-63d8-4bfd-832e-89094ae47eec';
+    private $key = "georginalissethyvladi";
 
     public function __construct($user_uuid)
     {
         $this->user_uuid = $user_uuid;
+    }
+
+    private function datosUsuario()
+    {
+        $sql = 'SELECT * FROM usuarios WHERE user_uuid = ?';
+        $response = $this->ejecutarConsulta($sql, [$this->user_uuid]);
+        $datos = $response->fetchAll(\PDO::FETCH_ASSOC);
+        return $datos;
     }
 
     private function fechaFinSuscripcion()
@@ -114,7 +124,7 @@ class Premiun extends Database
 
     public function canjearCupon($cupon)
     {
-
+        $user = $this->datosUsuario();
         $datosCupon = $this->datosCupon($cupon);
         $nCanjeos = $this->totalCanjeos($datosCupon[0]['cupon_uuid']);
         if ($nCanjeos[0]['cantidad'] < $datosCupon[0]['cupon_limite']) {
@@ -131,9 +141,13 @@ class Premiun extends Database
                     $sql_vip = 'UPDATE usuarios SET suscripcion = true, fin_suscripcion = ? WHERE user_uuid = ?';
                     $fecha = $this->fechaFinSuscripcion();
                     $guardarVip = $this->ejecutarConsulta($sql_vip, [$fecha, $this->user_uuid]);
-                    $this->response['status'] = 'OK';
-                    $this->response['message'] = 'Suscripcion exitosa.';
-                    return $this->response;
+                    if ($guardarVip) {
+                        $token = $this->generarTokenVip($user[0]['username'], $user[0]['email'], $user[0]['photo'], $user[0]['rol'], $user[0]['fecha'], $user[0]['ip'], $user[0]['suscripcion'], $user[0]['fin_suscripcion']);
+                        $this->response['status'] = 'OK';
+                        $this->response['message'] = 'Suscripcion exitosa.';
+                        $this->response['token'] = 'Suscripcion exitosa.';
+                        return $this->response;
+                    }
                 }
             }
         } else {
@@ -175,5 +189,30 @@ class Premiun extends Database
         $datos = $this->ejecutarConsulta($sql, [$cupon_uuid, $this->user_uuid]);
         $listar = $datos->fetchAll(\PDO::FETCH_ASSOC);
         return $listar;
+    }
+
+    private function generarTokenVip($username, $email, $photo, $rol, $fecha, $ip, $suscripcion, $fin_suscripcion)
+    {
+        // Crear un token
+        $payload = array(
+            "iss" => "multimarcas",
+            "aud" => $this->user_uuid,
+            "iat" => time(),
+            "nbf" => time(),
+            "data" => array(
+                "user_uuid" => $this->user_uuid,
+                "username" => $username,
+                "email" => $email,
+                "photo" => $photo,
+                "rol" => $rol,
+                "fecha" => $fecha,
+                "ip" => $ip,
+                "suscripcion" => $suscripcion,
+                "fin_suscripcion" => $fin_suscripcion,
+            ),
+        );
+        $alg = "HS256";
+        $token = JWT::encode($payload, $this->key, $alg);
+        return $token;
     }
 }

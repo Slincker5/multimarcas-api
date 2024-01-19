@@ -170,7 +170,6 @@ $app->group('/temp', function ($group) {
 });
 
 $app->group('/premiun', function ($group) {
-    $group->put('/update', PremiunController::class . ':hacerPremiun');
     $group->get('/cupon', PremiunController::class . ':generarCupon');
     $group->post('/nuevo-cupon', PremiunController::class . ':crearCupon');
     $group->post('/canjear-cupon', PremiunController::class . ':canjearCupon');
