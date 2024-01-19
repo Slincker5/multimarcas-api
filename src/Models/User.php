@@ -14,6 +14,14 @@ class User extends Database
         $this->user_uuid = $user_uuid;
     }
 
+    private function datosUsuario()
+    {
+        $sql = 'SELECT user_uuid, username, email, photo, rol, suscripcion, fin_suscripcion FROM usuarios WHERE user_uuid = ?';
+        $response = $this->ejecutarConsulta($sql, [$this->user_uuid]);
+        $datos = $response->fetchAll(\PDO::FETCH_ASSOC);
+        return $datos;
+    }
+
     private function totalCintillos()
     {
         $sql = 'SELECT COUNT(*) AS conteo FROM codigos WHERE  user_uuid = ?';
@@ -61,6 +69,7 @@ class User extends Database
     public function estadisticasGlobal()
     {
         $stats = [
+            "profile" => $this->datosUsuario(),
             "totalCintillos" => $this->totalCintillos(),
             "totalCintillosGenerados" => $this->totalCintillosGenerados(),
             "totalRotulos" => $this->totalRotulos(),
