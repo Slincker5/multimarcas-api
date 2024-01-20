@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+
+use Firebase\JWT\JWT;
 use App\Models\Database;
 
 class User extends Database
 {
 
     private $user_uuid;
+    private $key = "georginalissethyvladi";
 
     public function __construct($user_uuid)
     {
@@ -78,5 +81,31 @@ class User extends Database
         return $stats;
     }
 
+    public function generatedToken () {
+        $datos = $this->datosUsuario();
+        $payload = array(
+            "iss" => "multimarcas",
+            "aud" => $user_uuid,
+            "iat" => time(),
+            "nbf" => time(),
+            "data" => array(
+                "user_uuid" => $datos["user_uuid"],
+                "username" => $datos["username"],
+                "email" => $datos["email"],
+                "photo" => $datos["photo"],
+                "rol" => $datos["rol"],
+                "suscripcion" => $datos["suscripcion"],
+                "fin_suscripcion" => $datos["fin_suscripcion"]
+
+            ),
+        );
+        $alg = "HS256";
+        $token = JWT::encode($payload, $this->key, $alg);
+        $this->response['status'] = 'OK';
+        $this->response['message'] = 'token generado con exito.';
+        $this->response["usera"] = "hols";
+        $this->response['token'] = $token;
+        return $this->response;
+    }
 
 }

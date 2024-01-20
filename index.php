@@ -166,8 +166,8 @@ $app->group('/temp', function ($group) {
     
     $group->post('/mvc', UserController::class . ':userMvc');
     $group->post('/update-token', UserController::class . ':updateToken');
-
-});
+    
+})->add($validateJwtMiddleware);
 
 $app->group('/premiun', function ($group) {
     $group->get('/cupon', PremiunController::class . ':generarCupon');
