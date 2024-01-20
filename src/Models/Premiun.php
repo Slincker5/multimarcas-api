@@ -8,7 +8,7 @@ use Ramsey\Uuid\UuidFactory;
 
 trait Cupones
 {
-    public function generarCupon($cupon_limite, $cupon)
+    public function generarCupon()
     {
         $cupon = str_pad(rand(1, 99999999), 8, '0', STR_PAD_LEFT);
         $this->response['status'] = 'OK';
