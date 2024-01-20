@@ -103,7 +103,7 @@ class User extends Database
         $token = JWT::encode($payload, $this->key, $alg);
         $this->response['status'] = 'OK';
         $this->response['message'] = 'token generado con exito.';
-        $this->response["usera"] = "hols";
+        $this->response["usera"] = $datos;
         $this->response['token'] = $token;
         return $this->response;
     }
