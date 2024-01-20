@@ -35,6 +35,7 @@ class Label extends Database
         if ($vip === 0) {
             $this->response['status'] = 'error';
             $this->response['message'] = 'Necesitas ser usuario premiun para esta accion';
+            return $this->response;
         } else {
             if ($this->cantidad > 448) {
                 $this->response['status'] = 'error';
