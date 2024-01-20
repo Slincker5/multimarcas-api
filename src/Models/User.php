@@ -89,13 +89,13 @@ class User extends Database
             "iat" => time(),
             "nbf" => time(),
             "data" => array(
-                "user_uuid" => $datos["user_uuid"],
-                "username" => $datos["username"],
-                "email" => $datos["email"],
-                "photo" => $datos["photo"],
-                "rol" => $datos["rol"],
-                "suscripcion" => $datos["suscripcion"],
-                "fin_suscripcion" => $datos["fin_suscripcion"]
+                "user_uuid" => $datos[0]["user_uuid"],
+                "username" => $datos[0]["username"],
+                "email" => $datos[0]["email"],
+                "photo" => $datos[0]["photo"],
+                "rol" => $datos[0]["rol"],
+                "suscripcion" => $datos[0]["suscripcion"],
+                "fin_suscripcion" => $datos[0]["fin_suscripcion"]
 
             ),
         );
@@ -103,7 +103,6 @@ class User extends Database
         $token = JWT::encode($payload, $this->key, $alg);
         $this->response['status'] = 'OK';
         $this->response['message'] = 'token generado con exito.';
-        $this->response["usera"] = $datos[0]["suscripcion"];
         $this->response['token'] = $token;
         return $this->response;
     }
