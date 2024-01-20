@@ -85,7 +85,7 @@ class User extends Database
         $datos = $this->datosUsuario();
         $payload = array(
             "iss" => "multimarcas",
-            "aud" => $user_uuid,
+            "aud" => $this->user_uuid,
             "iat" => time(),
             "nbf" => time(),
             "data" => array(
