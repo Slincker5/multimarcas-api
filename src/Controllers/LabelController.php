@@ -15,9 +15,10 @@ class LabelController
     {
         $user_uuid = $request->getAttribute('payload')->data->user_uuid;
         $username = $request->getAttribute('payload')->data->username;
+        $suscripcion = $request->getAttribute('payload')->data->suscripcion;
         $body = $request->getParsedBody();
         $classLabel = new Label($body['barra'], $body['descripcion'], $body['cantidad'], $body['precio'], $username, $user_uuid);
-        $crear = $classLabel->addLabel();
+        $crear = $classLabel->addLabel($suscripcion);
         $response->getBody()->write(json_encode($crear));
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
     }
