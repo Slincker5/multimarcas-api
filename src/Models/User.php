@@ -104,7 +104,7 @@ class User extends Database
         $this->response['status'] = 'OK';
         $this->response['message'] = 'token generado con exito.';
         $this->response["usera"] = $datos;
-        $this->response['token'] = $token;
+        $this->response['token'] = $token[0]["suscripcion"];
         return $this->response;
     }
 
