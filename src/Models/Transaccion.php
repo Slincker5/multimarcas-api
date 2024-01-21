@@ -13,7 +13,7 @@ class Transaccion extends Database
         $sql = 'SELECT COUNT(*) FROM transacciones WHERE IdTransaccion = ?';
         $getIdTransaccion = $this->ejecutarConsulta($sql, [$IdTransaccion]);
         $result = $getIdTransaccion->fetchColumn();
-        return $total;
+        return $result;
     }
 
     public function saveTransaction($IdTransaccion, $ResultadoTransaccion, $Monto, $FechaTransaccion)
