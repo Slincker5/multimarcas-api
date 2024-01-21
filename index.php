@@ -177,7 +177,7 @@ $app->group('/premiun', function ($group) {
 
 $app->group('/pagos', function ($group) {
     $group->post('/webhook', TransaccionController::class . ':saveTransaction');
-    $group->post('/after-pay', TransaccionController::class . ':saveTransactionAfterPay');
+    $group->get('/after-pay', TransaccionController::class . ':saveTransactionAfterPay');
 });
 $app->run();
 
