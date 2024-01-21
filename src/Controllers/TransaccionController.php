@@ -23,7 +23,6 @@ class TransaccionController
     {
         $user_uuid = $request->getAttribute('payload')->data->user_uuid;
         $body = $request->getParsedBody();
-        $IdTransaccion = $request->getBody();
         $classTransaccion = new Transaccion();
         $save = $classTransaccion->saveTransactionAfterPay($body["IdTransaccion"], $user_uuid);
         $response->getBody()->write(json_encode($save));

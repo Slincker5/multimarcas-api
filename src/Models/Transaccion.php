@@ -10,7 +10,7 @@ class Transaccion extends Database
 
     private function existenciaIdTransaccion($IdTransaccion)
     {
-        $sql = 'SELECT COUNT(*) FROM transacciones WHERE IdTRansaccion = ?';
+        $sql = 'SELECT COUNT(*) FROM transacciones WHERE IdTransaccion = ?';
         $getIdTransaccion = $this->ejecutarConsulta($sql, [$IdTransaccion]);
         $result = $getIdTransaccion->fetchColumn();
         return $total;
