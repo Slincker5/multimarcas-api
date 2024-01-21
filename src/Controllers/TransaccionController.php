@@ -22,7 +22,7 @@ class TransaccionController
     function saveTransactionAfterPay($request, $response, $args)
     {
         $user_uuid = $request->getAttribute('payload')->data->user_uuid;
-        $IdTransaccion = $request->getQueryParam("IdTransaccion");
+        $IdTransaccion = $request->getQueryParams("IdTransaccion");
         $classTransaccion = new Transaccion();
         $save = $classTransaccion->saveTransactionAfterPay($IdTransaccion, $user_uuid);
         $response->getBody()->write(json_encode($save));
