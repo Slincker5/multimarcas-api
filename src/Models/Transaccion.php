@@ -18,12 +18,22 @@ class Transaccion extends Database
 
     public function saveTransaction($IdTransaccion, $ResultadoTransaccion, $Monto, $FechaTransaccion)
     {
-        $sql = 'INSERT INTO transacciones (IdTransaccion, ResultadoTransaccion, Monto, FechaTransaccion) VALUES (?, ?, ?, ?)';
-        $transaccion = $this->ejecutarConsulta($sql, [$IdTransaccion, $ResultadoTransaccion, $Monto, $FechaTransaccion]);
-        if ($transaccion) {
-            $this->response['status'] = 'OK';
-            $this->response['message'] = 'Operacion exitosa';
-            return $this->response;
+        if (!$this->existenciaIdTransaccion($IdTransaccion)) {
+            $sql = 'INSERT INTO transacciones (IdTransaccion, ResultadoTransaccion, Monto, FechaTransaccion) VALUES (?, ?, ?, ?)';
+            $transaccion = $this->ejecutarConsulta($sql, [$IdTransaccion, $ResultadoTransaccion, $Monto, $FechaTransaccion]);
+            if ($transaccion) {
+                $this->response['status'] = 'OK';
+                $this->response['message'] = 'Operacion exitosa';
+                return $this->response;
+            }
+        } else {
+            $sql = 'UPDATE transacciones SET ResultadoTransaccion = ?, Monto = ?, FechaTransaccion = ?';
+            $transaccion = $this->ejecutarConsulta($sql, [$ResultadoTransaccion, $Monto, $FechaTransaccion]);
+            if ($transaccion) {
+                $this->response['status'] = 'OK';
+                $this->response['message'] = 'Operacion exitosa';
+                return $this->response;
+            }
         }
     }
 
@@ -38,7 +48,7 @@ class Transaccion extends Database
                 return $this->response;
             }
         } else {
-            $sql = 'UPDATE SET transacciones user_uuid = ?';
+            $sql = 'UPDATE transacciones SET user_uuid = ?';
             $transaccion = $this->ejecutarConsulta($sql, [$user_uuid]);
             if ($transaccion) {
                 $this->response['status'] = 'OK';
