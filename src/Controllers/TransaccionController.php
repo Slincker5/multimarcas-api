@@ -13,8 +13,10 @@ class TransaccionController
     function saveTransaction($request, $response, $args)
     {
         $body = $request->getParsedBody();
+        $header_wompi = $request->getBody()->getContents();
+        $wompiHashHeader = $request->getHeader('wompi_hash')[0];
         $classTransaccion = new Transaccion();
-        $save = $classTransaccion->saveTransaction($body['IdTransaccion'], $body['ResultadoTransaccion'], $body['Monto'], $body['FechaTransaccion']);
+        $save = $classTransaccion->saveTransaction($body['IdTransaccion'], $body['ResultadoTransaccion'], $body['Monto'], $body['FechaTransaccion'], $header_wompi, $wompiHashHeader);
         $response->getBody()->write(json_encode($save));
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
     }

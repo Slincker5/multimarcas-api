@@ -6,6 +6,7 @@ use App\Models\Database;
 
 class Transaccion extends Database
 {
+    private $secret = '7519b85d-ccaa-42c5-8e2f-0390c23e5d22';
     private $response;
 
     private function existenciaIdTransaccion($IdTransaccion)
@@ -16,25 +17,33 @@ class Transaccion extends Database
         return $result;
     }
 
-    public function saveTransaction($IdTransaccion, $ResultadoTransaccion, $Monto, $FechaTransaccion)
+    public function saveTransaction($IdTransaccion, $ResultadoTransaccion, $Monto, $FechaTransaccion, $header_wompi, $wompiHashHeader)
     {
-        if (!$this->existenciaIdTransaccion($IdTransaccion)) {
-            $sql = 'INSERT INTO transacciones (IdTransaccion, ResultadoTransaccion, Monto, FechaTransaccion) VALUES (?, ?, ?, ?)';
-            $transaccion = $this->ejecutarConsulta($sql, [$IdTransaccion, $ResultadoTransaccion, $Monto, $FechaTransaccion]);
-            if ($transaccion) {
-                $this->response['status'] = 'OK';
-                $this->response['message'] = 'Operacion exitosa';
-                return $this->response;
+        $calculatedHash = hash_hmac('sha256', $header_wompi, $this->secret);
+        if ($calculatedHash === $wompiHashHeader) {
+            if (!$this->existenciaIdTransaccion($IdTransaccion)) {
+                $sql = 'INSERT INTO transacciones (IdTransaccion, ResultadoTransaccion, Monto, FechaTransaccion) VALUES (?, ?, ?, ?)';
+                $transaccion = $this->ejecutarConsulta($sql, [$IdTransaccion, $ResultadoTransaccion, $Monto, $FechaTransaccion]);
+                if ($transaccion) {
+                    $this->response['status'] = 'OK';
+                    $this->response['message'] = 'Operacion exitosa';
+                    return $this->response;
+                }
+            } else {
+                $sql = 'UPDATE transacciones SET ResultadoTransaccion = ?, Monto = ?, FechaTransaccion = ?';
+                $transaccion = $this->ejecutarConsulta($sql, [$ResultadoTransaccion, $Monto, $FechaTransaccion]);
+                if ($transaccion) {
+                    $this->response['status'] = 'OK';
+                    $this->response['message'] = 'Operacion exitosa';
+                    return $this->response;
+                }
             }
         } else {
-            $sql = 'UPDATE transacciones SET ResultadoTransaccion = ?, Monto = ?, FechaTransaccion = ?';
-            $transaccion = $this->ejecutarConsulta($sql, [$ResultadoTransaccion, $Monto, $FechaTransaccion]);
-            if ($transaccion) {
-                $this->response['status'] = 'OK';
-                $this->response['message'] = 'Operacion exitosa';
-                return $this->response;
-            }
+            $this->response['status'] = 'OK';
+            $this->response['message'] = 'Tu transaccion es fraudulenta.';
+            return $this->response;
         }
+
     }
 
     public function saveTransactionAfterPay($IdTransaccion, $user_uuid)

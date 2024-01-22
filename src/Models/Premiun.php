@@ -20,6 +20,7 @@ trait Cupones
 class Premiun extends Database
 {
     use Cupones;
+    private $secret = '7519b85d-ccaa-42c5-8e2f-0390c23e5d22';
     private $user_uuid;
     private $response;
     private $admin_uuid = '2c62e966-63d8-4bfd-832e-89094ae47eec';
