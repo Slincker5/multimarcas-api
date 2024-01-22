@@ -94,11 +94,6 @@ $app->group('/label', function ($group) {
 
 })->add($validateJwtMiddleware);
 
-$app->group('/notification', function ($group) {
-
-    $group->post('/create', NotificationController::class . ':send');
-
-})->add($validateJwtMiddleware);
 
 $app->group('/search', function($group) {
 
@@ -177,7 +172,11 @@ $app->group('/premiun', function ($group) {
 
 $app->group('/pagos', function ($group) {
     $group->post('/webhook', TransaccionController::class . ':saveTransaction');
-    $group->post('/after-pay', TransaccionController::class . ':saveTransactionAfterPay');
 });
+
+$app->group('/pagos', function ($group) {
+    $group->post('/after-pay', TransaccionController::class . ':saveTransactionAfterPay');
+})->add($validateJwtMiddleware);
+
 $app->run();
 
