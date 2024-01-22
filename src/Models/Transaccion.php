@@ -59,9 +59,16 @@ class Transaccion extends Database
             $sql = 'INSERT INTO transacciones (IdTransaccion, user_uuid) VALUES (?, ?)';
             $transaccion = $this->ejecutarConsulta($sql, [$IdTransaccion, $user_uuid]);
             if ($transaccion) {
-                $this->response['status'] = 'OK';
-                $this->response['message'] = 'Operacion exitosa';
-                return $this->response;
+                if ($transaccion) {
+                    $hacerPremiun = 'UPDATE usuarios SET suscripcion = true, fin_suscripcion = ? WHERE user_uuid = ?';
+                    $fecha = $this->fechaFinSuscripcion();
+                    $premiun = $this->ejecutarConsulta($hacerPremiun, [$fecha, $user_uuid]);
+                    if ($premiun) {
+                        $this->response['status'] = 'OK';
+                        $this->response['message'] = '¡En hora buena!, ahora eres usuario premiun.';
+                        return $this->response;
+                    }
+                }
             }
         } else {
             $sql = 'UPDATE transacciones SET user_uuid = ?';
