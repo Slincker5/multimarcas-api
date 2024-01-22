@@ -84,7 +84,7 @@ class Transaccion extends Database
             $sql = 'UPDATE transacciones SET user_uuid = ?';
             $transaccion = $this->ejecutarConsulta($sql, [$user_uuid]);
             if ($transaccion) {
-                return $this->hacerPremiun($user_uuid);
+                $this->hacerPremiun($user_uuid);
             }
         }
     }
