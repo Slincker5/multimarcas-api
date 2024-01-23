@@ -71,8 +71,8 @@ class Transaccion extends Database
                 }
             }
         } else {
-            $sql = 'UPDATE transacciones SET user_uuid = ?';
-            $transaccion = $this->ejecutarConsulta($sql, [$user_uuid]);
+            $sql = 'UPDATE transacciones SET user_uuid = ? WHERE IdTransaccion = ?';
+            $transaccion = $this->ejecutarConsulta($sql, [$user_uuid, $IdTransaccion]);
             if ($transaccion) {
                 $hacerPremiun = 'UPDATE usuarios SET suscripcion = true, fin_suscripcion = ? WHERE user_uuid = ?';
                 $fecha = $this->fechaFinSuscripcion();
