@@ -8,11 +8,16 @@ use Ramsey\Uuid\UuidFactory;
 class Label extends Database
 {
     private $response;
-    protected $plantilla;
+    private $barra;
+    private $descripcion;
+    private $cantidad;
+    private $precio;
+    private $username;
+    private $user_uuid;
+
 
     public function __construct($barra = '', $descripcion = '', $cantidad = '', $precio = '', $username = '', $user_uuid = '')
     {
-        $this->plantilla = $_SERVER['DOCUMENT_ROOT'] . '/public/documentos/PLANTILLA2.xlsx';
         $this->barra = $barra;
         $this->descripcion = $descripcion;
         $this->cantidad = $cantidad;

@@ -7,7 +7,14 @@ use Ramsey\Uuid\UuidFactory;
 class Poster extends Database
 {
 
-    private $response = [];
+    private $response;
+    private $barra;
+    private $descripcion;
+    private $precio;
+    private $f_inicio;
+    private $f_fin;
+    private $cantidad;
+    private $user_uuid;
 
     public function __construct($barra = '', $descripcion = '', $precio = '', $f_inicio = '', $f_fin = '', $cantidad = '', $user_uuid = '')
     {
@@ -44,11 +51,11 @@ class Poster extends Database
         return $datos;
     }
 
-    public function createPoster($vip)
+    public function createPoster($suscripcion)
     {
 
         date_default_timezone_set("America/El_Salvador");
-        if ($vip === 0) {
+        if ($suscripcion === 0) {
             $this->response['status'] = 'error';
             $this->response['message'] = 'Necesitas ser usuario premiun para esta accion';
             return $this->response;
@@ -91,11 +98,11 @@ class Poster extends Database
         }
     }
 
-    public function createPosterSmall()
+    public function createPosterSmall($suscripcion)
     {
 
         date_default_timezone_set("America/El_Salvador");
-        if ($vip === 0) {
+        if ($suscripcion === 0) {
             $this->response['status'] = 'error';
             $this->response['message'] = 'Necesitas ser usuario premiun para esta accion';
             return $this->response;
@@ -138,12 +145,12 @@ class Poster extends Database
         }
     }
 
-    public function createPosterLowPriceSmall()
+    public function createPosterLowPriceSmall($suscripcion)
     {
 
         date_default_timezone_set("America/El_Salvador");
 
-        if ($vip === 0) {
+        if ($suscripcion === 0) {
             $this->response['status'] = 'error';
             $this->response['message'] = 'Necesitas ser usuario premiun para esta accion';
             return $this->response;

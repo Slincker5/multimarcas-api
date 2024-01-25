@@ -8,7 +8,7 @@ use App\Models\Database;
 
 class User extends Database
 {
-
+    private $response;
     private $user_uuid;
     private $key = "georginalissethyvladi";
 

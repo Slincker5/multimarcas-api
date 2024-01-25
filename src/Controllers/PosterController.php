@@ -5,8 +5,8 @@ namespace App\Controllers;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Exception\HttpNotFoundException;
 use Slim\Factory\AppFactory;
-use App\Models\Poster;
 use App\Models\Email;
+use App\Models\Poster;
 
 class PosterController
 {
@@ -14,9 +14,10 @@ class PosterController
     function createPoster($request, $response, $args)
     {
         $user_uuid = $request->getAttribute('payload')->data->user_uuid;
+        $suscripcion = $request->getAttribute('payload')->data->suscripcion;
         $body = $request->getParsedBody();
         $classPoster = new Poster($body['barra'], $body['descripcion'], $body['precio'], $body['f_inicio'], $body['f_fin'], $body['cantidad'], $user_uuid);
-        $create = $classPoster->createPoster();
+        $create = $classPoster->createPoster($suscripcion);
         $response->getBody()->write(json_encode($create));
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
     }
@@ -31,7 +32,7 @@ class PosterController
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
     }
 
-    function buildPosterDocument ($request, $response, $args)
+    function buildPosterDocument($request, $response, $args)
     {
         $user_uuid = $request->getAttribute('payload')->data->user_uuid;
         $username = $request->getAttribute('payload')->data->username;
@@ -45,8 +46,8 @@ class PosterController
         $res->code = $random_id;
 
         if ($res->status === 'OK') {
-            $guardarDocumento = $classPoster->saveGenerated($res->path_complete, $res->path_name, $res->path_uuid, $res->user_uuid, $body['comentarios'], $random_id, 'super_oferta_4x4');
-            $asignarDocumento = $classPoster->assignDocument($res->path_uuid, $res->user_uuid);
+            $classPoster->saveGenerated($res->path_complete, $res->path_name, $res->path_uuid, $res->user_uuid, $body['comentarios'], $random_id, 'super_oferta_4x4');
+            $classPoster->assignDocument($res->path_uuid, $res->user_uuid);
         }
 
         if ($body !== null) {
@@ -54,10 +55,10 @@ class PosterController
                 $asunto = 'AFICHES #' . $random_id;
                 $regex = '/^[\p{L}\p{N}\s.,;:!?\'"áéíóúÁÉÍÓÚñÑ]+$/u';
                 $comment = $body['comentarios'];
-                if(!preg_match($regex, $comment)){
+                if (!preg_match($regex, $comment)) {
                     $comment = '---';
                 }
-                $correo = $classEmail->sendMailPoster($body['receptor'], $body['nombreReceptor'], $res->path_complete, $asunto, $comment, $res->cantidad, $username);
+                $classEmail->sendMailPoster($body['receptor'], $body['nombreReceptor'], $res->path_complete, $asunto, $comment, $res->cantidad, $username);
             }
         }
         $response->getBody()->write(json_encode($res));
@@ -68,9 +69,10 @@ class PosterController
     function createPosterSmall($request, $response, $args)
     {
         $user_uuid = $request->getAttribute('payload')->data->user_uuid;
+        $suscripcion = $request->getAttribute('payload')->data->suscripcion;
         $body = $request->getParsedBody();
         $classPoster = new Poster($body['barra'], $body['descripcion'], $body['precio'], $body['f_inicio'], $body['f_fin'], $body['cantidad'], $user_uuid);
-        $create = $classPoster->createPosterSmall();
+        $create = $classPoster->createPosterSmall($suscripcion);
         $response->getBody()->write(json_encode($create));
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
     }
@@ -95,7 +97,7 @@ class PosterController
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
     }
 
-    function buildPosterDocumentSmall ($request, $response, $args)
+    function buildPosterDocumentSmall($request, $response, $args)
     {
         $user_uuid = $request->getAttribute('payload')->data->user_uuid;
         $username = $request->getAttribute('payload')->data->username;
@@ -109,8 +111,8 @@ class PosterController
         $res->code = $random_id;
 
         if ($res->status === 'OK') {
-            $guardarDocumento = $classPoster->saveGenerated($res->path_complete, $res->path_name, $res->path_uuid, $res->user_uuid, $body['comentarios'], $random_id, 'super_oferta_3x9');
-            $asignarDocumento = $classPoster->assignDocumentSmall($res->path_uuid, $res->user_uuid);
+            $classPoster->saveGenerated($res->path_complete, $res->path_name, $res->path_uuid, $res->user_uuid, $body['comentarios'], $random_id, 'super_oferta_3x9');
+            $classPoster->assignDocumentSmall($res->path_uuid, $res->user_uuid);
         }
 
         if ($body !== null) {
@@ -118,10 +120,10 @@ class PosterController
                 $asunto = 'AFICHES #' . $random_id;
                 $regex = '/^[\p{L}\p{N}\s.,;:!?\'"áéíóúÁÉÍÓÚñÑ]+$/u';
                 $comment = $body['comentarios'];
-                if(!preg_match($regex, $comment)){
+                if (!preg_match($regex, $comment)) {
                     $comment = '---';
                 }
-                $correo = $classEmail->sendMailPosterSmall($body['receptor'], $body['nombreReceptor'], $res->path_complete, $asunto, $comment, $res->cantidad, $username);
+                $classEmail->sendMailPosterSmall($body['receptor'], $body['nombreReceptor'], $res->path_complete, $asunto, $comment, $res->cantidad, $username);
             }
         }
         $response->getBody()->write(json_encode($res));
@@ -129,7 +131,7 @@ class PosterController
 
     }
 
-    function buildPosterLowPriceDocumentSmall ($request, $response, $args)
+    function buildPosterLowPriceDocumentSmall($request, $response, $args)
     {
         $user_uuid = $request->getAttribute('payload')->data->user_uuid;
         $username = $request->getAttribute('payload')->data->username;
@@ -143,8 +145,8 @@ class PosterController
         $res->code = $random_id;
 
         if ($res->status === 'OK') {
-            $guardarDocumento = $classPoster->saveGenerated($res->path_complete, $res->path_name, $res->path_uuid, $res->user_uuid, $body['comentarios'], $random_id, 'super_oferta_3x9');
-            $asignarDocumento = $classPoster->assignDocumentLowPriceSmall($res->path_uuid, $res->user_uuid);
+            $classPoster->saveGenerated($res->path_complete, $res->path_name, $res->path_uuid, $res->user_uuid, $body['comentarios'], $random_id, 'super_oferta_3x9');
+            $classPoster->assignDocumentLowPriceSmall($res->path_uuid, $res->user_uuid);
         }
 
         if ($body !== null) {
@@ -152,22 +154,24 @@ class PosterController
                 $asunto = 'AFICHES #' . $random_id;
                 $regex = '/^[\p{L}\p{N}\s.,;:!?\'"áéíóúÁÉÍÓÚñÑ]+$/u';
                 $comment = $body['comentarios'];
-                if(!preg_match($regex, $comment)){
+                if (!preg_match($regex, $comment)) {
                     $comment = '---';
                 }
-                $correo = $classEmail->sendMailPosterLowPriceSmall($body['receptor'], $body['nombreReceptor'], $res->path_complete, $asunto, $comment, $res->cantidad, $username);
+                $classEmail->sendMailPosterLowPriceSmall($body['receptor'], $body['nombreReceptor'], $res->path_complete, $asunto, $comment, $res->cantidad, $username);
             }
         }
         $response->getBody()->write(json_encode($res));
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
 
     }
-    
-    function createPosterLowPriceSmall($request, $response, $args) {
+
+    function createPosterLowPriceSmall($request, $response, $args)
+    {
         $user_uuid = $request->getAttribute('payload')->data->user_uuid;
+        $suscripcion = $request->getAttribute('payload')->data->suscripcion;
         $body = $request->getParsedBody();
         $classPoster = new Poster($body['barra'], $body['descripcion'], $body['precio'], null, null, $body['cantidad'], $user_uuid);
-        $create = $classPoster->createPosterLowPriceSmall();
+        $create = $classPoster->createPosterLowPriceSmall($suscripcion);
         $response->getBody()->write(json_encode($create));
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
     }
@@ -185,5 +189,3 @@ class PosterController
         return $response;
     }
 }
-
-    
