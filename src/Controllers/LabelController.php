@@ -84,12 +84,10 @@ class LabelController
         $res = json_decode(trim($generar));
         $random_id = mt_rand(100000, 999999);
         $res->code = $random_id;
-
         
-        $ruta = escapeshellarg($res->path_complete);
         if ($res->status === 'OK') {
-            $guardarDocumento = $classLabel->saveGenerated($res->path_complete, $res->path_name, $res->path_uuid, $res->user_uuid, $body['comentarios'], $random_id);
-            $asignarDocumento = $classLabel->assignDocument($res->path_uuid, $res->user_uuid);
+            $classLabel->saveGenerated($res->path_complete, $res->path_name, $res->path_uuid, $res->user_uuid, $body['comentarios'], $random_id, $body['receptor'], $body['nombreReceptor']);
+            $classLabel->assignDocument($res->path_uuid, $res->user_uuid);
         }
 
         if ($body !== null) {
@@ -100,7 +98,7 @@ class LabelController
                 if(!preg_match($regex, $comment)){
                     $comment = '---';
                 }
-                $correo = $classEmail->sendMailLabel($body['receptor'], $body['nombreReceptor'], $res->path_complete, $asunto, $comment, $res->cantidad, $username);
+                $classEmail->sendMailLabel($body['receptor'], $body['nombreReceptor'], $res->path_complete, $asunto, $comment, $res->cantidad, $username);
             }
         }
         $response->getBody()->write(json_encode($res));

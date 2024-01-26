@@ -108,15 +108,15 @@ class Label extends Database
         return $datos;
     }
 
-    public function saveGenerated($path, $path_name, $path_uuid, $user_uuid, $comment, $code)
+    public function saveGenerated($path, $path_name, $path_uuid, $user_uuid, $comment, $code, $email, $receptor)
     {
         $regex = '/^[\p{L}\p{N}\s.,;:!?\'"áéíóúÁÉÍÓÚñÑ]+$/u';
         if (preg_match($regex, $comment)) {
-            $sql = 'INSERT INTO generados (path, path_name, path_uuid, user_uuid, comentario, code) VALUES (?, ?, ?, ?, ?, ?)';
-            $this->ejecutarConsulta($sql, [$path, $path_name, $path_uuid, $user_uuid, $comment, $code]);
+            $sql = 'INSERT INTO generados (path, path_name, path_uuid, user_uuid, comentario, code, email, receptor) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+            $this->ejecutarConsulta($sql, [$path, $path_name, $path_uuid, $user_uuid, $comment, $code, $email, $receptor]);
         } else {
-            $sql = 'INSERT INTO generados (path, path_name, path_uuid, user_uuid, comentario, code) VALUES (?, ?, ?, ?, ?, ?)';
-            $this->ejecutarConsulta($sql, [$path, $path_name, $path_uuid, $user_uuid, null, $code]);
+            $sql = 'INSERT INTO generados (path, path_name, path_uuid, user_uuid, comentario, code, email, receptor) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+            $this->ejecutarConsulta($sql, [$path, $path_name, $path_uuid, $user_uuid, null, $code, $email, $receptor]);
         }
 
     }
