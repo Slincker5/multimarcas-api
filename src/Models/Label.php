@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Database;
+use App\Models\Email;
 use Ramsey\Uuid\UuidFactory;
 
 class Label extends Database
@@ -14,10 +15,11 @@ class Label extends Database
     private $precio;
     private $username;
     private $user_uuid;
-
+    private $instanciaEmail;
 
     public function __construct($barra = '', $descripcion = '', $cantidad = '', $precio = '', $username = '', $user_uuid = '')
     {
+        $this->instanciaEmail = new Email();
         $this->barra = $barra;
         $this->descripcion = $descripcion;
         $this->cantidad = $cantidad;
@@ -111,14 +113,14 @@ class Label extends Database
     public function saveGenerated($path, $path_name, $path_uuid, $user_uuid, $comment, $code, $email, $receptor)
     {
         $regex = '/^[\p{L}\p{N}\s.,;:!?\'"áéíóúÁÉÍÓÚñÑ]+$/u';
-        if (preg_match($regex, $comment)) {
-            $sql = 'INSERT INTO generados (path, path_name, path_uuid, user_uuid, comentario, code, email, receptor) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
-            $this->ejecutarConsulta($sql, [$path, $path_name, $path_uuid, $user_uuid, $comment, $code, $email, $receptor]);
-        } else {
-            $sql = 'INSERT INTO generados (path, path_name, path_uuid, user_uuid, comentario, code, email, receptor) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
-            $this->ejecutarConsulta($sql, [$path, $path_name, $path_uuid, $user_uuid, null, $code, $email, $receptor]);
-        }
 
+        $comentarioValido = preg_match($regex, $comment);
+        $emailExistente = $this->instanciaEmail->validarEmailExistencia($email);
+
+        $sql = 'INSERT INTO generados (path, path_name, path_uuid, user_uuid, comentario, code, email, receptor) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+        $params = [$path, $path_name, $path_uuid, $user_uuid, $comentarioValido ? $comment : null, $code, $emailExistente ? $email : null, $receptor];
+
+        $this->ejecutarConsulta($sql, $params);
     }
 
     public function assignDocument($path_uuid, $user_uuid)

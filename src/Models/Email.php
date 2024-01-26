@@ -32,6 +32,15 @@ class Email extends Database
         }
     }
 
+    public function validarEmailExistencia($email)
+    {
+        $sql = 'SELECT COUNT(*) FROM correos WHERE correo = ?';
+        $getData = $this->ejecutarConsulta($sql, [$email]);
+        $total = $getData->fetchColumn();
+        return $total;
+    }
+
+
     public function sendMailLabel($receptor, $nombreReceptor, $documentoEmisor, $asunto, $comentarios, $cantidad, $username)
     {
         try {
