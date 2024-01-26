@@ -142,7 +142,7 @@ class Label extends Database
 
     public function listaGenerados($user_uuid)
     {
-        $sql = 'SELECT * FROM generados WHERE user_uuid = ?  AND email IS NOT NULL OR receptor IS NOT NULL ORDER BY id DESC LIMIT 10';
+        $sql = 'SELECT * FROM generados WHERE user_uuid = ?  AND (email IS NOT NULL OR receptor IS NOT NULL) ORDER BY id DESC LIMIT 10';
         $response = $this->ejecutarConsulta($sql, [$user_uuid]);
         $generados = $response->fetchAll(\PDO::FETCH_ASSOC);
         return $generados;
