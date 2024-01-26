@@ -118,7 +118,7 @@ class Label extends Database
         $emailExistente = $this->instanciaEmail->validarEmailExistencia($email);
 
         $sql = 'INSERT INTO generados (path, path_name, path_uuid, user_uuid, comentario, code, email, receptor) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
-        $params = [$path, $path_name, $path_uuid, $user_uuid, $comentarioValido ? $comment : null, $code, $emailExistente ? $email : null, $receptor];
+        $params = [$path, $path_name, $path_uuid, $user_uuid, $comentarioValido ? $comment : null, $code, !$emailExistente ? $email : null, $receptor];
 
         $this->ejecutarConsulta($sql, $params);
     }
