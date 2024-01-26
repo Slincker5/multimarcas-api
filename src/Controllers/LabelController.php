@@ -1,12 +1,11 @@
 <?php
 
 namespace App\Controllers;
-
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Exception\HttpNotFoundException;
 use Slim\Factory\AppFactory;
-use App\Models\Label;
 use App\Models\Email;
+use App\Models\Label;
 
 class LabelController
 {
@@ -71,7 +70,8 @@ class LabelController
         return $response;
     }
 
-    function build ($request, $response, $args){
+    function build($request, $response, $args)
+    {
 
         $user_uuid = $request->getAttribute('payload')->data->user_uuid;
         $username = $request->getAttribute('payload')->data->username;
@@ -84,7 +84,7 @@ class LabelController
         $res = json_decode(trim($generar));
         $random_id = mt_rand(100000, 999999);
         $res->code = $random_id;
-        
+
         if ($res->status === 'OK') {
             $classLabel->saveGenerated($res->path_complete, $res->path_name, $res->path_uuid, $res->user_uuid, $body['comentarios'], $random_id, $body['receptor'], $body['nombreReceptor']);
             $classLabel->assignDocument($res->path_uuid, $res->user_uuid);
@@ -95,7 +95,7 @@ class LabelController
                 $asunto = 'CINTILLOS #' . $random_id;
                 $regex = '/^[\p{L}\p{N}\s.,;:!?\'"áéíóúÁÉÍÓÚñÑ]+$/u';
                 $comment = $body['comentarios'];
-                if(!preg_match($regex, $comment)){
+                if (!preg_match($regex, $comment)) {
                     $comment = '---';
                 }
                 $classEmail->sendMailLabel($body['receptor'], $body['nombreReceptor'], $res->path_complete, $asunto, $comment, $res->cantidad, $username);
@@ -103,5 +103,17 @@ class LabelController
         }
         $response->getBody()->write(json_encode($res));
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
+    }
+
+    function listaGenerados($request, $response, $args)
+    {
+
+        $user_uuid = $request->getAttribute('payload')->data->user_uuid;
+
+        $classLabel = new Label();
+        $list = $classLabel->listaGenerados($user_uuid);
+        $response->getBody()->write(json_encode($list));
+        $response = $response->withStatus(200)->withHeader('Content-Type', 'application/json');
+        return $response;
     }
 }

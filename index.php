@@ -89,6 +89,7 @@ $app->group('/label', function ($group) {
     $group->put('/edit', LabelController::class . ':editLabel');
     $group->delete('/remove', LabelController::class . ':removeLabel');
     $group->get('/list', LabelController::class . ':listOfLabels');
+    $group->get('/list-generated', LabelController::class . ':listaGenerados');
     $group->get('/details/{uuid}', LabelController::class . ':detailsLabels');
     $group->post('/build-document', LabelController::class . ':build');
 
