@@ -24,7 +24,7 @@ class Auth extends Database
         return $total;
     }
 
-    private function emailStock($email)
+    public function emailStock($email)
     {
         $sql = 'SELECT COUNT(*) FROM usuarios WHERE email = ?';
         $getData = $this->ejecutarConsulta($sql, [$email]);

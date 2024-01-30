@@ -39,4 +39,13 @@ class AuthController
     $response->getBody()->write(json_encode($login));
     return $response;
     }
+
+    function validarEmail($request, $response, $args){
+        $body = $request->getParsedBody();
+        $classAuth = new Auth();
+        $validar = $classAuth->emailStock($body['email']);
+        $response = $response->withHeader('Content-Type', 'application/json');
+        $response->getBody()->write(json_encode($validar));
+        return $response;
+    }
 }
