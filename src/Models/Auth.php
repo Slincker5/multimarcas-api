@@ -12,6 +12,7 @@ class Auth extends Database
     #PROPIEDADES CLASE
 
     private $expReg = '/^[a-zA-Z0-9 ñÑ ]+$/';
+    private $nombres = '/^[a-zA-ZñÑ]+$/';
     private $response = [];
     public $key = "georginalissethyvladi";
 
@@ -26,10 +27,17 @@ class Auth extends Database
 
     public function emailStock($email)
     {
-        $sql = 'SELECT COUNT(*) FROM usuarios WHERE email = ?';
-        $getData = $this->ejecutarConsulta($sql, [$email]);
-        $total = $getData->fetchColumn();
-        return $total;
+        if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $sql = 'SELECT COUNT(*) FROM usuarios WHERE email = ?';
+            $getData = $this->ejecutarConsulta($sql, [$email]);
+            $total = $getData->fetchColumn();
+            return $total;
+        }else{
+            $this->response['status'] = 'error';
+            $this->response['message'] = 'No es un email';
+            return $this->response;
+        }
+
     }
 
     public function getDataUser($email)
@@ -97,6 +105,61 @@ class Auth extends Database
         }
     }
 
+
+
+    public function createAccountNew($nombre, $apellido, $correo, $telefono, $pass, $ip)
+    {
+        if (empty($nombre) || empty($apellido) || empty($correo) || empty($telefono) || empty($pass)) {
+            $this->response['status'] = 'error';
+            $this->response['message'] = 'Completa todos los campos.';
+            return $this->response;
+        } else if (!preg_match($this->nombres, $nombre) || !preg_match($this->nombres, $apellido)) {
+            $this->response['status'] = 'error';
+            $this->response['message'] = 'El nombre de usuario solo puede contener numeros y letras, no se permiten espacios';
+            return $this->response;
+        } else if (strlen($nombre) > 30 || strlen($apellido) > 30) {
+            $this->response['status'] = 'error';
+            $this->response['message'] = 'El nombre de usuario no puede tener mas de 30 caracteres.';
+            return $this->response;
+        } else if (strlen($nombre) < 4 || strlen($apellido) < 4) {
+            $this->response['status'] = 'error';
+            $this->response['message'] = 'El nombre de usuario debe tener al menos 4 caracteres.';
+            return $this->response;
+        } else if (strlen($pass) < 8) {
+            $this->response['status'] = 'error';
+            $this->response['message'] = 'Tu contraseña debe tener al menos 8 caracteres.';
+            return $this->response;
+        } else if (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
+            $this->response['status'] = 'error';
+            $this->response['message'] = 'El correo no es valido';
+            return $this->response;
+        } else {
+
+            #GENERANDO UN UUID UNICO PARA EL PERFIL
+            $uuidFactory = new UuidFactory();
+            $uuid = $uuidFactory->uuid4();
+            $profile_uuid = $uuid->toString();
+
+            #ENCRIPTADO DE CLAVE
+            $options = ['cost' => 12];
+            $passwordHash = password_hash($pass, PASSWORD_BCRYPT, $options);
+
+            #PROCEDER AL GUARDADO PERSISTENTE
+            $sql = 'INSERT INTO usuarios (user_uuid, nombre, apellido, correo, telefono, pass, rol, ip) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+            $signUp = $this->ejecutarConsulta($sql, [$profile_uuid, $nombre, $apellido, $correo, $telefono, $passwordHash, 'User', $ip]);
+
+            if ($signUp) {
+                $this->response['status'] = 'OK';
+                $this->response['message'] = 'Registro exitoso.';
+                return $this->response;
+            } else {
+                $this->response['status'] = 'error';
+                $this->response['message'] = 'Hubo algun problema a la hora de tu registro, intenta mas tarde.';
+                return $this->response;
+            }
+        }
+    }
+
     public function logIn($username, $pass)
     {
         $sql = 'SELECT * FROM usuarios WHERE username = ?';
@@ -105,7 +168,7 @@ class Auth extends Database
 
         if (count($accountData) === 1) {
             if (password_verify($pass, $accountData[0]['pass'])) {
-                
+
                 // Crear un token
                 $payload = array(
                     "iss" => "multimarcas",
@@ -205,7 +268,7 @@ class Auth extends Database
                         "username" => $username,
                         "email" => $username,
                         "photo" => $photo,
-                        "rol" => 'User'
+                        "rol" => 'User',
 
                     ),
                 );
@@ -229,7 +292,8 @@ class Auth extends Database
 
     }
 
-    public function generatedToken ($user_uuid, $username, $email, $photo) {
+    public function generatedToken($user_uuid, $username, $email, $photo)
+    {
         $payload = array(
             "iss" => "multimarcas",
             "aud" => $user_uuid,
@@ -240,7 +304,7 @@ class Auth extends Database
                 "username" => $username,
                 "email" => $email,
                 "photo" => $photo,
-                "rol" => 'User'
+                "rol" => 'User',
 
             ),
         );
