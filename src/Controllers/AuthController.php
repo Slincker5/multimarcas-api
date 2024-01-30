@@ -20,6 +20,17 @@ class AuthController
         return $response;
     }
 
+    function registerN($request, $response, $args)
+    {
+
+        $body = $request->getParsedBody();
+        $classAuth = new Auth();
+        $register = $classAuth->createAccountN($body['nombre'], $body['apellido'], $body['correo'], $body['telefono'], $body['pass'], $body['ip']);
+        $response = $response->withHeader('Content-Type', 'application/json');
+        $response->getBody()->write(json_encode($register));
+        return $response;
+    }
+
     function login($request, $response, $args)
     {
         $body = $request->getParsedBody();

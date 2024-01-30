@@ -107,7 +107,7 @@ class Auth extends Database
 
 
 
-    public function createAccountNew($nombre, $apellido, $correo, $telefono, $pass, $ip)
+    public function createAccountN($nombre, $apellido, $correo, $telefono, $pass, $ip)
     {
         if (empty($nombre) || empty($apellido) || empty($correo) || empty($telefono) || empty($pass)) {
             $this->response['status'] = 'error';

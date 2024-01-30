@@ -78,7 +78,7 @@ $validateJwtMiddleware = function ($request, $handler) {
 $app->group('/auth', function ($group) {
 
     $group->post('/register', AuthController::class . ':register');
-    $group->post('/register-nuevo', AuthController::class . ':registerNew');
+    $group->post('/register-nuevo', AuthController::class . ':registerN');
     $group->post('/login', AuthController::class . ':login');
     $group->post('/login-with-google', AuthController::class . ':logInGoogle');
     $group->post('/validar-email', AuthController::class . ':validarEmail');
