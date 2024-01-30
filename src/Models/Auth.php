@@ -145,7 +145,7 @@ class Auth extends Database
             $passwordHash = password_hash($pass, PASSWORD_BCRYPT, $options);
 
             #PROCEDER AL GUARDADO PERSISTENTE
-            $sql = 'INSERT INTO usuarios (user_uuid, nombre, apellido, correo, telefono, pass, rol, ip) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+            $sql = 'INSERT INTO usuarios (user_uuid, nombre, apellido, email, telefono, pass, rol, ip) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
             $signUp = $this->ejecutarConsulta($sql, [$profile_uuid, $nombre, $apellido, $correo, $telefono, $passwordHash, 'User', $ip]);
 
             if ($signUp) {
