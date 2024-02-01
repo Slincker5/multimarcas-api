@@ -6,7 +6,6 @@ use Slim\Exception\HttpNotFoundException;
 use Slim\Factory\AppFactory;
 use App\Models\Email;
 use App\Models\Label;
-use App\Models\Notification;
 
 class LabelController
 {
@@ -17,10 +16,7 @@ class LabelController
         $username = $request->getAttribute('payload')->data->username;
         $suscripcion = $request->getAttribute('payload')->data->suscripcion;
         $body = $request->getParsedBody();
-        $classNotification = new Notification();
         $classLabel = new Label($body['barra'], $body['descripcion'], $body['cantidad'], $body['precio'], $username, $user_uuid);
-        $bodyNoti = $username . " ha creado " . $body["cantidad"] . " cintillos.";
-        $classNotification->crearNotificacion("🏷️ ETIQUETA AGREGADA", $bodyNoti);
         $crear = $classLabel->addLabel($suscripcion);
         $response->getBody()->write(json_encode($crear));
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');

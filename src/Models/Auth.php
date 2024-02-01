@@ -34,9 +34,18 @@ class Auth extends Database
             return $total;
         }else{
             $this->response['status'] = 'error';
-            $this->response['message'] = 'No es un email';
+            $this->response['message'] = 'Usa un correo valido';
             return $this->response;
         }
+
+    }
+
+    public function telefonoStock($telefono)
+    {
+            $sql = 'SELECT COUNT(*) FROM usuarios WHERE telefono = ?';
+            $getData = $this->ejecutarConsulta($sql, [$telefono]);
+            $total = $getData->fetchColumn();
+            return $total;
 
     }
 
@@ -162,8 +171,8 @@ class Auth extends Database
 
     public function logIn($username, $pass)
     {
-        $sql = 'SELECT * FROM usuarios WHERE username = ?';
-        $logIn = $this->ejecutarConsulta($sql, [$username]);
+        $sql = 'SELECT * FROM usuarios WHERE email = ? OR telefono OR username = ?';
+        $logIn = $this->ejecutarConsulta($sql, [$username, $username, $username]);
         $accountData = $logIn->fetchAll(\PDO::FETCH_ASSOC);
 
         if (count($accountData) === 1) {
@@ -182,6 +191,8 @@ class Auth extends Database
                         "photo" => $accountData[0]['photo'],
                         "rol" => $accountData[0]['rol'],
                         "fecha" => $accountData[0]['fecha'],
+                        "suscripcion" => $accountData[0]['suscripcion'],
+                        "fin_suscripcion" => $accountData[0]['fin_suscripcion'],
                         "ip" => $accountData[0]['ip'],
 
                     ),
@@ -229,6 +240,8 @@ class Auth extends Database
                     "photo" => $data[0]['photo'],
                     "rol" => $data[0]['rol'],
                     "fecha" => $data[0]['fecha'],
+                    "suscripcion" => $data[0]['suscripcion'],
+                    "fin_suscripcion" => $data[0]['fin_suscripcion'],
                     "ip" => $data[0]['ip'],
 
                 ),
@@ -268,7 +281,7 @@ class Auth extends Database
                         "username" => $username,
                         "email" => $username,
                         "photo" => $photo,
-                        "rol" => 'User',
+                        "rol" => 'User'
 
                     ),
                 );

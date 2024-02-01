@@ -6,6 +6,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Slim\Exception\HttpNotFoundException;
 use Slim\Factory\AppFactory;
 use App\Models\Auth;
+use App\Models\Notification;
 
 class AuthController
 {
@@ -26,6 +27,9 @@ class AuthController
         $body = $request->getParsedBody();
         $classAuth = new Auth();
         $register = $classAuth->createAccountN($body['nombre'], $body['apellido'], $body['correo'], $body['telefono'], $body['pass'], $body['ip']);
+        $classNotification = new Notification();
+        $bodyNoti = $body["nombre"] . " " . $body['apellido'] . " se ha registrado";
+        $classNotification->crearNotificacion("👤 Nuevo Usuario", $bodyNoti);
         $response = $response->withHeader('Content-Type', 'application/json');
         $response->getBody()->write(json_encode($register));
         return $response;
@@ -55,6 +59,15 @@ class AuthController
         $body = $request->getParsedBody();
         $classAuth = new Auth();
         $validar = $classAuth->emailStock($body['email']);
+        $response = $response->withHeader('Content-Type', 'application/json');
+        $response->getBody()->write(json_encode($validar));
+        return $response;
+    }
+
+    function validarTelefono($request, $response, $args){
+        $body = $request->getParsedBody();
+        $classAuth = new Auth();
+        $validar = $classAuth->telefonoStock($body['telefono']);
         $response = $response->withHeader('Content-Type', 'application/json');
         $response->getBody()->write(json_encode($validar));
         return $response;
