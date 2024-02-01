@@ -171,7 +171,7 @@ class Auth extends Database
 
     public function logIn($username, $pass)
     {
-        $sql = 'SELECT * FROM usuarios WHERE email = ? OR telefono OR username = ?';
+        $sql = 'SELECT * FROM usuarios WHERE email = ? OR telefono = ? OR username = ?';
         $logIn = $this->ejecutarConsulta($sql, [$username, $username, $username]);
         $accountData = $logIn->fetchAll(\PDO::FETCH_ASSOC);
 
