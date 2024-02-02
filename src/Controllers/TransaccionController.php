@@ -6,6 +6,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Slim\Exception\HttpNotFoundException;
 use Slim\Factory\AppFactory;
 use App\Models\Transaccion;
+use App\Models\Notification;
 
 class TransaccionController
 {
@@ -15,8 +16,10 @@ class TransaccionController
         $body = $request->getParsedBody();
         $header_wompi = $request->getBody()->getContents();
         $wompiHashHeader = $request->getHeader('wompi_hash')[0];
-        $classTransaccion = new Transaccion();
         $cliente = json_encode($body['cliente']);
+        $classTransaccion = new Transaccion();
+        $classNotification = new Notification();
+        $classNotification->crearNotificacion("👤 Nuevo Usuario", $cliente);
         $save = $classTransaccion->saveTransaction($body['IdTransaccion'], $body['ResultadoTransaccion'], $body['Monto'], $body['FechaTransaccion'], $header_wompi, $wompiHashHeader, $cliente);
         $response->getBody()->write(json_encode($save));
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
