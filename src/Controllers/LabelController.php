@@ -80,7 +80,7 @@ class LabelController
 
         $classLabel = new Label();
         $classEmail = new Email();
-        $generar = shell_exec("python3 cintillo.py https://procter.work/api/label/list $jwt $user_uuid");
+        $generar = shell_exec("python3 cintillo.py https://api.multimarcas.app/api/label/list $jwt $user_uuid");
         $res = json_decode(trim($generar));
         $random_id = mt_rand(100000, 999999);
         $res->code = $random_id;

@@ -24,13 +24,13 @@ class Transaccion extends Database
         return $result;
     }
 
-    public function saveTransaction($IdTransaccion, $ResultadoTransaccion, $Monto, $FechaTransaccion, $header_wompi, $wompiHashHeader)
+    public function saveTransaction($IdTransaccion, $ResultadoTransaccion, $Monto, $FechaTransaccion, $header_wompi, $wompiHashHeader, $adicional)
     {
         $calculatedHash = hash_hmac('sha256', $header_wompi, $this->secret);
         if ($calculatedHash === $wompiHashHeader) {
             if (!$this->existenciaIdTransaccion($IdTransaccion)) {
-                $sql = 'INSERT INTO transacciones (IdTransaccion, ResultadoTransaccion, Monto, FechaTransaccion) VALUES (?, ?, ?, ?)';
-                $transaccion = $this->ejecutarConsulta($sql, [$IdTransaccion, $ResultadoTransaccion, $Monto, $FechaTransaccion]);
+                $sql = 'INSERT INTO transacciones (IdTransaccion, ResultadoTransaccion, Monto, FechaTransaccion, adicional) VALUES (?, ?, ?, ?, ?)';
+                $transaccion = $this->ejecutarConsulta($sql, [$IdTransaccion, $ResultadoTransaccion, $Monto, $FechaTransaccion, $adicional]);
                 if ($transaccion) {
                     $this->response['status'] = 'OK';
                     $this->response['message'] = 'Operacion exitosa';
