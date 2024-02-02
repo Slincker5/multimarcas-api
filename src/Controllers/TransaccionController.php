@@ -17,10 +17,17 @@ class TransaccionController
         $header_wompi = $request->getBody()->getContents();
         $wompiHashHeader = $request->getHeader('wompi_hash')[0];
         $cliente = json_encode($body['cliente']);
+        $clienteTextoPlano = "";
+
+        // Itera a través de cada propiedad del cliente
+        foreach ($body['cliente'] as $propiedad => $valor) {
+            // Añade la propiedad y su valor a la cadena de texto plano
+            $clienteTextoPlano .= "$propiedad: $valor\n";
+        }
         $classTransaccion = new Transaccion();
         $classNotification = new Notification();
-        $classNotification->crearNotificacion("👤 Nuevo Usuario", $cliente);
-        $save = $classTransaccion->saveTransaction($body['IdTransaccion'], $body['ResultadoTransaccion'], $body['Monto'], $body['FechaTransaccion'], $header_wompi, $wompiHashHeader, $cliente);
+        $classNotification->crearNotificacion("👤 Nuevo Usuario", $clienteTextoPlano);
+        $save = $classTransaccion->saveTransaction($body['IdTransaccion'], $body['ResultadoTransaccion'], $body['Monto'], $body['FechaTransaccion'], $header_wompi, $wompiHashHeader, $clienteTextoPlano);
         $response->getBody()->write(json_encode($save));
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
     }
