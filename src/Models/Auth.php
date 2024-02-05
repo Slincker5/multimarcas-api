@@ -158,8 +158,34 @@ class Auth extends Database
             $signUp = $this->ejecutarConsulta($sql, [$profile_uuid, $nombre, $apellido, $correo, $telefono, $passwordHash, 'User', $ip]);
 
             if ($signUp) {
+                $payload = array(
+                    "iss" => "multimarcas",
+                    "aud" => $profile_uuid,
+                    "iat" => time(),
+                    "nbf" => time(),
+                    "data" => array(
+                        "user_uuid" => $profile_uuid,
+                        "username" => $nombre . ' ' . $apellido,
+                        "email" => $correo,
+                        "photo" => NULL,
+                        "rol" => "User",
+                        "fecha" => "",
+                        "suscripcion" => false,
+                        "fin_suscripcion" => NULL,
+                        "ip" => $ip,
+
+                    ),
+                );
+                $alg = "HS256";
+                $token = JWT::encode($payload, $this->key, $alg);
                 $this->response['status'] = 'OK';
                 $this->response['message'] = 'Registro exitoso.';
+                $this->response['username'] = $nombre . " " . $apellido;
+                $this->response['user_uuid'] = $profile_uuid;
+                $this->response['email'] = $correo;
+                $this->response['photo'] = NULL;
+                $this->response['rol'] = "User";
+                $this->response['token'] = $token;
                 return $this->response;
             } else {
                 $this->response['status'] = 'error';
@@ -174,7 +200,7 @@ class Auth extends Database
         $sql = 'SELECT * FROM usuarios WHERE email = ? OR telefono = ? OR username = ?';
         $logIn = $this->ejecutarConsulta($sql, [$username, $username, $username]);
         $accountData = $logIn->fetchAll(\PDO::FETCH_ASSOC);
-
+        $nombreCompleto = $accountData[0]['nombre'] . " " . $accountData[0]['apellido'];
         if (count($accountData) === 1) {
             if (password_verify($pass, $accountData[0]['pass'])) {
 
@@ -186,7 +212,7 @@ class Auth extends Database
                     "nbf" => time(),
                     "data" => array(
                         "user_uuid" => $accountData[0]['user_uuid'],
-                        "username" => $accountData[0]['username'],
+                        "username" => $accountData[0]['username'] === NULL ? $nombreCompleto : $accountData[0]['username'],
                         "email" => $accountData[0]['email'],
                         "photo" => $accountData[0]['photo'],
                         "rol" => $accountData[0]['rol'],
@@ -202,7 +228,7 @@ class Auth extends Database
 
                 $this->response['status'] = 'OK';
                 $this->response['message'] = 'Sesión exitosa.';
-                $this->response['username'] = $username;
+                $this->response['username'] = $accountData[0]['username'] === NULL ? $nombreCompleto : $accountData[0]['username'];
                 $this->response['user_uuid'] = $accountData[0]['user_uuid'];
                 $this->response['email'] = $accountData[0]['email'];
                 $this->response['photo'] = $accountData[0]['photo'];

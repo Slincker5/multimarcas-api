@@ -83,6 +83,7 @@ class User extends Database
 
     public function generatedToken () {
         $datos = $this->datosUsuario();
+        $nombreCompleto = $datos[0]["nombre"] . " " . $datos[0]["apellido"];
         $payload = array(
             "iss" => "multimarcas",
             "aud" => $this->user_uuid,
@@ -90,7 +91,7 @@ class User extends Database
             "nbf" => time(),
             "data" => array(
                 "user_uuid" => $datos[0]["user_uuid"],
-                "username" => $datos[0]["username"],
+                "username" => $datos[0]["username"] === NULL ? $nombreCompleto : $datos[0]["username"],
                 "email" => $datos[0]["email"],
                 "photo" => $datos[0]["photo"],
                 "rol" => $datos[0]["rol"],
