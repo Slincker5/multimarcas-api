@@ -261,7 +261,7 @@ class Auth extends Database
                 "nbf" => time(),
                 "data" => array(
                     "user_uuid" => $data[0]['user_uuid'],
-                    "username" => $data[0]['username'],
+                    "username" => $data[0]['username'] === NULL ? $data[0]['nombre'] . ' ' . $data[0]['apellido'] : $data[0]['username'],
                     "email" => $data[0]['email'],
                     "photo" => $data[0]['photo'],
                     "rol" => $data[0]['rol'],
@@ -277,7 +277,7 @@ class Auth extends Database
 
             $this->response['status'] = 'OK';
             $this->response['message'] = 'Sesión exitosa.';
-            $this->response['username'] = $data[0]['username'];
+            $this->response['username'] = $data[0]['username'] === NULL ? $data[0]['nombre'] . ' ' . $data[0]['apellido'] : $data[0]['username'];
             $this->response['user_uuid'] = $data[0]['user_uuid'];
             $this->response['email'] = $data[0]['email'];
             $this->response['photo'] = $data[0]['photo'];
