@@ -26,7 +26,7 @@ class AuthController
 
         $body = $request->getParsedBody();
         $classAuth = new Auth();
-        $register = $classAuth->createAccountN($body['nombre'], $body['apellido'], $body['correo'], $body['telefono'], $body['pass'], $body['ip']);
+        $register = $classAuth->createAccountN($body['nombre'], $body['apellido'], $body['correo'], $body['pass'], $body['ip']);
         $classNotification = new Notification();
         $bodyNoti = $body["nombre"] . " " . $body['apellido'] . " se ha registrado";
         $classNotification->crearNotificacion("👤 Nuevo Usuario", $bodyNoti);
