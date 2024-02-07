@@ -9,23 +9,13 @@ use App\Models\Auth;
 
 class AuthController
 {
+
     function register($request, $response, $args)
     {
 
         $body = $request->getParsedBody();
         $classAuth = new Auth();
-        $register = $classAuth->createAccount($body['username'], $body['pass'], $body['ip']);
-        $response = $response->withHeader('Content-Type', 'application/json');
-        $response->getBody()->write(json_encode($register));
-        return $response;
-    }
-
-    function registerN($request, $response, $args)
-    {
-
-        $body = $request->getParsedBody();
-        $classAuth = new Auth();
-        $register = $classAuth->createAccountN($body['nombre'], $body['apellido'], $body['correo'], $body['pass'], $body['ip']);
+        $register = $classAuth->createAccount($body['nombre'], $body['apellido'], $body['correo'], $body['pass'], $body['ip']);
         $response = $response->withHeader('Content-Type', 'application/json');
         $response->getBody()->write(json_encode($register));
         return $response;
@@ -49,23 +39,5 @@ class AuthController
     $response = $response->withHeader('Content-Type', 'application/json');
     $response->getBody()->write(json_encode($login));
     return $response;
-    }
-
-    function validarEmail($request, $response, $args){
-        $body = $request->getParsedBody();
-        $classAuth = new Auth();
-        $validar = $classAuth->emailStock($body['email']);
-        $response = $response->withHeader('Content-Type', 'application/json');
-        $response->getBody()->write(json_encode($validar));
-        return $response;
-    }
-
-    function validarTelefono($request, $response, $args){
-        $body = $request->getParsedBody();
-        $classAuth = new Auth();
-        $validar = $classAuth->telefonoStock($body['telefono']);
-        $response = $response->withHeader('Content-Type', 'application/json');
-        $response->getBody()->write(json_encode($validar));
-        return $response;
     }
 }
