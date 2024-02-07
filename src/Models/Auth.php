@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Database;
 use Firebase\JWT\JWT;
 use Ramsey\Uuid\UuidFactory;
+use App\Models\Notification;
 
 class Auth extends Database
 {
@@ -15,6 +16,11 @@ class Auth extends Database
     private $nombres = '/^[a-zA-ZñÑ]+$/';
     private $response = [];
     public $key = "georginalissethyvladi";
+    public $instanciaNotificacion;
+    public function __construct($instanciaNotificacion = "")
+    {
+        $this->instanciaNotificacion = new Notification();
+    }
 
     #METODOS CLASE
     private function usernameStock($user)
@@ -153,6 +159,9 @@ class Auth extends Database
             $signUp = $this->ejecutarConsulta($sql, [$profile_uuid, $nombre, $apellido, $correo, $passwordHash, 'User', $ip]);
 
             if ($signUp) {
+                
+                $cuerpoNotificacion = $nombre . " " . $apellido . " se ha registrado";
+                $this->instanciaNotificacion->crearNotificacion("👤 Nuevo Usuario", $cuerpoNotificacion);
                 $payload = array(
                     "iss" => "multimarcas",
                     "aud" => $profile_uuid,
