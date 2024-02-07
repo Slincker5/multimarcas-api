@@ -27,25 +27,18 @@ class Auth extends Database
 
     public function emailStock($email)
     {
-        if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $sql = 'SELECT COUNT(*) FROM usuarios WHERE email = ?';
-            $getData = $this->ejecutarConsulta($sql, [$email]);
-            $total = $getData->fetchColumn();
-            return $total;
-        }else{
-            $this->response['status'] = 'error';
-            $this->response['message'] = 'Usa un correo valido';
-            return $this->response;
-        }
-
+        $sql = 'SELECT COUNT(*) FROM usuarios WHERE email = ?';
+        $getData = $this->ejecutarConsulta($sql, [$email]);
+        $total = $getData->fetchColumn();
+        return $total;
     }
 
     public function telefonoStock($telefono)
     {
-            $sql = 'SELECT COUNT(*) FROM usuarios WHERE telefono = ?';
-            $getData = $this->ejecutarConsulta($sql, [$telefono]);
-            $total = $getData->fetchColumn();
-            return $total;
+        $sql = 'SELECT COUNT(*) FROM usuarios WHERE telefono = ?';
+        $getData = $this->ejecutarConsulta($sql, [$telefono]);
+        $total = $getData->fetchColumn();
+        return $total;
 
     }
 
@@ -114,33 +107,35 @@ class Auth extends Database
         }
     }
 
-
-
-    public function createAccountN($nombre, $apellido, $correo, $telefono, $pass, $ip)
+    public function createAccountN($nombre, $apellido, $correo, $pass, $ip)
     {
-        if (empty($nombre) || empty($apellido) || empty($correo) || empty($telefono) || empty($pass)) {
+        if (empty($nombre) || empty($apellido) || empty($correo) || empty($pass)) {
             $this->response['status'] = 'error';
             $this->response['message'] = 'Completa todos los campos.';
             return $this->response;
         } else if (!preg_match($this->nombres, $nombre) || !preg_match($this->nombres, $apellido)) {
             $this->response['status'] = 'error';
-            $this->response['message'] = 'El nombre de usuario solo puede contener numeros y letras, no se permiten espacios';
+            $this->response['message'] = 'El nombre o apellido solo puede contener letras.';
             return $this->response;
         } else if (strlen($nombre) > 30 || strlen($apellido) > 30) {
             $this->response['status'] = 'error';
-            $this->response['message'] = 'El nombre de usuario no puede tener mas de 30 caracteres.';
+            $this->response['message'] = 'El nombre o apellido no puede tener mas de 30 caracteres.';
             return $this->response;
-        } else if (strlen($nombre) < 4 || strlen($apellido) < 4) {
+        } else if (strlen($nombre) < 3 || strlen($apellido) < 3) {
             $this->response['status'] = 'error';
-            $this->response['message'] = 'El nombre de usuario debe tener al menos 4 caracteres.';
+            $this->response['message'] = 'El nombre o apellido debe tener al menos 3 caracteres.';
             return $this->response;
         } else if (strlen($pass) < 8) {
             $this->response['status'] = 'error';
             $this->response['message'] = 'Tu contraseña debe tener al menos 8 caracteres.';
             return $this->response;
-        } else if (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
+        } else if($this->emailStock($correo) === 1){
             $this->response['status'] = 'error';
-            $this->response['message'] = 'El correo no es valido';
+            $this->response['message'] = 'Este correo ya esta registrado, intenta con uno difrente.';
+            return $this->response;
+        } else if(!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
+            $this->response['status'] = 'error';
+            $this->response['message'] = 'Debes ingresar un correo electronico valido.';
             return $this->response;
         } else {
 
@@ -154,8 +149,8 @@ class Auth extends Database
             $passwordHash = password_hash($pass, PASSWORD_BCRYPT, $options);
 
             #PROCEDER AL GUARDADO PERSISTENTE
-            $sql = 'INSERT INTO usuarios (user_uuid, nombre, apellido, email, telefono, pass, rol, ip) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
-            $signUp = $this->ejecutarConsulta($sql, [$profile_uuid, $nombre, $apellido, $correo, $telefono, $passwordHash, 'User', $ip]);
+            $sql = 'INSERT INTO usuarios (user_uuid, nombre, apellido, email, pass, rol, ip) VALUES (?, ?, ?, ?, ?, ?, ?)';
+            $signUp = $this->ejecutarConsulta($sql, [$profile_uuid, $nombre, $apellido, $correo, $passwordHash, 'User', $ip]);
 
             if ($signUp) {
                 $payload = array(
@@ -167,11 +162,11 @@ class Auth extends Database
                         "user_uuid" => $profile_uuid,
                         "username" => $nombre . ' ' . $apellido,
                         "email" => $correo,
-                        "photo" => NULL,
+                        "photo" => null,
                         "rol" => "User",
                         "fecha" => "",
                         "suscripcion" => false,
-                        "fin_suscripcion" => NULL,
+                        "fin_suscripcion" => null,
                         "ip" => $ip,
 
                     ),
@@ -183,7 +178,7 @@ class Auth extends Database
                 $this->response['username'] = $nombre . " " . $apellido;
                 $this->response['user_uuid'] = $profile_uuid;
                 $this->response['email'] = $correo;
-                $this->response['photo'] = NULL;
+                $this->response['photo'] = null;
                 $this->response['rol'] = "User";
                 $this->response['token'] = $token;
                 return $this->response;
@@ -212,7 +207,7 @@ class Auth extends Database
                     "nbf" => time(),
                     "data" => array(
                         "user_uuid" => $accountData[0]['user_uuid'],
-                        "username" => $accountData[0]['username'] === NULL ? $nombreCompleto : $accountData[0]['username'],
+                        "username" => $accountData[0]['username'] === null ? $nombreCompleto : $accountData[0]['username'],
                         "email" => $accountData[0]['email'],
                         "photo" => $accountData[0]['photo'],
                         "rol" => $accountData[0]['rol'],
@@ -228,7 +223,7 @@ class Auth extends Database
 
                 $this->response['status'] = 'OK';
                 $this->response['message'] = 'Sesión exitosa.';
-                $this->response['username'] = $accountData[0]['username'] === NULL ? $nombreCompleto : $accountData[0]['username'];
+                $this->response['username'] = $accountData[0]['username'] === null ? $nombreCompleto : $accountData[0]['username'];
                 $this->response['user_uuid'] = $accountData[0]['user_uuid'];
                 $this->response['email'] = $accountData[0]['email'];
                 $this->response['photo'] = $accountData[0]['photo'];
@@ -261,7 +256,7 @@ class Auth extends Database
                 "nbf" => time(),
                 "data" => array(
                     "user_uuid" => $data[0]['user_uuid'],
-                    "username" => $data[0]['username'] === NULL ? $data[0]['nombre'] . ' ' . $data[0]['apellido'] : $data[0]['username'],
+                    "username" => $data[0]['username'] === null ? $data[0]['nombre'] . ' ' . $data[0]['apellido'] : $data[0]['username'],
                     "email" => $data[0]['email'],
                     "photo" => $data[0]['photo'],
                     "rol" => $data[0]['rol'],
@@ -277,7 +272,7 @@ class Auth extends Database
 
             $this->response['status'] = 'OK';
             $this->response['message'] = 'Sesión exitosa.';
-            $this->response['username'] = $data[0]['username'] === NULL ? $data[0]['nombre'] . ' ' . $data[0]['apellido'] : $data[0]['username'];
+            $this->response['username'] = $data[0]['username'] === null ? $data[0]['nombre'] . ' ' . $data[0]['apellido'] : $data[0]['username'];
             $this->response['user_uuid'] = $data[0]['user_uuid'];
             $this->response['email'] = $data[0]['email'];
             $this->response['photo'] = $data[0]['photo'];
@@ -307,7 +302,7 @@ class Auth extends Database
                         "username" => $username,
                         "email" => $username,
                         "photo" => $photo,
-                        "rol" => 'User'
+                        "rol" => 'User',
 
                     ),
                 );
