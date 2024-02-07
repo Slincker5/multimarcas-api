@@ -54,7 +54,7 @@ class Premiun extends Database
         return $total;
     }
 
-    private function hacerPremiun()
+    public function hacerPremiun()
     {
         $sql = 'UPDATE usuarios SET suscripcion = true, fin_suscripcion = ? WHERE user_uuid = ?';
         $fecha = $this->fechaFinSuscripcion();
