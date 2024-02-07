@@ -27,10 +27,10 @@ class Auth extends Database
 
     public function emailStock($email)
     {
-        $sql = 'SELECT COUNT(*) FROM usuarios WHERE email = ?';
+        $sql = 'SELECT * FROM usuarios WHERE email = ?';
         $getData = $this->ejecutarConsulta($sql, [$email]);
-        $total = $getData->fetchColumn();
-        return $total;
+        $datos = $getData->fetchAll(\PDO::FETCH_ASSOC);
+        return $datos;
     }
 
     public function telefonoStock($telefono)
@@ -129,7 +129,7 @@ class Auth extends Database
             $this->response['status'] = 'error';
             $this->response['message'] = 'Tu contraseña debe tener al menos 8 caracteres.';
             return $this->response;
-        } else if($this->emailStock($correo) === 1){
+        } else if($this->emailStock($correo)){
             $this->response['status'] = 'error';
             $this->response['message'] = 'Este correo ya esta registrado, intenta con uno difrente.';
             return $this->response;
