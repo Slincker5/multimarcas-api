@@ -73,7 +73,7 @@ $validateJwtMiddleware = function ($request, $handler) {
             "message" => "Token no valido."
         ];
         $response->getBody()->write(json_encode($paquete));
-        return $response->withStatus(402)->withHeader('Content-Type', 'application/json');
+        return $response->withStatus(401)->withHeader('Content-Type', 'application/json');
     }
 
     return $handler->handle($request);
