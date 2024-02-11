@@ -223,7 +223,7 @@ class Premiun extends Database
         $fin_suscripcion = $usuario[0]["fin_suscripcion"];
         $fecha_actual = date("Y-m-d");
         if ($fecha_actual > $fin_suscripcion) {
-            $sql = "UPDATE SET usuarios suscripcion = ? WHERE user_uuid = ?";
+            $sql = "UPDATE usuarios SET suscripcion = ? WHERE user_uuid = ?";
             $guardar = $this->ejecutarConsulta($sql, [false, $this->user_uuid]);
             if($guardar){
                 return true;
