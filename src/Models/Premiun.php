@@ -26,7 +26,7 @@ class Premiun extends Database
     private $admin_uuid = '2c62e966-63d8-4bfd-832e-89094ae47eec';
     private $key = "georginalissethyvladi";
 
-    public function __construct($user_uuid)
+    public function __construct($user_uuid = "")
     {
         $this->user_uuid = $user_uuid;
     }
@@ -215,5 +215,21 @@ class Premiun extends Database
         $alg = "HS256";
         $token = JWT::encode($payload, $this->key, $alg);
         return $token;
+    }
+
+    public function validarSuscripcion($user_uuid)
+    {
+        $usuario = $this->datosUsuario();
+        $fin_suscripcion = $usuario[0]["fin_suscripcion"];
+        $fecha_actual = date("Y-m-d");
+        if ($fecha_actual > $fin_suscripcion) {
+            $sql = "UPDATE SET usuarios suscripcion = ? WHERE user_uuid = ?";
+            $guardar = $this->ejecutarConsulta($sql, [false, $this->user_uuid]);
+            if($guardar){
+                return true;
+            }else{
+                return false;
+            }
+        }
     }
 }
