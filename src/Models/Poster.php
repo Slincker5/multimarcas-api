@@ -2,6 +2,7 @@
 namespace App\Models;
 
 use App\Models\Database;
+use App\Models\Premiun;
 use Ramsey\Uuid\UuidFactory;
 
 class Poster extends Database
@@ -15,9 +16,11 @@ class Poster extends Database
     private $f_fin;
     private $cantidad;
     private $user_uuid;
+    private $instanciaPremium;
 
     public function __construct($barra = '', $descripcion = '', $precio = '', $f_inicio = '', $f_fin = '', $cantidad = '', $user_uuid = '')
     {
+        $this->instanciaPremium = new Premiun();
         $this->barra = $barra;
         $this->descripcion = $descripcion;
         $this->precio = $precio;
@@ -55,7 +58,7 @@ class Poster extends Database
     {
 
         date_default_timezone_set("America/El_Salvador");
-        if ($suscripcion === 0) {
+        if ($suscripcion === 0 || $this->instanciaPremium->validarSuscripcion($this->user_uuid)) {
             $this->response['status'] = 'error';
             $this->response['message'] = 'Necesitas ser usuario premiun para esta accion';
             return $this->response;
