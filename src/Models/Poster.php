@@ -54,14 +54,14 @@ class Poster extends Database
         return $datos;
     }
 
-    public function createPoster($suscripcion)
+    public function createPoster()
     {
 
         date_default_timezone_set("America/El_Salvador");
         $estadoPremium = $this->instanciaPremium->validarSuscripcion($this->user_uuid);
         if ($estadoPremium) {
             $this->response['status'] = 'error';
-            $this->response['message'] = $estadoPremium . " " . $suscripcion;
+            $this->response['message'] = "Necesitas ser usuario premiun para esta accion";
             return $this->response;
         } else {
 

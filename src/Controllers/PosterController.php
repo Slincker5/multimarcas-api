@@ -14,10 +14,9 @@ class PosterController
     function createPoster($request, $response, $args)
     {
         $user_uuid = $request->getAttribute('payload')->data->user_uuid;
-        $suscripcion = $request->getAttribute('payload')->data->suscripcion;
         $body = $request->getParsedBody();
         $classPoster = new Poster($body['barra'], $body['descripcion'], $body['precio'], $body['f_inicio'], $body['f_fin'], $body['cantidad'], $user_uuid);
-        $create = $classPoster->createPoster($suscripcion);
+        $create = $classPoster->createPoster();
         $response->getBody()->write(json_encode($create));
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
     }
