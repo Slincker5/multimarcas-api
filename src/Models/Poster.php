@@ -59,9 +59,9 @@ class Poster extends Database
 
         date_default_timezone_set("America/El_Salvador");
         $estadoPremium = $this->instanciaPremium->validarSuscripcion($this->user_uuid);
-        if ($suscripcion === 0) {
+        if ($suscripcion) {
             $this->response['status'] = 'error';
-            $this->response['message'] = $estadoPremium;
+            $this->response['message'] = $estadoPremium . " " . $suscripcion;
             return $this->response;
         } else {
 
