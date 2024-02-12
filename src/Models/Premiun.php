@@ -220,14 +220,14 @@ class Premiun extends Database
     public function validarSuscripcion($user_uuid)
     {
         $usuario = $this->datosUsuario();
-        $fin_suscripcion = $usuario[0]["fin_suscripcion"];
-        $fecha_actual = date("Y-m-d");
+        $fin_suscripcion = new DateTime($usuario[0]["fin_suscripcion"]);
+        $fecha_actual = new DateTime(date("Y-m-d"));
         if ($fecha_actual > $fin_suscripcion) {
             $sql = "UPDATE usuarios SET suscripcion = 0 WHERE user_uuid = ?";
             $guardar = $this->ejecutarConsulta($sql, [$user_uuid]);
-            return false;
-        }else{
             return true;
+        }else{
+            return false;
         }
     }
 }
