@@ -48,7 +48,7 @@ class PremiunController
 
     function estado($request, $response, $args){
         $user_uuid = $request->getAttribute('payload')->data->user_uuid;
-        $classPremiun = new Premiun();
+        $classPremiun = new Premiun($user_uuid);
         $cupon = $classPremiun->validarSuscripcion($user_uuid);
         $response->getBody()->write(json_encode($cupon));
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
