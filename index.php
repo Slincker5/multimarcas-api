@@ -172,7 +172,7 @@ $app->group('/premiun', function ($group) {
     $group->get('/cupon', PremiunController::class . ':generarCupon');
     $group->post('/nuevo-cupon', PremiunController::class . ':crearCupon');
     $group->post('/canjear-cupon', PremiunController::class . ':canjearCupon');
-    $group->get('/ver', PremiunController::class . ':estadoSub');
+    $group->get('/ver', PremiunController::class . ':estado');
 })->add($validateJwtMiddleware);
 
 $app->group('/pagos', function ($group) {
