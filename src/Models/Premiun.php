@@ -223,9 +223,9 @@ class Premiun extends Database
         $fin_suscripcion = $usuario[0]["fin_suscripcion"];
         $fecha_actual = date("Y-m-d");
         if ($fin_suscripcion > $fecha_actual) {
-            return true;
+            return $fin_suscripcion;
         }else{
-            return false;
+            return $fin_suscripcion;
         }
     }
 }
