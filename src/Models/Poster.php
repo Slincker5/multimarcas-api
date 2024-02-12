@@ -20,7 +20,7 @@ class Poster extends Database
 
     public function __construct($barra = '', $descripcion = '', $precio = '', $f_inicio = '', $f_fin = '', $cantidad = '', $user_uuid = '')
     {
-        $this->instanciaPremium = new Premiun();
+        $this->instanciaPremium = new Premiun($user_uuid);
         $this->barra = $barra;
         $this->descripcion = $descripcion;
         $this->precio = $precio;
