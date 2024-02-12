@@ -58,7 +58,8 @@ class Poster extends Database
     {
 
         date_default_timezone_set("America/El_Salvador");
-        if ($suscripcion === 0 || $this->instanciaPremium->validarSuscripcion($this->user_uuid)) {
+        $estadoPremium = $this->instanciaPremium->validarSuscripcion($this->user_uuid);
+        if ($suscripcion === 0 || $estadoPremium) {
             $this->response['status'] = 'error';
             $this->response['message'] = 'Necesitas ser usuario premiun para esta accion';
             return $this->response;
