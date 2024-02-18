@@ -9,6 +9,8 @@ use App\Controllers\SearchController;
 use App\Controllers\PostController;
 use App\Controllers\PremiunController;
 use App\Controllers\TransaccionController;
+use App\Controllers\LinkController;
+use App\Controllers\CounterController;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Psr\Http\Message\ServerRequestInterface;
@@ -181,6 +183,29 @@ $app->group('/pagos', function ($group) {
 $app->group('/pagos', function ($group) {
     $group->post('/after-pay', TransaccionController::class . ':saveTransactionAfterPay');
 })->add($validateJwtMiddleware);
+
+
+// APLICACION DE JOSUE GABRIEL
+
+$app->group('/link', function ($group) {
+
+    $group->post('/create', LinkController::class . ':create');
+    $group->get('/list', LinkController::class . ':list');
+    $group->put('/edit', LinkController::class . ':edit');
+    $group->post('/remove', LinkController::class . ':remove');
+    $group->get('/clics', LinkController::class . ':clics');
+    $group->post('/view', LinkController::class . ':view');
+    $group->post('/viewcountry', LinkController::class . ':viewcountry');
+
+
+})->add($validateJwtMiddleware);
+
+$app->group('/view', function ($group) {
+
+    $group->post('/logger', CounterController::class . ':view');
+    $group->post('/validate', CounterController::class . ':validate');
+
+});
 
 $app->run();
 
