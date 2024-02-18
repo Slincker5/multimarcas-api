@@ -17,10 +17,12 @@ class Poster extends Database
     private $cantidad;
     private $user_uuid;
     private $instanciaPremium;
+    private $estadoPremium;
 
     public function __construct($barra = '', $descripcion = '', $precio = '', $f_inicio = '', $f_fin = '', $cantidad = '', $user_uuid = '')
     {
         $this->instanciaPremium = new Premiun($user_uuid);
+        $this->estadoPremium = $this->instanciaPremium->validarSuscripcion();
         $this->barra = $barra;
         $this->descripcion = $descripcion;
         $this->precio = $precio;
@@ -58,8 +60,7 @@ class Poster extends Database
     {
 
         date_default_timezone_set("America/El_Salvador");
-        $estadoPremium = $this->instanciaPremium->validarSuscripcion($this->user_uuid);
-        if ($estadoPremium) {
+        if ($this->estadoPremium) {
             $this->response['status'] = 'error';
             $this->response['message'] = "Necesitas ser usuario premiun para esta accion";
             return $this->response;
