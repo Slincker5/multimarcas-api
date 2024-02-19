@@ -12,7 +12,7 @@ class User extends Database
     private $user_uuid;
     private $key = "georginalissethyvladi";
 
-    public function __construct($user_uuid)
+    public function __construct($user_uuid = "")
     {
         $this->user_uuid = $user_uuid;
     }
@@ -79,6 +79,13 @@ class User extends Database
             "totalRotulosGenerados" => $this->totalRotulosGenerados(),
         ];
         return $stats;
+    }
+
+    public function notificarPremium(){
+        $sql = "SELECT user_uuid, suscripcion, fin_suscripcion FROM usuarios";
+        $response = $this->ejecutarConsulta($sql);
+        $datos = $response->fetchAll(\PDO::FETCH_ASSOC);
+        return $datos;
     }
 
     public function generatedToken () {
