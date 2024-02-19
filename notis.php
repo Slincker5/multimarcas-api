@@ -15,4 +15,4 @@ foreach($lista as $user) { // Corrected here
         array_push($listaDos, $user);
     }
 }
-print_r($listaDos);
+echo json_encode($listaDos);
