@@ -15,4 +15,4 @@ foreach($lista as $user) { // Corrected here
         array_push($listaDos, $user);
     }
 }
-print($listaDos);
+print_r($listaDos);
