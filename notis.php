@@ -7,9 +7,14 @@ $users = new User();
 
 $lista = $users->notificarPremium();
 $listaDos = [];
-foreach($lista as $user) { // Corrected here
-    $fechaInicio = new DateTime(); // Today's date
-    $fechaFin = new DateTime($user['fin_suscripcion']); // Subscription end date from $user array
-    $diferencia = $fechaInicio->diff($fechaFin);
-    echo $diferencia->days;
+foreach($lista as $user) {
+    try {
+        echo "Fin de suscripción: " . $user['fin_suscripcion'] . "<br>"; // Depuración
+        $fechaInicio = new DateTime(); // Fecha actual
+        $fechaFin = new DateTime($user['fin_suscripcion']); // Fecha de fin de suscripción del usuario
+        $diferencia = $fechaInicio->diff($fechaFin); // Diferencia entre las fechas
+        echo "Días restantes: " . $diferencia->days . " días<br>"; // Muestra la diferencia en días
+    } catch (Exception $e) {
+        echo "Excepción capturada: ",  $e->getMessage(), "<br>";
+    }
 }
