@@ -18,6 +18,7 @@ foreach ($lista as $user) {
         $diferencia = $fechaInicio->diff($fechaFin); // Diferencia entre las fechas
         if ($diferencia->days == 2 && $fechaFin > $fechaInicio) {
             if (!in_array($user['user_uuid'], $usersNotificados)) { // Verificar si el usuario ya fue notificado
+                echo "hola" . $user["user_uuid"] . "<br>";
                 #$instanciaNotificacion = new Notification();
                 #$cuerpoNotificacion = "Prepárate para renovar y seguir disfrutando de nuestros servicios sin interrupciones.";
                 #$instanciaNotificacion->crearNotificacion("🔔👀!SOLO TIENES 3 DIAS!", $cuerpoNotificacion); // Crear notificación
