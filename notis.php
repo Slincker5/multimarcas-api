@@ -13,6 +13,8 @@ foreach($lista as $user) { // Corrected here
     $diferencia = $fechaInicio->diff($fechaFin); 
     if($diferencia === 3){
         array_push($listaDos, $user);
+    }else{
+        echo $diferencia;
     }
 }
 echo json_encode($listaDos);
