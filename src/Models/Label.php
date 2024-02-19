@@ -17,9 +17,13 @@ class Label extends Database
     private $username;
     private $user_uuid;
     private $instanciaEmail;
+    private $instanciaPremium;
+    private $estadoPremium;
 
     public function __construct($barra = '', $descripcion = '', $cantidad = '', $precio = '', $username = '', $user_uuid = '')
     {
+        $this->instanciaPremium = new Premiun($user_uuid);
+        $this->estadoPremium = $this->instanciaPremium->validarSuscripcion();
         $this->instanciaEmail = new Email();
         $this->barra = $barra;
         $this->descripcion = $descripcion;
@@ -37,10 +41,10 @@ class Label extends Database
         return $labels;
     }
 
-    public function addLabel($vip)
+    public function addLabel()
     {
         date_default_timezone_set("America/El_Salvador");
-        if ($vip === 0) {
+        if ($this->estadoPremium) {
             $this->response['status'] = 'error';
             $this->response['message'] = 'Necesitas ser usuario premiun para esta accion';
             return $this->response;

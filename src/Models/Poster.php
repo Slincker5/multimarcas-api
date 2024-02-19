@@ -103,11 +103,11 @@ class Poster extends Database
         }
     }
 
-    public function createPosterSmall($suscripcion)
+    public function createPosterSmall()
     {
 
         date_default_timezone_set("America/El_Salvador");
-        if ($suscripcion === 0) {
+        if ($this->estadoPremium) {
             $this->response['status'] = 'error';
             $this->response['message'] = 'Necesitas ser usuario premiun para esta accion';
             return $this->response;
@@ -150,12 +150,12 @@ class Poster extends Database
         }
     }
 
-    public function createPosterLowPriceSmall($suscripcion)
+    public function createPosterLowPriceSmall()
     {
 
         date_default_timezone_set("America/El_Salvador");
 
-        if ($suscripcion === 0) {
+        if ($this->estadoPremium) {
             $this->response['status'] = 'error';
             $this->response['message'] = 'Necesitas ser usuario premiun para esta accion';
             return $this->response;
