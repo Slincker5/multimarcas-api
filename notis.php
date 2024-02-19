@@ -31,4 +31,4 @@ foreach ($lista as $user) {
     }
 }
 
-echo json_encode($usersNotificados)
+echo json_encode($usersNotificados);
