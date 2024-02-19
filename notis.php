@@ -23,7 +23,7 @@ foreach ($lista as $user) {
                 #$instanciaNotificacion->crearNotificacion("🔔👀!SOLO TIENES 3 DIAS!", $cuerpoNotificacion); // Crear notificación
                 #echo "Faltan " . $diferencia->days . " días para que la suscripción de " . $user['user_uuid'] . " termine.<br>"; // Muestra la diferencia en días
 #
-                $usersNotificados[] = $user['user_uuid']; // Agregar el usuario al arreglo de notificados
+                array_push($usersNotificados, $user['user_uuid']); // Agregar el usuario al arreglo de notificados
             }
         }
     } catch (Exception $e) {
