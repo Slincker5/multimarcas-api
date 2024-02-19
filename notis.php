@@ -13,7 +13,10 @@ foreach($lista as $user) {
         $fechaInicio = new DateTime(); // Fecha actual
         $fechaFin = new DateTime($user['fin_suscripcion']); // Fecha de fin de suscripción del usuario
         $diferencia = $fechaInicio->diff($fechaFin); // Diferencia entre las fechas
-        echo "Días restantes: " . $diferencia->days . " días<br>"; // Muestra la diferencia en días
+        if($diferencia->days === 3){
+            echo "Días restantes: " . $diferencia->days . " días<br>"; // Muestra la diferencia en días
+        }
+        
     } catch (Exception $e) {
         echo "Excepción capturada: ",  $e->getMessage(), "<br>";
     }
