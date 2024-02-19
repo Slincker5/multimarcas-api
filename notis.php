@@ -14,7 +14,7 @@ foreach($lista as $user) { // Corrected here
     if($diferencia === 3){
         array_push($listaDos, $user);
     }else{
-        echo $diferencia;
+        echo $user['fin_suscripcion'];
     }
 }
 echo json_encode($listaDos);
