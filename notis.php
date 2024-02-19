@@ -12,9 +12,11 @@ foreach($lista as $user) { // Corrected here
     $fechaFin = new DateTime($user['fin_suscripcion']); // Subscription end date from $user array
     $diferencia = $fechaInicio->diff($fechaFin); 
     if($diferencia === 3){
+        
+        echo $diferencia;
         array_push($listaDos, $user);
     }else{
-        echo $user['fin_suscripcion'];
+        echo $diferencia;
     }
 }
 echo json_encode($listaDos);
