@@ -5,16 +5,19 @@ namespace App\Models;
 
 use Firebase\JWT\JWT;
 use App\Models\Database;
+use App\Models\Premiun;
 
 class User extends Database
 {
     private $response;
     private $user_uuid;
     private $key = "georginalissethyvladi";
+    public $instanciaPremium;
 
     public function __construct($user_uuid = "")
     {
         $this->user_uuid = $user_uuid;
+        $this->instanciaPremium = new Premiun($user_uuid);
     }
 
     private function datosUsuario()
@@ -71,6 +74,7 @@ class User extends Database
 
     public function estadisticasGlobal()
     {
+        $this->instanciaPremium->validarSuscripcion();
         $stats = [
             "profile" => $this->datosUsuario(),
             "totalCintillos" => $this->totalCintillos(),
