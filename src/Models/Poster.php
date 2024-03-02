@@ -193,8 +193,8 @@ class Poster extends Database
                     if ($this->barra == '') {
                         $this->barra = ' ';
                     }
-                    $sql = 'INSERT INTO  rotulos_mini_desc (barra, descripcion, precio, f_inicio, f_fin, cantidad, user_uuid, uuid) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
-                    $crear = $this->ejecutarConsulta($sql, [$this->barra, $this->descripcion, $this->precio, $this->f_inicio, $this->f_fin, $this->cantidad, $this->user_uuid, $poster_uuid]);
+                    $sql = 'INSERT INTO  rotulos_mini_desc (descripcion, precio, f_inicio, f_fin, cantidad, user_uuid, uuid) VALUES (?, ?, ?, ?, ?, ?, ?)';
+                    $crear = $this->ejecutarConsulta($sql, [$this->descripcion, $this->precio, $this->f_inicio, $this->f_fin, $this->cantidad, $this->user_uuid, $poster_uuid]);
                     if (!$crear) {
                         $this->response['status'] = 'error';
                         $this->response['message'] = 'Hubo un error al crear el rótulo.';
