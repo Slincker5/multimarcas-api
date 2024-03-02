@@ -56,6 +56,14 @@ class Poster extends Database
         return $datos;
     }
 
+    public function totalPosterSmallDesc($user_uuid)
+    {
+        $sql = 'SELECT COUNT(*) AS total FROM rotulos_mini_desc WHERE user_uuid = ?  AND path_uuid IS NULL ORDER BY id DESC';
+        $registrar = $this->ejecutarConsulta($sql, [$user_uuid]);
+        $datos = $registrar->fetchAll(\PDO::FETCH_ASSOC);
+        return $datos;
+    }
+
     public function listPosterLowPriceSmall($user_uuid)
     {
         $sql = 'SELECT * FROM rotulos_mini_baja WHERE user_uuid = ?  AND path_uuid IS NULL ORDER BY id DESC';
@@ -161,7 +169,7 @@ class Poster extends Database
     public function createPosterSmallDesc($descuento)
     {
         date_default_timezone_set("America/El_Salvador");
-        $totalAfiches = $this->listPosterSmallDesc($this->user_uuid);
+        $totalAfiches = $this->totalPosterSmallDesc($this->user_uuid);
         if ($this->estadoPremium) {
             $this->response['status'] = 'error';
             $this->response['message'] = 'Necesitas ser usuario premiun para esta accion';
@@ -181,7 +189,7 @@ class Poster extends Database
                 return $this->response;
             } else if ($this->cantidad > 27) {
                 $this->response['status'] = 'error';
-                $this->response['message'] = 'El limite de rotulos por crear es de 27' . count($totalAfiches);
+                $this->response['message'] = 'El limite de rotulos por crear es de 27' . $totalAfiches[0]["total"];
                 return $this->response;
             } else {
                 #CREAR UUID PARA CADA ROTULO
