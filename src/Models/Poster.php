@@ -160,14 +160,14 @@ class Poster extends Database
 
     public function createPosterSmallDesc($descuento)
     {
-
         date_default_timezone_set("America/El_Salvador");
+        $totalAfiches = $this->listPosterSmallDesc($this->user_uuid);
         if ($this->estadoPremium) {
             $this->response['status'] = 'error';
             $this->response['message'] = 'Necesitas ser usuario premiun para esta accion';
             return $this->response;
         } else {
-            if(count($this->listPosterSmallDesc($this->user_uuid)) > 27){
+            if(count($totalAfiches) > 27){
                 $this->response['status'] = 'error';
                 $this->response['message'] = 'El documento ha llegado a 27 rotulos.';
                 return $this->response;
@@ -181,7 +181,7 @@ class Poster extends Database
                 return $this->response;
             } else if ($this->cantidad > 27) {
                 $this->response['status'] = 'error';
-                $this->response['message'] = 'El limite de rotulos por crear es de 27';
+                $this->response['message'] = 'El limite de rotulos por crear es de 27' . count($totalAfiches);
                 return $this->response;
             } else {
                 #CREAR UUID PARA CADA ROTULO
