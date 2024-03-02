@@ -190,8 +190,18 @@ class PosterController
     {
         $user_uuid = $request->getAttribute('payload')->data->user_uuid;
         $body = $request->getParsedBody();
-        $classPoster = new Poster($body['barra'], $body['descripcion'], $body['precio'], $body['f_inicio'], $body['f_fin'], $body['cantidad'], $user_uuid);
-        $create = $classPoster->createPosterSmallDesc();
+        $classPoster = new Poster('', $body['descripcion'], $body['precio'], $body['f_inicio'], $body['f_fin'], $body['cantidad'], $user_uuid);
+        $create = $classPoster->createPosterSmallDesc($body['descuento']);
+        $response->getBody()->write(json_encode($create));
+        return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
+    }
+
+    function listPosterSmallDesc($request, $response, $args)
+    {
+        $user_uuid = $request->getAttribute('payload')->data->user_uuid;
+        $body = $request->getParsedBody();
+        $classPoster = new Poster();
+        $create = $classPoster->listPosterSmallDesc($user_uuid);
         $response->getBody()->write(json_encode($create));
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
     }
