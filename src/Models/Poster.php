@@ -175,7 +175,7 @@ class Poster extends Database
             $this->response['message'] = 'Necesitas ser usuario premiun para esta accion';
             return $this->response;
         } else {
-            if($totalAfiches[0]["total"] > 26){
+            if($totalAfiches[0]["total"] >= 28){
                 $this->response['status'] = 'error';
                 $this->response['message'] = 'El documento ha llegado a 27 rotulos.';
                 return $this->response;
