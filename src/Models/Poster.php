@@ -169,7 +169,7 @@ class Poster extends Database
         } else {
             if(count($this->listPosterSmallDesc($this->user_uuid)) > 27){
                 $this->response['status'] = 'error';
-                $this->response['message'] = 'Solo puedes hacer 27 rotulos por documento.';
+                $this->response['message'] = 'El documento ha llegado a 27 rotulos.';
                 return $this->response;
             } else if (empty($this->descripcion) || empty($this->precio) || empty($this->cantidad)) {
                 $this->response['status'] = 'error';
