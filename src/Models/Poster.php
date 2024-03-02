@@ -56,10 +56,10 @@ class Poster extends Database
         return $datos;
     }
 
-    public function totalPosterSmallDesc($user_uuid)
+    public function totalPosterSmallDesc()
     {
         $sql = 'SELECT COUNT(*) AS total FROM rotulos_mini_desc WHERE user_uuid = ?  AND path_uuid IS NULL ORDER BY id DESC';
-        $registrar = $this->ejecutarConsulta($sql, [$user_uuid]);
+        $registrar = $this->ejecutarConsulta($sql, [$this->user_uuid]);
         $datos = $registrar->fetchAll(\PDO::FETCH_ASSOC);
         return $datos;
     }
@@ -169,7 +169,7 @@ class Poster extends Database
     public function createPosterSmallDesc($descuento)
     {
         date_default_timezone_set("America/El_Salvador");
-        $totalAfiches = $this->totalPosterSmallDesc($this->user_uuid);
+        $totalAfiches = $this->totalPosterSmallDesc();
         if ($this->estadoPremium) {
             $this->response['status'] = 'error';
             $this->response['message'] = 'Necesitas ser usuario premiun para esta accion';
