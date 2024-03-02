@@ -137,7 +137,7 @@ class PosterController
         $body = $request->getParsedBody();
         $classEmail = new Email();
         $classPoster = new Poster();
-        $generar = shell_exec('python3 rotulos_mini_desc.py https://api.multimarcas.app/api/poster-small/list ' . $jwt . ' ' . $user_uuid);
+        $generar = shell_exec('python3 rotulos_mini_desc.py https://api.multimarcas.app/api/poster-small-desc/list ' . $jwt . ' ' . $user_uuid);
         $res = json_decode(trim($generar));
         $random_id = mt_rand(100000, 999999);
         $res->code = $random_id;
