@@ -129,6 +129,8 @@ $app->group('/poster-small-desc', function ($group) {
 
     $group->post('/create', PosterController::class . ':createPosterSmallDesc');
     $group->get('/list', PosterController::class . ':listPosterSmallDesc');
+    $group->delete('/remove', PosterController::class . ':removePosterSmallDesc');
+    $group->post('/build', PosterController::class . ':buildPosterDocumentSmallDesc');
 
 })->add($validateJwtMiddleware);
 

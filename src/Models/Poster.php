@@ -266,6 +266,18 @@ class Poster extends Database
             return $this->response;
         }
     }
+
+    public function removePosterSmallDesc($uuid, $user_uuid)
+    {
+        $sql = 'DELETE FROM rotulos_mini_desc WHERE uuid = ? AND user_uuid = ?';
+        $eliminar = $this->ejecutarConsulta($sql, [$uuid, $user_uuid]);
+        if ($eliminar) {
+            $this->response['status'] = 'OK';
+            $this->response['message'] = 'Se elimino el rotulo correctamente';
+            return $this->response;
+        }
+    }
+
     public function saveGenerated($path, $path_name, $path_uuid, $user_uuid, $comment, $code, $tipo)
     {
         date_default_timezone_set("America/El_Salvador");
@@ -288,6 +300,12 @@ class Poster extends Database
     public function assignDocumentSmall($path_uuid, $user_uuid)
     {
         $sql = 'UPDATE rotulos_mini SET path_uuid = ? WHERE user_uuid = ? AND path_uuid IS NULL';
+        $this->ejecutarConsulta($sql, [$path_uuid, $user_uuid]);
+    }
+
+    public function assignDocumentSmallDesc($path_uuid, $user_uuid)
+    {
+        $sql = 'UPDATE rotulos_mini_desc SET path_uuid = ? WHERE user_uuid = ? AND path_uuid IS NULL';
         $this->ejecutarConsulta($sql, [$path_uuid, $user_uuid]);
     }
 

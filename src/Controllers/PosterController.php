@@ -129,6 +129,40 @@ class PosterController
 
     }
 
+    function buildPosterDocumentSmallDesc($request, $response, $args)
+    {
+        $user_uuid = $request->getAttribute('payload')->data->user_uuid;
+        $username = $request->getAttribute('payload')->data->username;
+        $jwt = $request->getAttribute('jwt');
+        $body = $request->getParsedBody();
+        $classEmail = new Email();
+        $classPoster = new Poster();
+        $generar = shell_exec('python3 rotulos_mini_desc.py https://api.multimarcas.app/api/poster-small/list ' . $jwt . ' ' . $user_uuid);
+        $res = json_decode(trim($generar));
+        $random_id = mt_rand(100000, 999999);
+        $res->code = $random_id;
+
+        if ($res->status === 'OK') {
+            $classPoster->saveGenerated($res->path_complete, $res->path_name, $res->path_uuid, $res->user_uuid, $body['comentarios'], $random_id, 'super_oferta_3x9');
+            $classPoster->assignDocumentSmallDesc($res->path_uuid, $res->user_uuid);
+        }
+
+        if ($body !== null) {
+            if (isset($res->path_complete)) {
+                $asunto = 'AFICHES #' . $random_id;
+                $regex = '/^[\p{L}\p{N}\s.,;:!?\'"áéíóúÁÉÍÓÚñÑ]+$/u';
+                $comment = $body['comentarios'];
+                if (!preg_match($regex, $comment)) {
+                    $comment = '---';
+                }
+                $classEmail->sendMailPosterSmallDesc($body['receptor'], $body['nombreReceptor'], $res->path_complete, $asunto, $comment, $res->cantidad, $username);
+            }
+        }
+        $response->getBody()->write(json_encode($res));
+        return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
+
+    }
+
     function buildPosterLowPriceDocumentSmall($request, $response, $args)
     {
         $user_uuid = $request->getAttribute('payload')->data->user_uuid;
@@ -181,6 +215,19 @@ class PosterController
         $body = $request->getParsedBody();
         $classLabel = new Poster();
         $content = $classLabel->removePosterSmall($body['uuid'], $user_uuid);
+        $response->withHeader('Content-Type', 'application/json');
+        $response->getBody()->write(json_encode($content));
+        return $response;
+    }
+
+    function removePosterSmallDesc($request, $response, $args)
+    {
+
+        $user_uuid = $request->getAttribute('payload')->data->user_uuid;
+
+        $body = $request->getParsedBody();
+        $classLabel = new Poster();
+        $content = $classLabel->removePosterSmallDesc($body['uuid'], $user_uuid);
         $response->withHeader('Content-Type', 'application/json');
         $response->getBody()->write(json_encode($content));
         return $response;
