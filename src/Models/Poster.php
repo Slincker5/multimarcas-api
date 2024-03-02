@@ -177,11 +177,11 @@ class Poster extends Database
                 return $this->response;
             } else if (!is_numeric($this->cantidad)) {
                 $this->response['status'] = 'error';
-                $this->response['message'] = 'La cantidad de cintillos debe ser en numeros';
+                $this->response['message'] = 'La cantidad de rotulos debe ser en numeros';
                 return $this->response;
-            } else if ($this->cantidad > 90) {
+            } else if ($this->cantidad > 27) {
                 $this->response['status'] = 'error';
-                $this->response['message'] = 'El limite de rotulos por crear es de 90';
+                $this->response['message'] = 'El limite de rotulos por crear es de 27';
                 return $this->response;
             } else {
                 #CREAR UUID PARA CADA ROTULO
