@@ -48,6 +48,14 @@ class Poster extends Database
         return $datos;
     }
 
+    public function listPosterSmallDesc($user_uuid)
+    {
+        $sql = 'SELECT * FROM rotulos_mini_desc WHERE user_uuid = ?  AND path_uuid IS NULL ORDER BY id DESC';
+        $registrar = $this->ejecutarConsulta($sql, [$user_uuid]);
+        $datos = $registrar->fetchAll(\PDO::FETCH_ASSOC);
+        return $datos;
+    }
+
     public function listPosterLowPriceSmall($user_uuid)
     {
         $sql = 'SELECT * FROM rotulos_mini_baja WHERE user_uuid = ?  AND path_uuid IS NULL ORDER BY id DESC';
@@ -136,6 +144,56 @@ class Poster extends Database
                         $this->barra = ' ';
                     }
                     $sql = 'INSERT INTO  rotulos_mini (barra, descripcion, precio, f_inicio, f_fin, cantidad, user_uuid, uuid) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+                    $crear = $this->ejecutarConsulta($sql, [$this->barra, $this->descripcion, $this->precio, $this->f_inicio, $this->f_fin, $this->cantidad, $this->user_uuid, $poster_uuid]);
+                    if (!$crear) {
+                        $this->response['status'] = 'error';
+                        $this->response['message'] = 'Hubo un error al crear el rótulo.';
+                        return $this->response;
+                    }
+                }
+                $this->response['status'] = 'OK';
+                $this->response['message'] = 'Se han añadido ' . $this->cantidad . ' rotulos.';
+                return $this->response;
+            }
+        }
+    }
+
+    public function createPosterSmallDesc()
+    {
+
+        date_default_timezone_set("America/El_Salvador");
+        if ($this->estadoPremium) {
+            $this->response['status'] = 'error';
+            $this->response['message'] = 'Necesitas ser usuario premiun para esta accion';
+            return $this->response;
+        } else {
+            if(count($this->listPosterSmallDesc($this->user_uuid)) > 27){
+                $this->response['status'] = 'error';
+                $this->response['message'] = 'Solo puedes hacer 27 rotulos por documento.';
+                return $this->response;
+            } else if (empty($this->descripcion) || empty($this->precio) || empty($this->cantidad)) {
+                $this->response['status'] = 'error';
+                $this->response['message'] = 'Debes completar todos los campos';
+                return $this->response;
+            } else if (!is_numeric($this->cantidad)) {
+                $this->response['status'] = 'error';
+                $this->response['message'] = 'La cantidad de cintillos debe ser en numeros';
+                return $this->response;
+            } else if ($this->cantidad > 90) {
+                $this->response['status'] = 'error';
+                $this->response['message'] = 'El limite de rotulos por crear es de 90';
+                return $this->response;
+            } else {
+                #CREAR UUID PARA CADA ROTULO
+                $uuidFactory = new UuidFactory();
+                $uuid = $uuidFactory->uuid4();
+                $poster_uuid = $uuid->toString();
+
+                for ($i = 1; $i <= $this->cantidad; $i++) {
+                    if ($this->barra == '') {
+                        $this->barra = ' ';
+                    }
+                    $sql = 'INSERT INTO  rotulos_mini_desc (barra, descripcion, precio, f_inicio, f_fin, cantidad, user_uuid, uuid) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
                     $crear = $this->ejecutarConsulta($sql, [$this->barra, $this->descripcion, $this->precio, $this->f_inicio, $this->f_fin, $this->cantidad, $this->user_uuid, $poster_uuid]);
                     if (!$crear) {
                         $this->response['status'] = 'error';
