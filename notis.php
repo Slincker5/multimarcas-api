@@ -10,7 +10,7 @@ $users = new User();
 $lista = $users->notificarPremium();
 foreach($lista as $user) {
     try {
-        var_dump($user);
+        var_dump($user["username"]);
     } catch (Exception $e) {
         echo "Excepción capturada: ",  $e->getMessage(), "<br>";
     }
