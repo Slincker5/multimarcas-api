@@ -15,7 +15,7 @@ class LabelController
         $user_uuid = $request->getAttribute('payload')->data->user_uuid;
         $username = $request->getAttribute('payload')->data->username;
         $body = $request->getParsedBody();
-        $classLabel = new Label($body['barra'], $body['descripcion'], $body['cantidad'], $body['precio'], $username, $user_uuid);
+        $classLabel = new Label($body['barra'], $body['descripcion'], $body['cantidad'], $body['precio'], $username, $user_uuid, $body["path"]);
         $crear = $classLabel->addLabel();
         $classLabel->savedImage();
         $response->getBody()->write(json_encode($crear));
