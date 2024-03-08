@@ -76,7 +76,7 @@ class Label extends Database
         } else {
             if ($this->cantidad > 448) {
                 $this->response['status'] = 'error';
-                $this->response['message'] = $this->img . 'El maximo de cintillos que puedes generar es de 448.';
+                $this->response['message'] = 'El maximo de cintillos que puedes generar es de 448.';
                 return $this->response;
             } else if (empty($this->cantidad) || empty($this->precio)) {
                 $this->response['status'] = 'error';
@@ -111,6 +111,7 @@ class Label extends Database
                 }
                 $this->response['status'] = 'OK';
                 $this->response['message'] = 'Se han añadido ' . $this->cantidad . ' cintillos.';
+                $this->response['path'] = $this->img;
                 return $this->response;
             }
         }
