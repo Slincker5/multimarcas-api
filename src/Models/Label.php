@@ -32,7 +32,7 @@ class Label extends Database
         $this->precio = $precio;
         $this->username = $username;
         $this->user_uuid = $user_uuid;
-        $this->img;
+        $this->img = $img;
     }
 
     public function getLabels($user_uuid)
@@ -111,7 +111,6 @@ class Label extends Database
                 }
                 $this->response['status'] = 'OK';
                 $this->response['message'] = 'Se han añadido ' . $this->cantidad . ' cintillos.';
-                $this->response['path'] = $this->img;
                 return $this->response;
             }
         }
