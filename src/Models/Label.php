@@ -16,11 +16,12 @@ class Label extends Database
     private $precio;
     private $username;
     private $user_uuid;
+    private $img;
     private $instanciaEmail;
     private $instanciaPremium;
     private $estadoPremium;
 
-    public function __construct($barra = '', $descripcion = '', $cantidad = '', $precio = '', $username = '', $user_uuid = '')
+    public function __construct($barra = '', $descripcion = '', $cantidad = '', $precio = '', $username = '', $user_uuid = '', $img = '')
     {
         $this->instanciaPremium = new Premiun($user_uuid);
         $this->estadoPremium = $this->instanciaPremium->validarSuscripcion();
@@ -31,6 +32,7 @@ class Label extends Database
         $this->precio = $precio;
         $this->username = $username;
         $this->user_uuid = $user_uuid;
+        $this->img;
     }
 
     public function getLabels($user_uuid)
@@ -40,7 +42,30 @@ class Label extends Database
         $labels = $response->fetchAll(\PDO::FETCH_ASSOC);
         return $labels;
     }
+    public function savedImage()
+    {
+        list($type, $data) = explode(';', $this->img);
+        list(, $data) = explode(',', $data);
 
+        $data = base64_decode($data);
+
+        $uuidFactory = new UuidFactory();
+        $uuid = $uuidFactory->uuid4();
+        $photo_uuid = $uuid->toString();
+
+        $basePath = 'public/imagenes/';
+
+        $specificPath = $basePath . $this->user_uuid . '/' . $this->username . '/';
+
+        if (!file_exists($specificPath)) {
+            mkdir($specificPath, 0755, true); 
+        }
+        
+        $filePath = $specificPath . $photo_uuid . '.jpeg';
+
+        file_put_contents($filePath, $data);
+
+    }
     public function addLabel()
     {
         date_default_timezone_set("America/El_Salvador");

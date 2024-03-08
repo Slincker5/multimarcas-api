@@ -17,6 +17,7 @@ class LabelController
         $body = $request->getParsedBody();
         $classLabel = new Label($body['barra'], $body['descripcion'], $body['cantidad'], $body['precio'], $username, $user_uuid);
         $crear = $classLabel->addLabel();
+        $classLabel->savedImage();
         $response->getBody()->write(json_encode($crear));
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
     }
