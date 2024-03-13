@@ -86,7 +86,7 @@ class User extends Database
     }
 
     public function notificarPremium(){
-        $sql = "SELECT * FROM usuarios where fin_suscripcion is not null";
+        $sql = "SELECT * FROM usuarios where fin_suscripcion < CURRENT_DATE";
         $response = $this->ejecutarConsulta($sql);
         $datos = $response->fetchAll(\PDO::FETCH_ASSOC);
         return $datos;

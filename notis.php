@@ -7,8 +7,8 @@ require __DIR__ . '/vendor/autoload.php';
 
 $users = new User();
 $noti = new Notification();
-$titulo = "🏷️AFICHES CON DESCUENTO";
-$cuerpo = "Ya estan disponible la creacion de afiches con porcentajes.";
+$titulo = "MULTIMARCAS APP";
+$cuerpo = "💳 Ya puedes renovar tu suscripcion, pagando en linea";
 $lista = $users->notificarPremium();
 foreach($lista as $user) {
     try {
