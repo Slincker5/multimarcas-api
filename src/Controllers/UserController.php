@@ -39,7 +39,7 @@ class UserController
         
     if ($uploadedFile->getError() === UPLOAD_ERR_OK) {
         $res = $classUser->uploadPhoto($uploadedFile, $fileType);
-        $response->getBody()->write($res);
+        $response->getBody()->write(json_encode($res));
         return $response;
     }
     }
