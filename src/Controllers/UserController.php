@@ -31,13 +31,12 @@ class UserController
 
     function uploadPhoto($request, $response, $args){
         $user_uuid = $request->getAttribute('payload')->data->user_uuid;
-        $directory = '/var/www/multimarcas-api/public/imagenes';
         $uploadedFiles = $request->getUploadedFiles();
         $classUser = new User($user_uuid);
         
         $uploadedFile = $uploadedFiles['example1'];
     if ($uploadedFile->getError() === UPLOAD_ERR_OK) {
-        $res = $classUser->uploadPhoto($directory, $uploadedFile);
+        $res = $classUser->uploadPhoto($uploadedFile);
         $response->getBody()->write($res);
         return $response;
     }

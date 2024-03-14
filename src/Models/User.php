@@ -12,10 +12,12 @@ class User extends Database
     private $user_uuid;
     private $key = "georginalissethyvladi";
     public $instanciaPremium;
+    private $routePhotoProfile;
 
     public function __construct($user_uuid = "")
     {
         $this->user_uuid = $user_uuid;
+        $this->routePhotoProfile = "/var/www/multimarcas-api/public/perfiles/";
         $this->instanciaPremium = new Premiun($user_uuid);
     }
 
@@ -86,10 +88,10 @@ class User extends Database
         return $stats;
     }
 
-    public function uploadPhoto($directory, $uploadedFile)
+    public function uploadPhoto($uploadedFile)
     {
         $filename = strtolower(str_replace(' ', '-', $uploadedFile->getClientFilename()));
-        $uploadedFile->moveTo($directory . DIRECTORY_SEPARATOR . $filename);
+        $uploadedFile->moveTo($this->routePhotoProfile . DIRECTORY_SEPARATOR . $filename);
 
         return $filename;
     }
