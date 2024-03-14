@@ -14,7 +14,7 @@ class UserController
         $user_uuid = $request->getAttribute('payload')->data->user_uuid;
         $classUser = new User($user_uuid);
         $res = $classUser->estadisticasGlobal();
-        
+
         $response->getBody()->write(json_encode($res));
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
     }
@@ -24,24 +24,23 @@ class UserController
         $body = $request->getParsedBody();
         $classUser = new User($body['user_uuid']);
         $res = $classUser->verEstado();
-        
+
         $response->getBody()->write(json_encode($res));
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
     }
 
-    function uploadPhoto($request, $response, $args){
+    function uploadPhoto($request, $response, $args)
+    {
         $user_uuid = $request->getAttribute('payload')->data->user_uuid;
         $uploadedFiles = $request->getUploadedFiles();
         $uploadedFile = $uploadedFiles['example1'];
         $fileType = $uploadedFile->getClientMediaType();
         $classUser = new User($user_uuid);
-        
-        
-    if ($uploadedFile->getError() === UPLOAD_ERR_OK) {
-        $res = $classUser->uploadPhoto($uploadedFile, $fileType);
-        $response->getBody()->write(json_encode($res));
-        return $response;
-    }
+        if ($uploadedFile->getError() === UPLOAD_ERR_OK) {
+            $res = $classUser->uploadPhoto($uploadedFile, $fileType);
+            $response->getBody()->write(json_encode($res));
+            return $response;
+        }
     }
 
     function updateToken($request, $response, $args)

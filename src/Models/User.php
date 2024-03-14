@@ -93,8 +93,16 @@ class User extends Database
     public function uploadPhoto($uploadedFile, $fileType)
     {
         if (in_array($fileType, $this->allowedTypes)) {
-            $filename = strtolower(str_replace(' ', '-', $uploadedFile->getClientFilename()));
-            $uploadedFile->moveTo($this->routePhotoProfile . DIRECTORY_SEPARATOR . $filename);
+
+            $userDirectory = $this->routePhotoProfile . DIRECTORY_SEPARATOR . $this->user_uuid;
+            if (!file_exists($userDirectory)) {
+                mkdir($userDirectory, 0755, true);
+            }
+            $imageUuid = uniqid();
+            $extension = pathinfo($uploadedFile->getClientFilename(), PATHINFO_EXTENSION);
+            $filename = $imageUuid . '.' . $extension;
+            $completePath = $userDirectory . DIRECTORY_SEPARATOR . $filename;
+            $uploadedFile->moveTo($completePath);
 
             return $filename;
         } else {
