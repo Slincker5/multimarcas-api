@@ -101,6 +101,7 @@ class User extends Database
     public function uploadPhoto($uploadedFile, $fileType, $fileSize)
     {
         ini_set('max_execution_time', 300);
+        ini_set('memory_limit', '512M');
         $maxFileSize = 6 * 1024 * 1024;
         if (in_array($fileType, $this->allowedTypes)) {
             if ($fileSize < $maxFileSize) {
