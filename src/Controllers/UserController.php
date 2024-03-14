@@ -37,7 +37,7 @@ class UserController
         
         $uploadedFile = $uploadedFiles['example1'];
     if ($uploadedFile->getError() === UPLOAD_ERR_OK) {
-        $res = $classUser->uploadPhoto($directory, $uploadedFiles);
+        $res = $classUser->uploadPhoto($directory, $uploadedFile);
         $response->getBody()->write($res);
     }
     }
