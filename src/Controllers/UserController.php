@@ -32,11 +32,13 @@ class UserController
     function uploadPhoto($request, $response, $args){
         $user_uuid = $request->getAttribute('payload')->data->user_uuid;
         $uploadedFiles = $request->getUploadedFiles();
+        $uploadedFile = $uploadedFiles['example1'];
+        $fileType = $uploadedFile->getClientMediaType();
         $classUser = new User($user_uuid);
         
-        $uploadedFile = $uploadedFiles['example1'];
+        
     if ($uploadedFile->getError() === UPLOAD_ERR_OK) {
-        $res = $classUser->uploadPhoto($uploadedFile);
+        $res = $classUser->uploadPhoto($uploadedFile, $fileType);
         $response->getBody()->write($res);
         return $response;
     }

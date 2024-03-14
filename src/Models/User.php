@@ -13,11 +13,13 @@ class User extends Database
     private $key = "georginalissethyvladi";
     public $instanciaPremium;
     private $routePhotoProfile;
+    private $allowedTypes;
 
     public function __construct($user_uuid = "")
     {
         $this->user_uuid = $user_uuid;
         $this->routePhotoProfile = "/var/www/multimarcas-api/public/perfiles/";
+        $this->allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
         $this->instanciaPremium = new Premiun($user_uuid);
     }
 
@@ -88,12 +90,19 @@ class User extends Database
         return $stats;
     }
 
-    public function uploadPhoto($uploadedFile)
+    public function uploadPhoto($uploadedFile, $fileType)
     {
-        $filename = strtolower(str_replace(' ', '-', $uploadedFile->getClientFilename()));
-        $uploadedFile->moveTo($this->routePhotoProfile . DIRECTORY_SEPARATOR . $filename);
+        if (in_array($fileType, $this->allowedTypes)) {
+            $filename = strtolower(str_replace(' ', '-', $uploadedFile->getClientFilename()));
+            $uploadedFile->moveTo($this->routePhotoProfile . DIRECTORY_SEPARATOR . $filename);
 
-        return $filename;
+            return $filename;
+        } else {
+            $this->response['status'] = 'error';
+            $this->response['message'] = 'Formato de imagen no valida.';
+            return $this->response;
+        }
+
     }
 
     public function notificarPremium()
