@@ -31,7 +31,7 @@ class UserController
 
     function uploadPhoto($request, $response, $args){
         $user_uuid = $request->getAttribute('payload')->data->user_uuid;
-        $directory = __DIR__ . '/public/imagenes';
+        $directory = '/var/www/multimarcas-api/public/imagenes';
         $uploadedFiles = $request->getUploadedFiles();
         $classUser = new User($user_uuid);
         
