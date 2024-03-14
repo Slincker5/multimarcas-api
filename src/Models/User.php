@@ -114,7 +114,7 @@ class User extends Database
                 $temporaryPath = $userDirectory . DIRECTORY_SEPARATOR . 'temp_' . $filename;
                 $uploadedFile->moveTo($temporaryPath);
                 if ($extension === 'jpg' || $extension === 'jpeg') {
-                    $this->comprimirImagenJPEG($temporaryPath, $completePath, 75);
+                    $this->comprimirImagenJPEG($temporaryPath, $completePath, 50);
                 } else {
                     rename($temporaryPath, $completePath);
                 }
