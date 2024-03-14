@@ -17,7 +17,7 @@ class User extends Database
     public function __construct($user_uuid = "")
     {
         $this->user_uuid = $user_uuid;
-        $this->routePhotoProfile = "/var/www/multimarcas-api/public/perfiles";
+        $this->routePhotoProfile = "/var/www/multimarcas-api/public/perfiles/";
         $this->instanciaPremium = new Premiun($user_uuid);
     }
 
