@@ -35,9 +35,10 @@ class UserController
         $uploadedFiles = $request->getUploadedFiles();
         $uploadedFile = $uploadedFiles['example1'];
         $fileType = $uploadedFile->getClientMediaType();
+        $fileSize = $uploadedFile->getSize();
         $classUser = new User($user_uuid);
         if ($uploadedFile->getError() === UPLOAD_ERR_OK) {
-            $res = $classUser->uploadPhoto($uploadedFile, $fileType);
+            $res = $classUser->uploadPhoto($uploadedFile, $fileType, $fileSize);
             $response->getBody()->write(json_encode($res));
             return $response;
         }

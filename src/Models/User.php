@@ -90,21 +90,41 @@ class User extends Database
         return $stats;
     }
 
-    public function uploadPhoto($uploadedFile, $fileType)
+    private function comprimirImagenJPEG($rutaOriginal, $rutaGuardado, $calidad)
     {
+        $imagen = imagecreatefromjpeg($rutaOriginal);
+        imagejpeg($imagen, $rutaGuardado, $calidad);
+        imagedestroy($imagen);
+        unlink($rutaOriginal);
+    }
+
+    public function uploadPhoto($uploadedFile, $fileType, $fileSize)
+    {
+        $maxFileSize = 6 * 1024 * 1024;
         if (in_array($fileType, $this->allowedTypes)) {
-
-            $userDirectory = $this->routePhotoProfile . DIRECTORY_SEPARATOR . $this->user_uuid;
-            if (!file_exists($userDirectory)) {
-                mkdir($userDirectory, 0755, true);
+            if ($fileSize < $maxFileSize) {
+                $userDirectory = $this->routePhotoProfile . DIRECTORY_SEPARATOR . $this->user_uuid;
+                if (!file_exists($userDirectory)) {
+                    mkdir($userDirectory, 0755, true);
+                }
+                $imageUuid = uniqid();
+                $extension = pathinfo($uploadedFile->getClientFilename(), PATHINFO_EXTENSION);
+                $filename = $imageUuid . '.' . $extension;
+                $completePath = $userDirectory . DIRECTORY_SEPARATOR . $filename;
+                $temporaryPath = $userDirectory . DIRECTORY_SEPARATOR . 'temp_' . $filename;
+                $uploadedFile->moveTo($temporaryPath);
+                if ($extension === 'jpg' || $extension === 'jpeg') {
+                    $this->comprimirImagenJPEG($temporaryPath, $completePath, 75);
+                } else {
+                    rename($temporaryPath, $completePath);
+                }
+                return $filename;
+            } else {
+                $this->response['status'] = 'error';
+                $this->response['message'] = 'El temaño de la imagen excede el limite, 6 MB';
+                return $this->response;
             }
-            $imageUuid = uniqid();
-            $extension = pathinfo($uploadedFile->getClientFilename(), PATHINFO_EXTENSION);
-            $filename = $imageUuid . '.' . $extension;
-            $completePath = $userDirectory . DIRECTORY_SEPARATOR . $filename;
-            $uploadedFile->moveTo($completePath);
 
-            return $filename;
         } else {
             $this->response['status'] = 'error';
             $this->response['message'] = 'Formato de imagen no valida.';
