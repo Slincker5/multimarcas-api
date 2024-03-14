@@ -29,6 +29,19 @@ class UserController
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
     }
 
+    function uploadPhoto($request, $response, $args){
+        $user_uuid = $request->getAttribute('payload')->data->user_uuid;
+        $directory = __DIR__ . '/public';
+        $uploadedFiles = $request->getUploadedFiles();
+        $classUser = new User($user_uuid);
+        
+        $uploadedFile = $uploadedFiles['example1'];
+    if ($uploadedFile->getError() === UPLOAD_ERR_OK) {
+        $res = $classUser->uploadPhoto($directory, $uploadedFiles);
+        $response->getBody()->write($res);
+    }
+    }
+
     function updateToken($request, $response, $args)
     {
         $user_uuid = $request->getAttribute('payload')->data->user_uuid;

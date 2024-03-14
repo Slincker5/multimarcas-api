@@ -2,10 +2,9 @@
 
 namespace App\Models;
 
-
-use Firebase\JWT\JWT;
 use App\Models\Database;
 use App\Models\Premiun;
+use Firebase\JWT\JWT;
 
 class User extends Database
 {
@@ -59,15 +58,17 @@ class User extends Database
         $datos = $response->fetchAll(\PDO::FETCH_ASSOC);
         return $datos[0]['conteo'];
     }
-    
-    public function verEstado(){
+
+    public function verEstado()
+    {
         $sql = 'SELECT mvc FROM usuarios WHERE  user_uuid = ?';
         $response = $this->ejecutarConsulta($sql, [$this->user_uuid]);
         $datos = $response->fetchAll(\PDO::FETCH_ASSOC);
         return $datos;
     }
 
-    public function updateToken(){
+    public function updateToken()
+    {
         $sql = 'UPDATE usuarios SET mvc = ? WHERE user_uuid = ?';
         $response = $this->ejecutarConsulta($sql, ['si', $this->user_uuid]);
     }
@@ -85,14 +86,24 @@ class User extends Database
         return $stats;
     }
 
-    public function notificarPremium(){
+    public function uploadPhoto($directory, $uploadedFile)
+    {
+        $filename = strtolower(str_replace(' ', '-', $uploadedFile->getClientFilename()));
+        $uploadedFile->moveTo($directory . DIRECTORY_SEPARATOR . $filename);
+
+        return $filename;
+    }
+
+    public function notificarPremium()
+    {
         $sql = "SELECT * FROM usuarios where fin_suscripcion < CURRENT_DATE";
         $response = $this->ejecutarConsulta($sql);
         $datos = $response->fetchAll(\PDO::FETCH_ASSOC);
         return $datos;
     }
 
-    public function generatedToken () {
+    public function generatedToken()
+    {
         $datos = $this->datosUsuario();
         $nombreCompleto = $datos[0]["nombre"] . " " . $datos[0]["apellido"];
         $payload = array(
@@ -102,12 +113,12 @@ class User extends Database
             "nbf" => time(),
             "data" => array(
                 "user_uuid" => $datos[0]["user_uuid"],
-                "username" => $datos[0]["username"] === NULL ? $nombreCompleto : $datos[0]["username"],
+                "username" => $datos[0]["username"] === null ? $nombreCompleto : $datos[0]["username"],
                 "email" => $datos[0]["email"],
                 "photo" => $datos[0]["photo"],
                 "rol" => $datos[0]["rol"],
                 "suscripcion" => $datos[0]["suscripcion"],
-                "fin_suscripcion" => $datos[0]["fin_suscripcion"]
+                "fin_suscripcion" => $datos[0]["fin_suscripcion"],
 
             ),
         );

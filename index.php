@@ -216,5 +216,13 @@ $app->group('/view', function ($group) {
 
 });
 
+
+$app->group('/user', function ($group) {
+
+    $group->post('/upload-photo', UserController::class . ':uploadPhoto');
+
+})->add($validateJwtMiddleware);
+
+
 $app->run();
 
