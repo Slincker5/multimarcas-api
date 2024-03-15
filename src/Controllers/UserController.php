@@ -33,7 +33,7 @@ class UserController
     {
         $user_uuid = $request->getAttribute('payload')->data->user_uuid;
         $uploadedFiles = $request->getUploadedFiles();
-        $uploadedFile = $uploadedFiles['example1'];
+        $uploadedFile = $uploadedFiles['photo'];
         $fileType = $uploadedFile->getClientMediaType();
         $fileSize = $uploadedFile->getSize();
         $classUser = new User($user_uuid);
