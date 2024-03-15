@@ -125,13 +125,14 @@ class User extends Database
                 if ($extension === 'jpg' || $extension === 'jpeg') {
                     $this->comprimirImagenJPEG($temporaryPath, $completePath, 40);
                     $this->guardarRutaImagen($pathDatabase);
+                    $cuerpoNotificacion = "Ha subido nueva foto de perfil";
+                    $this->instanciaNotificacion->crearNotificacion("MULTIMARCAS APP", $cuerpoNotificacion);
                 } else {
                     rename($temporaryPath, $completePath);
                 }
 
+                
                 return $filename;
-                $cuerpoNotificacion = "Ha subido nueva foto de perfil";
-                $this->instanciaNotificacion->crearNotificacion("MULTIMARCAS APP", $cuerpoNotificacion);
             } else {
                 $this->response['status'] = 'error';
                 $this->response['message'] = 'El temaño de la imagen excede el limite, 6 MB';
