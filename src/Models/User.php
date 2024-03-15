@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Database;
 use App\Models\Premiun;
+use App\Models\Notification;
 use Firebase\JWT\JWT;
 
 class User extends Database
@@ -14,6 +15,7 @@ class User extends Database
     public $instanciaPremium;
     private $routePhotoProfile;
     private $allowedTypes;
+    public $instanciaNotificacion;
 
     public function __construct($user_uuid = "")
     {
@@ -21,6 +23,7 @@ class User extends Database
         $this->routePhotoProfile = "/var/www/multimarcas-api/public/perfiles/";
         $this->allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
         $this->instanciaPremium = new Premiun($user_uuid);
+        $this->instanciaNotificacion = new Notification();
     }
 
     private function datosUsuario()
@@ -127,6 +130,8 @@ class User extends Database
                 }
 
                 return $filename;
+                $cuerpoNotificacion = "Ha subido nueva foto de perfil";
+                $this->instanciaNotificacion->crearNotificacion("MULTIMARCAS APP", $cuerpoNotificacion);
             } else {
                 $this->response['status'] = 'error';
                 $this->response['message'] = 'El temaño de la imagen excede el limite, 6 MB';
