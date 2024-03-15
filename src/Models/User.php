@@ -90,6 +90,11 @@ class User extends Database
         return $stats;
     }
 
+    private function guardarRutaImagen($ruta){
+        $sql = 'UPDATE usuarios SET photo = ? WHERE user_uuid = ?';
+        $this->ejecutarConsulta($sql, [$ruta , $this->user_uuid]);
+    }
+
     private function comprimirImagenJPEG($rutaOriginal, $rutaGuardado, $calidad)
     {
         $imagen = imagecreatefromjpeg($rutaOriginal);
@@ -100,8 +105,6 @@ class User extends Database
 
     public function uploadPhoto($uploadedFile, $fileType, $fileSize)
     {
-        ini_set('max_execution_time', 300);
-        ini_set('memory_limit', '512M');
         $maxFileSize = 6 * 1024 * 1024;
         if (in_array($fileType, $this->allowedTypes)) {
             if ($fileSize < $maxFileSize) {
@@ -114,12 +117,15 @@ class User extends Database
                 $filename = $imageUuid . '.' . $extension;
                 $completePath = $userDirectory . DIRECTORY_SEPARATOR . $filename;
                 $temporaryPath = $userDirectory . DIRECTORY_SEPARATOR . 'temp_' . $filename;
+                $pathDatabase = 'https://api.multimarcas.app/public/perfiles/' . $this->user_uuid . '/' . $filename;
                 $uploadedFile->moveTo($temporaryPath);
                 if ($extension === 'jpg' || $extension === 'jpeg') {
                     $this->comprimirImagenJPEG($temporaryPath, $completePath, 50);
+                    $this->guardarRutaImagen($pathDatabase);
                 } else {
                     rename($temporaryPath, $completePath);
                 }
+
                 return $filename;
             } else {
                 $this->response['status'] = 'error';
