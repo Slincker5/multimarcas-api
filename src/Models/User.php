@@ -120,7 +120,7 @@ class User extends Database
                 $pathDatabase = 'https://api.multimarcas.app/public/perfiles/' . $this->user_uuid . '/' . $filename;
                 $uploadedFile->moveTo($temporaryPath);
                 if ($extension === 'jpg' || $extension === 'jpeg') {
-                    $this->comprimirImagenJPEG($temporaryPath, $completePath, 1);
+                    $this->comprimirImagenJPEG($temporaryPath, $completePath, 40);
                     $this->guardarRutaImagen($pathDatabase);
                 } else {
                     rename($temporaryPath, $completePath);
