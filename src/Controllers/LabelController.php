@@ -115,4 +115,16 @@ class LabelController
         $response = $response->withStatus(200)->withHeader('Content-Type', 'application/json');
         return $response;
     }
+
+    function documentGenerated($request, $response, $args)
+    {
+
+        $user_uuid = $request->getAttribute('payload')->data->user_uuid;
+        $path_uuid = $args['path_uuid'];
+        $classLabel = new Label(null, null, null, null, null, $user_uuid);
+        $list = $classLabel->getLabelGenerated($path_uuid);
+        $response->getBody()->write(json_encode($list));
+        $response = $response->withStatus(200)->withHeader('Content-Type', 'application/json');
+        return $response;
+    }
 }

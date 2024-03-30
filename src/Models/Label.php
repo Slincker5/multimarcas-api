@@ -33,6 +33,71 @@ class Label extends Database
         $this->user_uuid = $user_uuid;
     }
 
+    private function countLabels($path_uuid)
+    {
+        $sql = 'SELECT
+            
+            COUNT(DISTINCT a.uuid) AS total
+        FROM
+            codigos AS a
+        WHERE a.user_uuid = ?  AND a.path_uuid = ?';
+
+        $response = $this->ejecutarConsulta($sql, [$this->user_uuid, $path_uuid]);
+        $labels = $response->fetchAll(\PDO::FETCH_ASSOC);
+        return $labels;
+    }
+
+    private function getLabelDetails($path_uuid)
+    {
+        $sql = 'SELECT DISTINCT
+            a.barra,
+            a.uuid,
+            a.descripcion,
+            a.cantidad,
+            a.precio,
+            a.user_uuid,
+            a.path_uuid,
+            a.fecha
+        FROM
+            codigos AS a
+        WHERE a.user_uuid = ?  AND a.path_uuid = ?
+        ORDER BY a.id DESC;';
+
+        $response = $this->ejecutarConsulta($sql, [$this->user_uuid, $path_uuid]);
+        $labels = $response->fetchAll(\PDO::FETCH_ASSOC);
+        return $labels;
+    }
+
+
+    private function getLabelDetailsGenerated($path_uuid)
+    {
+        $sql = 'SELECT
+            a.path,
+            a.path_name,
+            a.comentario,
+            a.code,
+            a.email,
+            a.receptor,
+            a.fecha
+        FROM
+            generados AS a
+        WHERE a.user_uuid = ?  AND a.path_uuid = ?
+        ORDER BY a.id DESC';
+
+        $response = $this->ejecutarConsulta($sql, [$this->user_uuid, $path_uuid]);
+        $labels = $response->fetchAll(\PDO::FETCH_ASSOC);
+        return $labels;
+    }
+
+    public function getLabelGenerated($path_uuid){
+        $documentGenerated = [
+            "detalles" => $this->getLabelDetailsGenerated($path_uuid),
+            "total" => $this->countLabels($path_uuid),
+            "cintillos" => $this->getLabelDetails($path_uuid)
+        ];
+        return $documentGenerated;
+    }
+
     public function getLabels($user_uuid)
     {
         $sql = 'SELECT * FROM codigos WHERE user_uuid = ?  AND path_uuid IS NULL ORDER BY id DESC';

@@ -224,5 +224,11 @@ $app->group('/user', function ($group) {
 })->add($validateJwtMiddleware);
 
 
+$app->group('/detail', function($group) {
+
+    $group->get('/label/{path_uuid}', LabelController::class . ':documentGenerated');
+    
+})->add($validateJwtMiddleware);
+
 $app->run();
 
