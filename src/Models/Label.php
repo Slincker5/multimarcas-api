@@ -238,8 +238,11 @@ class Label extends Database
             if (!preg_match($regex, $comment)) {
                 $comment = '---';
             }
-            $test = $this->instanciaEmail->sendMailLabel($email, $nombreReceptor, $param['path'], $asunto, $comment, $param["cantidad"], $username);
-            return $email;
+            $this->instanciaEmail->sendMailLabel($email, $nombreReceptor, $param['path'], $asunto, $comment, $param["cantidad"], $username);
+            $this->response['status'] = 'OK';
+            $this->response['message'] = 'Archivo reenviado con exito.';
+            $this->response['data'] = $param;
+            return $this->response;
         }
     }
 }
