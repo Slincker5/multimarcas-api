@@ -35,12 +35,14 @@ class Label extends Database
 
     private function countLabels($path_uuid)
     {
-        $sql = 'SELECT
-            
-            COUNT(DISTINCT a.uuid) AS total
-        FROM
-            codigos AS a
-        WHERE a.user_uuid = ?  AND a.path_uuid = ?';
+        $sql = 'SELECT SUM(cantidad) AS total
+        FROM (
+            SELECT DISTINCT uuid, cantidad
+            FROM codigos
+            WHERE user_uuid = ?
+            AND path_uuid = ?
+        ) AS unique_uuids
+        ';
 
         $response = $this->ejecutarConsulta($sql, [$this->user_uuid, $path_uuid]);
         $labels = $response->fetchAll(\PDO::FETCH_ASSOC);
@@ -68,7 +70,6 @@ class Label extends Database
         return $labels;
     }
 
-
     private function getLabelDetailsGenerated($path_uuid)
     {
         $sql = 'SELECT
@@ -89,11 +90,12 @@ class Label extends Database
         return $labels;
     }
 
-    public function getLabelGenerated($path_uuid){
+    public function getLabelGenerated($path_uuid)
+    {
         $documentGenerated = [
             "detalles" => $this->getLabelDetailsGenerated($path_uuid),
             "total" => $this->countLabels($path_uuid),
-            "cintillos" => $this->getLabelDetails($path_uuid)
+            "cintillos" => $this->getLabelDetails($path_uuid),
         ];
         return $documentGenerated;
     }
@@ -211,9 +213,33 @@ class Label extends Database
 
     public function listaGenerados($user_uuid)
     {
-        $sql = 'SELECT * FROM generados WHERE user_uuid = ?  AND (email IS NOT NULL OR receptor IS NOT NULL) ORDER BY id DESC LIMIT 10';
+        $sql = 'SELECT * FROM generados WHERE user_uuid = ?  AND (email IS NOT NULL OR receptor IS NOT NULL) ORDER BY id DESC LIMIT 9';
         $response = $this->ejecutarConsulta($sql, [$user_uuid]);
         $generados = $response->fetchAll(\PDO::FETCH_ASSOC);
         return $generados;
+    }
+
+    private function getEmail($name) {
+        $sql = 'SELECT correo FROM correos WHERE sala = ?';
+        $response = $this->ejecutarConsulta($sql, [$name]);
+        $generados = $response->fetchAll(\PDO::FETCH_ASSOC);
+        return $generados;
+    }
+
+    public function resend($username, $param)
+    {
+        if ($param !== null) {
+            $email = $param["receptor"] === 'Desconocido' ? $param["email"] : $this->getEmail($param["receptor"])[0]["correo"];
+            $partes = explode("@", $email);
+            $nombreReceptor = $param["receptor"] === 'Desconocido' ? $partes[0] : $param['nombreReceptor'];
+            $asunto = 'REENVIADO CINTILLOS #' . $param['code'];
+            $regex = '/^[\p{L}\p{N}\s.,;:!?\'"áéíóúÁÉÍÓÚñÑ]+$/u';
+            $comment = $param['comentario'];
+            if (!preg_match($regex, $comment)) {
+                $comment = '---';
+            }
+            $test = $this->instanciaEmail->sendMailLabel($email, $nombreReceptor, $param['path'], $asunto, $comment, $param["cantidad"], $username);
+            return $email;
+        }
     }
 }

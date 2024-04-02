@@ -26,7 +26,7 @@ class LabelController
 
         $user_uuid = $request->getAttribute('payload')->data->user_uuid;
         $body = $request->getParsedBody();
-        $classLabel = new Label();
+        $classLabel = new Label(null, null, null, null, null, $user_uuid);
         $content = $classLabel->editLabel($body, $user_uuid);
         $response->withHeader('Content-Type', 'application/json');
         $response->getBody()->write(json_encode($content));
@@ -109,7 +109,7 @@ class LabelController
 
         $user_uuid = $request->getAttribute('payload')->data->user_uuid;
 
-        $classLabel = new Label();
+        $classLabel = new Label(null, null, null, null, null, $user_uuid);
         $list = $classLabel->listaGenerados($user_uuid);
         $response->getBody()->write(json_encode($list));
         $response = $response->withStatus(200)->withHeader('Content-Type', 'application/json');
@@ -126,5 +126,18 @@ class LabelController
         $response->getBody()->write(json_encode($list));
         $response = $response->withStatus(200)->withHeader('Content-Type', 'application/json');
         return $response;
+    }
+
+    function resend($request, $response, $args)
+    {
+        $user_uuid = $request->getAttribute('payload')->data->user_uuid;
+        $username = $request->getAttribute('payload')->data->username;
+        $body = $request->getParsedBody();
+        $classLabel = new Label(null, null, null, null, null, $user_uuid);
+        if ($body !== null) {
+            $res = $classLabel->resend($username, $body);
+        }
+        $response->getBody()->write(json_encode($res));
+        return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
     }
 }
