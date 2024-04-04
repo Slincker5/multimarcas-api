@@ -97,7 +97,10 @@ class LabelController
                 if (!preg_match($regex, $comment)) {
                     $comment = '---';
                 }
-                $classEmail->sendMailLabel($body['receptor'], $body['nombreReceptor'], $res->path_complete, $asunto, $comment, $res->cantidad, $username);
+
+                $partes = explode("@", $body["receptor"]);
+                $nombreReceptor = $body["nombreReceptor"] === 'Desconocido' ? $partes[0] : $body['receptor'];
+                $classEmail->sendMailLabel($body['receptor'], $nombreReceptor, $res->path_complete, $asunto, $comment, $res->cantidad, $username);
             }
         }
         $response->getBody()->write(json_encode($res));
