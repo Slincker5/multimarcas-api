@@ -83,9 +83,10 @@ class LabelController
         $res = json_decode(trim($generar));
         $random_id = mt_rand(100000, 999999);
         $res->code = $random_id;
-
+        $partes = explode("@", $body["receptor"]);
+        $nombreReceptor = $body["nombreReceptor"] === 'Desconocido' ? $partes[0] : $body['receptor'];
         if ($res->status === 'OK') {
-            $classLabel->saveGenerated($res->path_complete, $res->path_name, $res->path_uuid, $res->user_uuid, $body['comentarios'], $random_id, $body['receptor'], $body['nombreReceptor']);
+            $classLabel->saveGenerated($res->path_complete, $res->path_name, $res->path_uuid, $res->user_uuid, $body['comentarios'], $random_id, $body['receptor'], $nombreReceptor);
             $classLabel->assignDocument($res->path_uuid, $res->user_uuid);
         }
 
@@ -97,9 +98,6 @@ class LabelController
                 if (!preg_match($regex, $comment)) {
                     $comment = '---';
                 }
-
-                $partes = explode("@", $body["receptor"]);
-                $nombreReceptor = $body["nombreReceptor"] === 'Desconocido' ? $partes[0] : $body['receptor'];
                 $classEmail->sendMailLabel($body['receptor'], $nombreReceptor, $res->path_complete, $asunto, $comment, $res->cantidad, $username);
             }
         }
