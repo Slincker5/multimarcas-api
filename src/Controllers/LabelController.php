@@ -84,7 +84,7 @@ class LabelController
         $random_id = mt_rand(100000, 999999);
         $res->code = $random_id;
         $partes = explode("@", $body["receptor"]);
-        $nombreReceptor = $body["nombreReceptor"] === 'Desconocido' ? $partes[0] : $body['receptor'];
+        $nombreReceptor = $body["nombreReceptor"] === 'Desconocido' ? $partes[0] : $body['nombreReceptor'];
         if ($res->status === 'OK') {
             $classLabel->saveGenerated($res->path_complete, $res->path_name, $res->path_uuid, $res->user_uuid, $body['comentarios'], $random_id, $body['receptor'], $nombreReceptor);
             $classLabel->assignDocument($res->path_uuid, $res->user_uuid);
