@@ -93,9 +93,9 @@ class Label extends Database
     public function getLabelGenerated($path_uuid)
     {
         $documentGenerated = [
-            $this->getLabelDetailsGenerated($path_uuid),
-            $this->countLabels($path_uuid),
-            $this->getLabelDetails($path_uuid),
+            "detalles" => $this->getLabelDetailsGenerated($path_uuid),
+            "total" => $this->countLabels($path_uuid),
+            "cintillos" => $this->getLabelDetails($path_uuid),
         ];
         return $documentGenerated;
     }
