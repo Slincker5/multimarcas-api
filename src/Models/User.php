@@ -183,4 +183,11 @@ class User extends Database
         return $this->response;
     }
 
+    public function  updateTokenNotification($token){
+        $sql = "UPDATE usuarios SET token_fcm = ? WHERE user_uuid = ?";
+        $response = $this->ejecutarConsulta($sql, [$token, $this->user_uuid]);
+        $this->response['status'] = 'OK';
+        $this->response['message'] = 'token_fcm actualizado';
+        return $this->response;
+    }
 }
