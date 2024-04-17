@@ -47,8 +47,18 @@ class UserController
     function updateToken($request, $response, $args)
     {
         $user_uuid = $request->getAttribute('payload')->data->user_uuid;
+        $body = $request->getParsedBody();
         $classUser = new User($user_uuid);
         $res = $classUser->generatedToken();
+        $response->getBody()->write(json_encode($res));
+        return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
+    }
+
+    function updateTokenNotificacion($request, $response, $args){
+        $user_uuid = $request->getAttribute('payload')->data->user_uuid;
+        $body = $request->getParsedBody();
+        $classUser = new User($user_uuid);
+        $res = $classUser->updateTokenNotification($body["token_fcm"]);
         $response->getBody()->write(json_encode($res));
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
     }
