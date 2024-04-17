@@ -221,7 +221,6 @@ $app->group('/view', function ($group) {
 $app->group('/user', function ($group) {
 
     $group->post('/upload-photo', UserController::class . ':uploadPhoto');
-    $group->post('/reload-token-fcm', UserController::class . ':updateTokenNotificacion');
 
 })->add($validateJwtMiddleware);
 
