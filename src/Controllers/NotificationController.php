@@ -21,7 +21,7 @@ class NotificationController
             $title = $body["title"];
             $message = $body["body"];
             $claseNotificacion = new Notification();
-            $content = $claseNotificacion->createNotification($tokens, $title, $message, null);
+            $content = $claseNotificacion->createNotification($title, $message, null);
             $response->withHeader('Content-Type', 'application/json');
             $response->getBody()->write(json_encode($content));
             return $response;

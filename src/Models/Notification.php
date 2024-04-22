@@ -22,9 +22,11 @@ class Notification extends Database
         return $credential->fetchAuthToken(HttpHandlerFactory::build());
     }
 
-    public function createNotification($tokens, $title = "MULTIMARCAS", $body, $link = ""){
-        $token = [$this->getTokenAuth()];
-        foreach ($tokens as $user_token) {
+    public function createNotification($title = "MULTIMARCAS", $body, $link = ""){
+
+        $token = $this->getTokenAuth();
+
+        foreach ($this->getTokenFcmAdmin() as $user_token) {
             $ch = curl_init("https://fcm.googleapis.com/v1/projects/multimarcasapp-2fa97/messages:send");
         
             curl_setopt($ch, CURLOPT_HTTPHEADER, [
@@ -34,7 +36,7 @@ class Notification extends Database
         
             curl_setopt($ch, CURLOPT_POSTFIELDS, '{
                 "message": {
-                  "token": "'.$user_token.'",
+                  "token": "'.$user_token["token_fcm"].'",
                   "data": {
                     "title": "'. $title .'",
                     "body": "'. $body .'",
@@ -49,7 +51,7 @@ class Notification extends Database
             $response = curl_exec($ch);
         
             if ($response) {
-                return "Notificacion enviada: " .  count($tokens);
+                return "enviada " . count($this->getTokenFcmAdmin());
             } else {
                 return "Hubo un error al enviar la notificaciÃ³n a un usuario.";
             }
