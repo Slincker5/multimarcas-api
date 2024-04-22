@@ -8,7 +8,7 @@ use Google\Auth\HttpHandler\HttpHandlerFactory;
 class Notification extends Database
 {
     public function getTokenFcmAdmin(){
-        $sql = 'SELECT token_fcm WHERE rol = "Admin"';
+        $sql = 'SELECT token_fcm FROM usuarios WHERE rol = "Admin"';
         $response = $this->ejecutarConsulta($sql);
         return $response->fetchAll(\PDO::FETCH_ASSOC);
     }
@@ -23,7 +23,7 @@ class Notification extends Database
     }
 
     public function createNotification($tokens, $title = "MULTIMARCAS", $body, $link = ""){
-        $token = $this->getTokenAuth();
+        $token = [$this->getTokenAuth()];
         foreach ($tokens as $user_token) {
             $ch = curl_init("https://fcm.googleapis.com/v1/projects/multimarcasapp-2fa97/messages:send");
         
