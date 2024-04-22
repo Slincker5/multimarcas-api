@@ -3,8 +3,6 @@
 namespace App\Models;
 
 use App\Models\Database;
-use App\Models\Premiun;
-use App\Models\Notification;
 use Firebase\JWT\JWT;
 
 class User extends Database
@@ -12,47 +10,27 @@ class User extends Database
     private $response;
     private $user_uuid;
     private $key = "georginalissethyvladi";
-    public $instanciaPremium;
     private $routePhotoProfile;
     private $allowedTypes;
-    public $instanciaNotificacion;
 
     public function __construct($user_uuid = "")
     {
         $this->user_uuid = $user_uuid;
         $this->routePhotoProfile = "/var/www/multimarcas-api/public/perfiles/";
         $this->allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
-        $this->instanciaPremium = new Premiun($user_uuid);
-        $this->instanciaNotificacion = new Notification();
     }
 
     private function datosUsuario()
     {
-        $sql = 'SELECT user_uuid, username, nombre, apellido, telefono, email, photo, rol, fecha, fin_suscripcion FROM usuarios WHERE user_uuid = ?';
+        $sql = 'SELECT user_uuid, username, nombre, apellido, telefono, email, photo, rol, fecha, suscripcion, fin_suscripcion FROM usuarios WHERE user_uuid = ?';
         $response = $this->ejecutarConsulta($sql, [$this->user_uuid]);
         $datos = $response->fetchAll(\PDO::FETCH_ASSOC);
         return $datos;
     }
 
-    private function totalCintillos()
-    {
-        $sql = 'SELECT COUNT(*) AS conteo FROM codigos WHERE  user_uuid = ?';
-        $response = $this->ejecutarConsulta($sql, [$this->user_uuid]);
-        $datos = $response->fetchAll(\PDO::FETCH_ASSOC);
-        return $datos[0]['conteo'];
-    }
-
     private function totalCintillosGenerados()
     {
         $sql = 'SELECT COUNT(*) AS conteo FROM codigos WHERE user_uuid = ? AND path_uuid IS NOT NULL';
-        $response = $this->ejecutarConsulta($sql, [$this->user_uuid]);
-        $datos = $response->fetchAll(\PDO::FETCH_ASSOC);
-        return $datos[0]['conteo'];
-    }
-
-    private function totalRotulos()
-    {
-        $sql = 'SELECT COUNT(*) AS conteo FROM rotulos WHERE user_uuid = ?';
         $response = $this->ejecutarConsulta($sql, [$this->user_uuid]);
         $datos = $response->fetchAll(\PDO::FETCH_ASSOC);
         return $datos[0]['conteo'];
@@ -66,36 +44,20 @@ class User extends Database
         return $datos[0]['conteo'];
     }
 
-    public function verEstado()
-    {
-        $sql = 'SELECT mvc FROM usuarios WHERE  user_uuid = ?';
-        $response = $this->ejecutarConsulta($sql, [$this->user_uuid]);
-        $datos = $response->fetchAll(\PDO::FETCH_ASSOC);
-        return $datos;
-    }
-
-    public function updateToken()
-    {
-        $sql = 'UPDATE usuarios SET mvc = ? WHERE user_uuid = ?';
-        $response = $this->ejecutarConsulta($sql, ['si', $this->user_uuid]);
-    }
-
     public function estadisticasGlobal()
     {
-        $this->instanciaPremium->validarSuscripcion();
         $stats = [
             "profile" => $this->datosUsuario(),
-            "totalCintillos" => $this->totalCintillos(),
             "totalCintillosGenerados" => $this->totalCintillosGenerados(),
-            "totalRotulos" => $this->totalRotulos(),
             "totalRotulosGenerados" => $this->totalRotulosGenerados(),
         ];
         return $stats;
     }
 
-    private function guardarRutaImagen($ruta){
+    private function guardarRutaImagen($ruta)
+    {
         $sql = 'UPDATE usuarios SET photo = ? WHERE user_uuid = ?';
-        $this->ejecutarConsulta($sql, [$ruta , $this->user_uuid]);
+        $this->ejecutarConsulta($sql, [$ruta, $this->user_uuid]);
     }
 
     private function comprimirImagenJPEG($rutaOriginal, $rutaGuardado, $calidad)
@@ -125,13 +87,11 @@ class User extends Database
                 if ($extension === 'jpg' || $extension === 'jpeg') {
                     $this->comprimirImagenJPEG($temporaryPath, $completePath, 40);
                     $this->guardarRutaImagen($pathDatabase);
-                    $cuerpoNotificacion = "Ha subido nueva foto de perfil";
-                    $this->instanciaNotificacion->crearNotificacion("MULTIMARCAS APP", $cuerpoNotificacion);
                 } else {
                     rename($temporaryPath, $completePath);
+                    $this->guardarRutaImagen($pathDatabase);
                 }
 
-                
                 return $filename;
             } else {
                 $this->response['status'] = 'error';
@@ -145,14 +105,6 @@ class User extends Database
             return $this->response;
         }
 
-    }
-
-    public function notificarPremium()
-    {
-        $sql = "SELECT * FROM usuarios where fin_suscripcion < CURRENT_DATE";
-        $response = $this->ejecutarConsulta($sql);
-        $datos = $response->fetchAll(\PDO::FETCH_ASSOC);
-        return $datos;
     }
 
     public function generatedToken()
@@ -183,9 +135,10 @@ class User extends Database
         return $this->response;
     }
 
-    public function  updateTokenNotification($token){
+    public function updateTokenNotification($token)
+    {
         $sql = "UPDATE usuarios SET token_fcm = ? WHERE user_uuid = ?";
-        $response = $this->ejecutarConsulta($sql, [$token, $this->user_uuid]);
+        $this->ejecutarConsulta($sql, [$token, $this->user_uuid]);
         $this->response['status'] = 'OK';
         $this->response['message'] = 'token_fcm actualizado';
         return $this->response;
