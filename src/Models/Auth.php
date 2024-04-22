@@ -85,7 +85,7 @@ class Auth extends Database
             if ($signUp) {
                 $tokensAdmin = $this->instanciaNotificacion->getTokenFcmAdmin();
                 $cuerpoNotificacion = $nombre . " " . $apellido . " se ha registrado";
-                $this->instanciaNotificacion->createNotification($tokensAdmin, null, $cuerpoNotificacion);
+                $this->instanciaNotificacion->createNotification(null, $cuerpoNotificacion);
                 $payload = array(
                     "iss" => "multimarcas",
                     "aud" => $profile_uuid,
