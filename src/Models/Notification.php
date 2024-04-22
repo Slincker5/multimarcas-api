@@ -9,7 +9,7 @@ class Notification extends Database
 {
     public function getTokenFcmAdmin(){
         $sql = 'SELECT token_fcm FROM usuarios WHERE rol = "Admin"';
-        $response = $this->ejecutarConsulta($sql);
+        $response = $this->ejecutarConsulta($sql, null);
         return $response->fetchAll(\PDO::FETCH_ASSOC);
     }
 
