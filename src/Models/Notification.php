@@ -1,75 +1,62 @@
 <?php
 
 namespace App\Models;
+use App\Models\Database;
+use Google\Auth\Credentials\ServiceAccountCredentials;
+use Google\Auth\HttpHandler\HttpHandlerFactory;
 
-use Pusher\PushNotifications\PushNotifications;
-
-class Notification
+class Notification extends Database
 {
-
-    public function crearNotificacion($titulo, $cuerpo, $imagen = 'https://cintillos-plazamundo.netlify.app/android-chrome-192x192.png')
-    {
-
-        $beamsClient = new PushNotifications(array(
-            "instanceId" => "b963f891-0b89-4e01-84a8-698b97373219",
-            "secretKey" => "B99ABC7E749BD28709D779B4EEF1D9F3E0A1A303BC57E7A58F4F2DCCB0FE8B28",
-        ));
-
-        $data = array(
-            "title" => $titulo,
-            "body" => $cuerpo,
-            "icon" => $imagen,
-            "deep_link" => "https://cintillos-plazamundo.netlify.app",
-        );
-
-        $beamsClient->publishToInterests(
-            array("2c62e966-63d8-4bfd-832e-89094ae47eec"),
-            array(
-                "web" => array(
-                    "notification" => $data,
-                ),
-            )
-        );
-
-        $mensaje = [
-            "status" => "ok",
-            "message" => "Notificacion enviada",
-        ];
-
-        return $mensaje;
-
+    public function getTokenFcmAdmin(){
+        $sql = 'SELECT token_fcm WHERE rol = "Admin"';
+        $response = $this->ejecutarConsulta($sql);
+        return $response->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function crearNotificacionUsers($interes, $titulo, $cuerpo, $imagen = 'https://cintillos-plazamundo.netlify.app/android-chrome-192x192.png')
-        {
-    
-            $beamsClient = new PushNotifications(array(
-                "instanceId" => "b963f891-0b89-4e01-84a8-698b97373219",
-                "secretKey" => "B99ABC7E749BD28709D779B4EEF1D9F3E0A1A303BC57E7A58F4F2DCCB0FE8B28",
-            ));
-    
-            $data = array(
-                "title" => $titulo,
-                "body" => $cuerpo,
-                "icon" => $imagen,
-                "deep_link" => "https://cintillos-plazamundo.netlify.app",
-            );
-    
-            $beamsClient->publishToInterests(
-                array($interes),
-                array(
-                    "web" => array(
-                        "notification" => $data,
-                    ),
-                )
-            );
-    
-            $mensaje = [
-                "status" => "ok",
-                "message" => "Notificacion enviada",
-            ];
-    
-            return $mensaje;
-    
+    private function getTokenAuth(){
+        $credential = new ServiceAccountCredentials(
+            "https://www.googleapis.com/auth/firebase.messaging",
+            json_decode(file_get_contents("../key.json"), true)
+        );
+        
+        return $credential->fetchAuthToken(HttpHandlerFactory::build());
+    }
+
+    public function createNotification($tokens, $title = "MULTIMARCAS", $body, $link = ""){
+        $token = $this->getTokenAuth();
+        foreach ($tokens as $user_token) {
+            $ch = curl_init("https://fcm.googleapis.com/v1/projects/multimarcasapp-2fa97/messages:send");
+        
+            curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                'Content-Type: application/json',
+                'Authorization: Bearer '.$token['access_token']
+            ]);
+        
+            curl_setopt($ch, CURLOPT_POSTFIELDS, '{
+                "message": {
+                  "token": "'.$user_token.'",
+                  "data": {
+                    "title": "'. $title .'",
+                    "body": "'. $body .'",
+                    "link": "'. $link .'"
+                  }
+                }
+              }');
+        
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        
+            $response = curl_exec($ch);
+        
+            if ($response) {
+                return "Notificacion enviada: " .  count($tokens);
+            } else {
+                return "Hubo un error al enviar la notificaciÃ³n a un usuario.";
+            }
+        
+            curl_close($ch);
         }
+    }
+
 }
+?>

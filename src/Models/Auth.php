@@ -83,9 +83,9 @@ class Auth extends Database
             $signUp = $this->ejecutarConsulta($sql, [$profile_uuid, $nombre, $apellido, $correo, $passwordHash, 'User', $ip]);
 
             if ($signUp) {
-                
+                $tokensAdmin = $this->instanciaNotificacion->getTokenFcmAdmin();
                 $cuerpoNotificacion = $nombre . " " . $apellido . " se ha registrado";
-                $this->instanciaNotificacion->crearNotificacion("👤 Nuevo Usuario", $cuerpoNotificacion);
+                $this->instanciaNotificacion->createNotification($tokensAdmin, null, $cuerpoNotificacion);
                 $payload = array(
                     "iss" => "multimarcas",
                     "aud" => $profile_uuid,

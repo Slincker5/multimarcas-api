@@ -17,10 +17,11 @@ class NotificationController
 
         if($user_rol == 'Admin'){
             $body = $request->getParsedBody();
-            $title = '🏷️ ETIQUETA AGREGADA';
-            $message = $body['username'] . ' agrego ' . $body['cantidad'] . ' etiquetas';
+            $tokens = $body["token_fcm"];
+            $title = $body["title"];
+            $message = $body["body"];
             $claseNotificacion = new Notification();
-            $content = $claseNotificacion->crearNotificacion($title, $message);
+            $content = $claseNotificacion->createNotification([$tokens], $title, $message, null);
             $response->withHeader('Content-Type', 'application/json');
             $response->getBody()->write(json_encode($content));
             return $response;
@@ -31,13 +32,6 @@ class NotificationController
             $response->getBody()->write(json_encode($this->res));
             return $response;
         }
-        
-    }
-
-    function sendGlobal($title, $message)
-    {
-        $claseNotificacion = new Notification();
-        $content = $claseNotificacion->crearNotificacion($title, $message);
         
     }
 }

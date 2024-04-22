@@ -6,7 +6,6 @@ use Psr\Http\Message\ServerRequestInterface;
 use Slim\Exception\HttpNotFoundException;
 use Slim\Factory\AppFactory;
 use App\Models\Email;
-use App\Models\Notification;
 use App\Models\Poster;
 
 class PosterController
@@ -69,25 +68,16 @@ class PosterController
     function createPosterSmall($request, $response, $args)
     {
         $user_uuid = $request->getAttribute('payload')->data->user_uuid;
-        $username = $request->getAttribute('payload')->data->username;
-        $suscripcion = $request->getAttribute('payload')->data->suscripcion;
         $body = $request->getParsedBody();
         $classPoster = new Poster($body['barra'], $body['descripcion'], $body['precio'], $body['f_inicio'], $body['f_fin'], $body['cantidad'], $user_uuid);
         $create = $classPoster->createPosterSmall();
         $response->getBody()->write(json_encode($create));
-        $notificar = new Notification();
-        if($suscripcion === 0){
-            $titulo = "Nuevo afiche";
-            $cuerpo = $username . " ha creado " . $body["cantidad"] . " afiches.";
-            $notificar->crearNotificacion($titulo, $cuerpo);
-        }
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
     }
 
     function listPosterSmall($request, $response, $args)
     {
         $user_uuid = $request->getAttribute('payload')->data->user_uuid;
-        $body = $request->getParsedBody();
         $classPoster = new Poster();
         $create = $classPoster->listPosterSmall($user_uuid);
         $response->getBody()->write(json_encode($create));
@@ -97,7 +87,6 @@ class PosterController
     function listPosterLowPriceSmall($request, $response, $args)
     {
         $user_uuid = $request->getAttribute('payload')->data->user_uuid;
-        $body = $request->getParsedBody();
         $classPoster = new Poster();
         $create = $classPoster->listPosterLowPriceSmall($user_uuid);
         $response->getBody()->write(json_encode($create));
@@ -233,18 +222,10 @@ class PosterController
     {
 
         $user_uuid = $request->getAttribute('payload')->data->user_uuid;
-        $username = $request->getAttribute('payload')->data->username;
-        $suscripcion = $request->getAttribute('payload')->data->suscripcion;
 
         $body = $request->getParsedBody();
         $classLabel = new Poster();
         $content = $classLabel->removePosterSmallDesc($body['uuid'], $user_uuid);
-        $notificar = new Notification();
-        if($suscripcion === 0){
-            $titulo = "Nuevo afiche";
-            $cuerpo = $username . " ha creado " . $body["cantidad"] . " afiches.";
-            $notificar->crearNotificacion($titulo, $cuerpo);
-        }
         $response->withHeader('Content-Type', 'application/json');
         $response->getBody()->write(json_encode($content));
         return $response;

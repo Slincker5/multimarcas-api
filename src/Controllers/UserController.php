@@ -19,16 +19,6 @@ class UserController
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
     }
 
-    function userMvc($request, $response, $args)
-    {
-        $body = $request->getParsedBody();
-        $classUser = new User($body['user_uuid']);
-        $res = $classUser->verEstado();
-
-        $response->getBody()->write(json_encode($res));
-        return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
-    }
-
     function uploadPhoto($request, $response, $args)
     {
         $user_uuid = $request->getAttribute('payload')->data->user_uuid;

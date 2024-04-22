@@ -11,6 +11,7 @@ use App\Controllers\PremiunController;
 use App\Controllers\TransaccionController;
 use App\Controllers\LinkController;
 use App\Controllers\CounterController;
+use App\Controllers\NotificationController;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Psr\Http\Message\ServerRequestInterface;
@@ -174,8 +175,6 @@ $app->group('/comment', function ($group) {
 })->add($validateJwtMiddleware);
 
 $app->group('/temp', function ($group) {
-    
-    $group->post('/mvc', UserController::class . ':userMvc');
     $group->post('/update-token', UserController::class . ':updateToken');
     
 })->add($validateJwtMiddleware);
@@ -192,6 +191,10 @@ $app->group('/pagos', function ($group) {
 
 $app->group('/pagos', function ($group) {
     $group->post('/after-pay', TransaccionController::class . ':saveTransactionAfterPay');
+})->add($validateJwtMiddleware);
+
+$app->group('/notification', function ($group) {
+    $group->post('/create', NotificationController::class . ':send');
 })->add($validateJwtMiddleware);
 
 
