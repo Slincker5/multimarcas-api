@@ -196,6 +196,7 @@ $app->group('/pagos', function ($group) {
 $app->group('/notification', function ($group) {
     $group->post('/create', NotificationController::class . ':send');
     $group->post('/global-create', NotificationController::class . ':sendGlobal');
+    $group->post('/premium-create', NotificationController::class . ':sendGlobalPremiumEnd');
 })->add($validateJwtMiddleware);
 
 
