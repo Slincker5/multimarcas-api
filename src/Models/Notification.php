@@ -48,13 +48,7 @@ class Notification extends Database
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         
-            $response = curl_exec($ch);
-        
-            if ($response) {
-                return "enviada " . count($this->getTokenFcmAdmin());
-            } else {
-                return "Hubo un error al enviar la notificaciÃ³n a un usuario.";
-            }
+            curl_exec($ch);
         
             curl_close($ch);
         }
