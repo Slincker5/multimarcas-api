@@ -195,7 +195,10 @@ $app->group('/pagos', function ($group) {
 
 $app->group('/notification', function ($group) {
     $group->post('/create', NotificationController::class . ':send');
+    $group->post('/global-create', NotificationController::class . ':sendGlobal');
 })->add($validateJwtMiddleware);
+
+
 
 
 // APLICACION DE JOSUE GABRIEL

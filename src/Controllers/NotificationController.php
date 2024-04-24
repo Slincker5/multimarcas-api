@@ -34,4 +34,16 @@ class NotificationController
         }
         
     }
+
+    function sendGlobal($request, $response, $args)
+    {
+            $body = $request->getParsedBody();
+            $title = $body["title"];
+            $message = $body["body"];
+            $claseNotificacion = new Notification();
+            $content = $claseNotificacion->createNotificationGlobal($title, $message, null);
+            $response->withHeader('Content-Type', 'application/json');
+            $response->getBody()->write(json_encode($content));
+            return $response;
+    }
 }
