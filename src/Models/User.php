@@ -147,22 +147,8 @@ class User extends Database
     public function getTopAll()
     {
         $sql = "
-CREATE TEMPORARY TABLE MostUsedReceptors AS
-SELECT
-    g.user_uuid,
-    g.receptor,
-    COUNT(*) AS count
-FROM
-    generados g
-WHERE
-    g.fecha BETWEEN DATE_SUB(CURRENT_DATE, INTERVAL 7 DAY) AND DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
-GROUP BY
-    g.user_uuid, g.receptor;
-
-CREATE INDEX idx_user_receptor ON MostUsedReceptors(user_uuid, count DESC);
-
-SELECT
-    u.user_uuid,
+SELECT 
+    u.user_uuid, 
     u.username,
     u.nombre,
     u.apellido,
@@ -172,58 +158,63 @@ SELECT
     COALESCE(c.total_codigos, 0) AS total_codigos,
     COALESCE(rmb.total_rotulos_mini_baja, 0) AS total_rotulos_mini_baja,
     CAST(ROUND((
-        (COALESCE(rm.total_rotulos_mini, 0) +
-         COALESCE(c.total_codigos, 0) +
-         COALESCE(rmb.total_rotulos_mini_baja, 0)
-        ) / 3.0)) AS SIGNED) AS total_global,
+        COALESCE(rm.total_rotulos_mini, 0) + 
+        COALESCE(c.total_codigos, 0) + 
+        COALESCE(rmb.total_rotulos_mini_baja, 0)
+    ) / 3.0) AS SIGNED) AS total_global,
     ROW_NUMBER() OVER (ORDER BY total_global DESC) AS top,
     CONCAT(
         DATE_FORMAT(DATE_SUB(CURRENT_DATE, INTERVAL 7 DAY), '%Y-%m-%d'),
         ' a ',
         DATE_FORMAT(DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY), '%Y-%m-%d')
     ) AS periodo_top,
-    r.receptor AS sala
-FROM
+    (SELECT g.receptor
+     FROM generados g
+     WHERE g.user_uuid = u.user_uuid
+     AND g.fecha BETWEEN DATE_SUB(CURRENT_DATE, INTERVAL 7 DAY) AND DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
+     GROUP BY g.receptor
+     ORDER BY COUNT(*) DESC
+     LIMIT 1) AS sala
+FROM 
     usuarios u
-LEFT JOIN MostUsedReceptors r ON u.user_uuid = r.user_uuid
 LEFT JOIN (
-    SELECT
-        user_uuid,
+    SELECT 
+        user_uuid, 
         COUNT(*) AS total_rotulos_mini
-    FROM
+    FROM 
         rotulos_mini
-    WHERE
+    WHERE 
         fecha BETWEEN DATE_SUB(CURRENT_DATE, INTERVAL 7 DAY)
                      AND DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
-    GROUP BY
+    GROUP BY 
         user_uuid
 ) rm ON u.user_uuid = rm.user_uuid
 LEFT JOIN (
-    SELECT
-        user_uuid,
+    SELECT 
+        user_uuid, 
         COUNT(*) AS total_codigos
-    FROM
+    FROM 
         codigos
-    WHERE
+    WHERE 
         fecha BETWEEN DATE_SUB(CURRENT_DATE, INTERVAL 7 DAY)
                      AND DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
-    GROUP BY
+    GROUP BY 
         user_uuid
 ) c ON u.user_uuid = c.user_uuid
 LEFT JOIN (
-    SELECT
-        user_uuid,
+    SELECT 
+        user_uuid, 
         COUNT(*) AS total_rotulos_mini_baja
-    FROM
+    FROM 
         rotulos_mini_baja
-    WHERE
+    WHERE 
         fecha BETWEEN DATE_SUB(CURRENT_DATE, INTERVAL 7 DAY)
                      AND DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
-    GROUP BY
+    GROUP BY 
         user_uuid
 ) rmb ON u.user_uuid = rmb.user_uuid
-ORDER BY
-    total_global DESC
+ORDER BY 
+    total_global DESC 
 LIMIT 5;
 ";
 
