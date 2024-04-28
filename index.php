@@ -153,6 +153,7 @@ $app->group('/email', function ($group) {
 $app->group('/user', function ($group) {
 
     $group->get('/stats', UserController::class . ':userStat');
+    $group->get('/top-global', UserController::class . ':topGlobal');
 
 })->add($validateJwtMiddleware);
 

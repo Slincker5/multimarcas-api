@@ -51,4 +51,12 @@ class UserController
         $response->getBody()->write(json_encode($res));
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
     }
+
+    function topGlobal($request, $response, $args){
+        $user_uuid = $request->getAttribute('payload')->data->user_uuid;
+        $classUser = new User($user_uuid);
+        $res = $classUser->getTopAll();
+        $response->getBody()->write(json_encode($res));
+        return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
+    }
 }

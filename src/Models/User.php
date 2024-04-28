@@ -143,4 +143,74 @@ class User extends Database
         $this->response['message'] = 'token_fcm actualizado';
         return $this->response;
     }
+
+    public function getTopAll()
+    {
+        $sql = "
+SELECT 
+    u.user_uuid, 
+    u.username,
+    u.nombre,
+    u.apellido,
+    u.photo,
+    u.fecha AS registro,
+    COALESCE(rm.total_rotulos_mini, 0) AS total_rotulos_mini,
+    COALESCE(c.total_codigos, 0) AS total_codigos,
+    COALESCE(rmb.total_rotulos_mini_baja, 0) AS total_rotulos_mini_baja,
+    CAST(ROUND((
+        (COALESCE(rm.total_rotulos_mini, 0) + 
+         COALESCE(c.total_codigos, 0) + 
+         COALESCE(rmb.total_rotulos_mini_baja, 0)
+        ) / 3.0)) AS SIGNED) AS total_global,
+    ROW_NUMBER() OVER (ORDER BY total_global DESC) AS top,
+    CONCAT(
+        DATE_FORMAT(DATE_SUB(CURRENT_DATE, INTERVAL 7 DAY), '%Y-%m-%d'),
+        ' a ',
+        DATE_FORMAT(DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY), '%Y-%m-%d')
+    ) AS periodo_top
+FROM 
+    usuarios u
+LEFT JOIN (
+    SELECT 
+        user_uuid, 
+        COUNT(*) AS total_rotulos_mini
+    FROM 
+        rotulos_mini
+    WHERE 
+        fecha BETWEEN DATE_SUB(CURRENT_DATE, INTERVAL 7 DAY)
+                     AND DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
+    GROUP BY 
+        user_uuid
+) rm ON u.user_uuid = rm.user_uuid
+LEFT JOIN (
+    SELECT 
+        user_uuid, 
+        COUNT(*) AS total_codigos
+    FROM 
+        codigos
+    WHERE 
+        fecha BETWEEN DATE_SUB(CURRENT_DATE, INTERVAL 7 DAY)
+                     AND DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
+    GROUP BY 
+        user_uuid
+) c ON u.user_uuid = c.user_uuid
+LEFT JOIN (
+    SELECT 
+        user_uuid, 
+        COUNT(*) AS total_rotulos_mini_baja
+    FROM 
+        rotulos_mini_baja
+    WHERE 
+        fecha BETWEEN DATE_SUB(CURRENT_DATE, INTERVAL 7 DAY)
+                     AND DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
+    GROUP BY 
+        user_uuid
+) rmb ON u.user_uuid = rmb.user_uuid
+ORDER BY 
+    total_global DESC 
+LIMIT 5;
+";
+        $response = $this->ejecutarConsulta($sql, []);
+        return $response;
+    }
 }
