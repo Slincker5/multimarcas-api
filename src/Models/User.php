@@ -210,7 +210,10 @@ ORDER BY
     total_global DESC
 LIMIT 5;
 ";
-        $response = $this->ejecutarConsulta($sql);
-        return $response;
+        $list = $this->ejecutarConsulta($sql);
+
+        $tops = $list->fetchAll(\PDO::FETCH_ASSOC);
+
+        return $tops;
     }
 }
