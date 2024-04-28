@@ -147,6 +147,20 @@ class User extends Database
     public function getTopAll()
     {
         $sql = "
+CREATE TEMPORARY TABLE MostUsedReceptors AS
+SELECT
+    g.user_uuid,
+    g.receptor,
+    COUNT(*) AS count
+FROM
+    generados g
+WHERE
+    g.fecha BETWEEN DATE_SUB(CURRENT_DATE, INTERVAL 7 DAY) AND DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
+GROUP BY
+    g.user_uuid, g.receptor;
+
+CREATE INDEX idx_user_receptor ON MostUsedReceptors(user_uuid, count DESC);
+
 SELECT
     u.user_uuid,
     u.username,
@@ -167,9 +181,11 @@ SELECT
         DATE_FORMAT(DATE_SUB(CURRENT_DATE, INTERVAL 7 DAY), '%Y-%m-%d'),
         ' a ',
         DATE_FORMAT(DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY), '%Y-%m-%d')
-    ) AS periodo_top
+    ) AS periodo_top,
+    r.receptor AS sala
 FROM
     usuarios u
+LEFT JOIN MostUsedReceptors r ON u.user_uuid = r.user_uuid
 LEFT JOIN (
     SELECT
         user_uuid,
@@ -210,6 +226,7 @@ ORDER BY
     total_global DESC
 LIMIT 5;
 ";
+
         $list = $this->ejecutarConsulta($sql);
 
         $tops = $list->fetchAll(\PDO::FETCH_ASSOC);
