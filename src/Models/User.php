@@ -164,9 +164,9 @@ SELECT
     ) / 3.0) AS SIGNED) AS total_global,
     ROW_NUMBER() OVER (ORDER BY total_global DESC) AS top,
     CONCAT(
-        DATE_FORMAT(DATE_SUB(CURRENT_DATE, INTERVAL 7 DAY), '%Y-%m-%d'),
-        ' a ',
-        DATE_FORMAT(DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY), '%Y-%m-%d')
+        DATE_FORMAT(DATE_SUB(CURRENT_DATE, INTERVAL 7 DAY), '%d-%m-%Y'),
+        ' al ',
+        DATE_FORMAT(DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY), '%d-%m-%Y')
     ) AS periodo_top,
     (SELECT g.receptor
      FROM generados g
