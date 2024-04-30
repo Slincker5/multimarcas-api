@@ -229,7 +229,7 @@ class Label extends Database
     public function resend($username, $param)
     {
         if ($param !== null) {
-            $email = $param["receptor"] === 'Desconocido' ? $param["email"] : $this->getEmail($param["receptor"])[0]["correo"];
+            $email = ($param["receptor"] === 'Desconocido' ? $param["email"] : (count($this->getEmail($param["receptor"])) === 0 ? $param["email"] : $this->getEmail($param["receptor"])[0]["correo"]));
             $partes = explode("@", $email);
             $nombreReceptor = $param["receptor"] === 'Desconocido' ? $partes[0] : $param['receptor'];
             $asunto = 'REENVIADO CINTILLOS #' . $param['code'];
