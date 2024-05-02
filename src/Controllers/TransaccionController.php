@@ -15,11 +15,11 @@ class TransaccionController
     {
         $body = $request->getParsedBody();
         $cliente = $body['cliente'];
-        $nombreCliente = $cliente['Nombre'];
+        $emailCliente = $cliente['Email'];
         $header_wompi = $request->getBody()->getContents();
         $wompiHashHeader = $request->getHeader('wompi_hash')[0];
         $classTransaccion = new Transaccion();
-        $save = $classTransaccion->saveTransaction($body['IdTransaccion'], $body['ResultadoTransaccion'], $body['Monto'], $body['FechaTransaccion'], $header_wompi, $wompiHashHeader, $nombreCliente);
+        $save = $classTransaccion->saveTransaction($body['IdTransaccion'], $body['ResultadoTransaccion'], $body['Monto'], $body['FechaTransaccion'], $header_wompi, $wompiHashHeader, $emailCliente);
         $response->getBody()->write(json_encode($save));
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
     }
