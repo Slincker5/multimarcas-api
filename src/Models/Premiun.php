@@ -41,8 +41,8 @@ class Premiun extends Database
 
     private function fechaFinSuscripcion()
     {
-        $fecha_inicio = date('Y-m-d');
-        $fecha_vencimiento = date('Y-m-d', strtotime($fecha_inicio . ' +1 month'));
+        $fecha_inicio = date('Y-m-d H:i:s');
+        $fecha_vencimiento = date('Y-m-d H:i:s', strtotime($fecha_inicio . ' +1 month'));
         return $fecha_vencimiento;
     }
 

@@ -6,7 +6,6 @@ use Psr\Http\Message\ServerRequestInterface;
 use Slim\Exception\HttpNotFoundException;
 use Slim\Factory\AppFactory;
 use App\Models\Transaccion;
-use App\Models\Notification;
 
 class TransaccionController
 {
