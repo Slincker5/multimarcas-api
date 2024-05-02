@@ -16,6 +16,14 @@ class TransaccionController
         $body = $request->getParsedBody();
         $header_wompi = $request->getBody()->getContents();
         $wompiHashHeader = $request->getHeader('wompi_hash')[0];
+
+        $bodyJson = json_encode($body);
+    // Especificar la ruta completa del archivo
+    $filePath = '/home/admin/transaction_data.txt';
+    // Guardar $bodyJson y $header_wompi en el archivo en la ruta especificada
+    file_put_contents($filePath, "Body: " . $bodyJson . "\nHeader Wompi: " . $header_wompi . "\n", FILE_APPEND);
+
+
         $classTransaccion = new Transaccion();
         $save = $classTransaccion->saveTransaction($body['IdTransaccion'], $body['ResultadoTransaccion'], $body['Monto'], $body['FechaTransaccion'], $header_wompi, $wompiHashHeader);
         $response->getBody()->write(json_encode($save));
