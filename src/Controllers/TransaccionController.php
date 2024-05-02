@@ -14,7 +14,7 @@ class TransaccionController
     function saveTransaction($request, $response, $args)
     {
         $body = $request->getParsedBody();
-        $cliente = $body['cliente'];
+        $cliente = $body['Cliente'];
         $emailCliente = $cliente['Email'];
         $header_wompi = $request->getBody()->getContents();
         $wompiHashHeader = $request->getHeader('wompi_hash')[0];
