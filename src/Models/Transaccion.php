@@ -37,8 +37,8 @@ class Transaccion extends Database
                     return $this->response;
                 }
             } else {
-                $sql = 'UPDATE transacciones SET ResultadoTransaccion = ?, Monto = ?, FechaTransaccion = ?';
-                $transaccion = $this->ejecutarConsulta($sql, [$ResultadoTransaccion, $Monto, $FechaTransaccion]);
+                $sql = 'UPDATE transacciones SET ResultadoTransaccion = ?, Monto = ?, FechaTransaccion = ? WHERE IdTransaccion = ?';
+                $transaccion = $this->ejecutarConsulta($sql, [$ResultadoTransaccion, $Monto, $FechaTransaccion, $IdTransaccion]);
                 if ($transaccion) {
                     $this->response['status'] = 'OK';
                     $this->response['message'] = 'Operacion exitosa';
