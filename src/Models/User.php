@@ -164,14 +164,15 @@ SELECT
     ) / 3.0) AS SIGNED) AS total_global,
     ROW_NUMBER() OVER (ORDER BY total_global DESC) AS top,
     CONCAT(
-        DATE_FORMAT(DATE_SUB(CURRENT_DATE, INTERVAL 7 DAY), '%d-%m-%Y'),
+        DATE_FORMAT(DATE_SUB(CURRENT_DATE - INTERVAL (WEEKDAY(CURRENT_DATE) + 1) DAY, INTERVAL 7 DAY), '%d-%m-%Y'),
         ' al ',
-        DATE_FORMAT(DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY), '%d-%m-%Y')
+        DATE_FORMAT(DATE_SUB(CURRENT_DATE - INTERVAL (WEEKDAY(CURRENT_DATE) + 1) DAY, INTERVAL 1 DAY), '%d-%m-%Y')
     ) AS periodo_top,
     (SELECT g.receptor
      FROM generados g
      WHERE g.user_uuid = u.user_uuid
-     AND g.fecha BETWEEN DATE_SUB(CURRENT_DATE, INTERVAL 7 DAY) AND DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
+     AND g.fecha BETWEEN DATE_SUB(CURRENT_DATE - INTERVAL (WEEKDAY(CURRENT_DATE) + 1) DAY, INTERVAL 7 DAY) 
+                      AND DATE_SUB(CURRENT_DATE - INTERVAL (WEEKDAY(CURRENT_DATE) + 1) DAY, INTERVAL 1 DAY)
      GROUP BY g.receptor
      ORDER BY COUNT(*) DESC
      LIMIT 1) AS sala
@@ -184,8 +185,8 @@ LEFT JOIN (
     FROM 
         rotulos_mini
     WHERE 
-        fecha BETWEEN DATE_SUB(CURRENT_DATE, INTERVAL 7 DAY)
-                     AND DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
+        fecha BETWEEN DATE_SUB(CURRENT_DATE - INTERVAL (WEEKDAY(CURRENT_DATE) + 1) DAY, INTERVAL 7 DAY)
+                     AND DATE_SUB(CURRENT_DATE - INTERVAL (WEEKDAY(CURRENT_DATE) + 1) DAY, INTERVAL 1 DAY)
     GROUP BY 
         user_uuid
 ) rm ON u.user_uuid = rm.user_uuid
@@ -196,8 +197,8 @@ LEFT JOIN (
     FROM 
         codigos
     WHERE 
-        fecha BETWEEN DATE_SUB(CURRENT_DATE, INTERVAL 7 DAY)
-                     AND DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
+        fecha BETWEEN DATE_SUB(CURRENT_DATE - INTERVAL (WEEKDAY(CURRENT_DATE) + 1) DAY, INTERVAL 7 DAY)
+                     AND DATE_SUB(CURRENT_DATE - INTERVAL (WEEKDAY(CURRENT_DATE) + 1) DAY, INTERVAL 1 DAY)
     GROUP BY 
         user_uuid
 ) c ON u.user_uuid = c.user_uuid
@@ -208,8 +209,8 @@ LEFT JOIN (
     FROM 
         rotulos_mini_baja
     WHERE 
-        fecha BETWEEN DATE_SUB(CURRENT_DATE, INTERVAL 7 DAY)
-                     AND DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
+        fecha BETWEEN DATE_SUB(CURRENT_DATE - INTERVAL (WEEKDAY(CURRENT_DATE) + 1) DAY, INTERVAL 7 DAY)
+                     AND DATE_SUB(CURRENT_DATE - INTERVAL (WEEKDAY(CURRENT_DATE) + 1) DAY, INTERVAL 1 DAY)
     GROUP BY 
         user_uuid
 ) rmb ON u.user_uuid = rmb.user_uuid
@@ -217,6 +218,7 @@ ORDER BY
     total_global DESC 
 LIMIT 5;
 ";
+
 
         $list = $this->ejecutarConsulta($sql);
 
