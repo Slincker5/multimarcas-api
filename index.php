@@ -187,7 +187,7 @@ $app->group('/premiun', function ($group) {
 })->add($validateJwtMiddleware);
 
 $app->group('/pagos', function ($group) {
-    $group->post('/webhook', TransaccionController::class . ':saveTransaction');
+    $group->get('/webhook', TransaccionController::class . ':saveTransaction');
 });
 
 $app->group('/pagos', function ($group) {
