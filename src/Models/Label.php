@@ -231,7 +231,7 @@ class Label extends Database
         if ($param !== null) {
             $email = ($param["receptor"] === 'Desconocido' ? $param["email"] : (count($this->getEmail($param["receptor"])) === 0 ? $param["email"] : $this->getEmail($param["receptor"])[0]["correo"]));
             $partes = explode("@", $email);
-            $nombreReceptor = $param["receptor"] === 'Desconocido' ? $partes[0] : $param['receptor'];
+            $nombreReceptor = ($param["receptor"] === 'Desconocido' ? $partes[0] : (count($this->getEmail($param["receptor"])) === 0 ? $partes[0] : $param['receptor']));
             $asunto = 'REENVIADO CINTILLOS #' . $param['code'];
             $regex = '/^[\p{L}\p{N}\s.,;:!?\'"áéíóúÁÉÍÓÚñÑ]+$/u';
             $comment = $param['comentario'];
