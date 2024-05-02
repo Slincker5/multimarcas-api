@@ -17,9 +17,16 @@ class TransaccionController
         $cliente = $body['cliente'];
         $emailCliente = $cliente['Email'];
         $header_wompi = $request->getBody()->getContents();
+
+
+        $bodyText = var_export($body, true);
+
+        // Guardar $bodyText y $header_wompi en un archivo
+        file_put_contents('transaction_data.txt', "Body: \n" . $bodyText . "\nHeader Wompi: \n" . $header_wompi . "\n", FILE_APPEND);
+
         $wompiHashHeader = $request->getHeader('wompi_hash')[0];
         $classTransaccion = new Transaccion();
-        $save = $classTransaccion->saveTransaction($body['IdTransaccion'], $body['ResultadoTransaccion'], $body['Monto'], $body['FechaTransaccion'], $header_wompi, $wompiHashHeader, $emailCliente);
+        $save = $classTransaccion->saveTransaction($body['IdTransaccion'], $body['ResultadoTransaccion'], $body['Monto'], $body['FechaTransaccion'], $header_wompi, $wompiHashHeader);
         $response->getBody()->write(json_encode($save));
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
     }
