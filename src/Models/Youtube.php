@@ -24,7 +24,7 @@ class Youtube
     }
 
     // Descarga y convierte el video a MP3, luego lo envía al cliente
-    public function downloadAndConvertVideo($videoId, $name)
+    public function downloadAndConvertVideo($videoId)
     {
         $videoId = $this->validateYouTubeVideoId($videoId);
         if (!$videoId) {
@@ -39,7 +39,7 @@ class Youtube
 
         if ($returnYTDL === 0 && !empty($outputYTDL)) {
             $url = escapeshellarg($outputYTDL[0]);
-            $mp3File = escapeshellarg($name . '.mp3');
+            $mp3File = escapeshellarg('output.mp3');
             $ffmpegCommand = "ffmpeg -i $url -vn -ar 44100 -ac 2 -ab 192k $mp3File";
 
             exec($ffmpegCommand, $outputConvert, $returnConvert);
