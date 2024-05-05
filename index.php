@@ -12,6 +12,7 @@ use App\Controllers\TransaccionController;
 use App\Controllers\LinkController;
 use App\Controllers\CounterController;
 use App\Controllers\NotificationController;
+use App\Controllers\YoutubeController;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Psr\Http\Message\ServerRequestInterface;
@@ -109,6 +110,11 @@ $app->group('/search', function($group) {
     
 })->add($validateJwtMiddleware);
 
+$app->group('/youtube', function($group) {
+
+    $group->get('/search/{search}', YoutubeController::class . ':search');
+    
+});
 
 $app->group('/poster', function ($group) {
 
