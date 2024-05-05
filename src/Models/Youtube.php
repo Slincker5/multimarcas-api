@@ -46,7 +46,6 @@ class Youtube
                     // Leer y enviar el archivo de forma eficiente
                     header('Content-Type: audio/mpeg');
                     header('Content-Disposition: attachment; filename="' . basename($mp3File) . '"');
-                    header('Content-Length: ' . filesize($mp3File));
                     readfile($mp3File); // Enviar archivo al cliente
 
             } else {
