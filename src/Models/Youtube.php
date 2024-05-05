@@ -13,11 +13,8 @@ class Youtube
         return $arr;
     }
 
-
-    <?php
-
     // Función para validar y limpiar el ID del video de YouTube
-    function validateYouTubeVideoId($videoId) {
+    private function validateYouTubeVideoId($videoId) {
         if (preg_match('/^[a-zA-Z0-9_-]{11}$/', $videoId)) {
             return $videoId;
         } else {
@@ -26,8 +23,8 @@ class Youtube
     }
     
     // Función para descargar y convertir el video a MP3, luego enviar al cliente
-    function downloadAndConvertVideo($videoId) {
-        $videoId = validateYouTubeVideoId($videoId);
+    public function downloadAndConvertVideo($videoId) {
+        $videoId = $this->validateYouTubeVideoId($videoId);
         if (!$videoId) {
             echo "ID de video de YouTube inválido.";
             return; // Detiene la ejecución si el ID es inválido
