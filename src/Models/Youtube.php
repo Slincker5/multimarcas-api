@@ -23,36 +23,40 @@ class Youtube
         }
     }
 
-    // Descarga y convierte el video a MP3, luego lo envía al cliente
+    
+
+
     public function downloadAndConvertVideo($videoId)
-    {
-        $videoId = $this->validateYouTubeVideoId($videoId);
-        if (!$videoId) {
-            echo "Error: ID de video de YouTube inválido.";
-            return;
-        }
-
-        $videoId = escapeshellarg($videoId); // Sanitiza el videoId para uso en shell
-        $ytDlpCommand = "/var/multimarcas-dev/bin/yt-dlp -g --format bestaudio[ext=webm] https://www.youtube.com/watch?v=$videoId";
-
-        exec($ytDlpCommand, $outputYTDL, $returnYTDL);
-
-        if ($returnYTDL === 0 && !empty($outputYTDL)) {
-            $url = escapeshellarg($outputYTDL[0]);
-            $mp3File = escapeshellarg('output.mp3');
-            $ffmpegCommand = "ffmpeg -i $url -vn -ar 44100 -ac 2 -ab 192k $mp3File";
-
-            exec($ffmpegCommand, $outputConvert, $returnConvert);
-
-            if ($returnConvert === 0 && file_exists($mp3File)) {
-                $this->sendFileToClient($mp3File);
-            } else {
-                echo "Error en la conversión: " . implode("\n", $outputConvert);
-            }
-        } else {
-            echo "Error obteniendo la URL del video: " . implode("\n", $outputYTDL);
-        }
+{
+    $videoId = $this->validateYouTubeVideoId($videoId);
+    if (!$videoId) {
+        echo "Error: ID de video de YouTube inválido.";
+        return;
     }
+
+    $videoId = escapeshellarg($videoId); // Sanitiza el videoId para uso en shell
+    $ytDlpCommand = "/var/multimarcas-dev/bin/yt-dlp -g --format bestaudio[ext=webm] https://www.youtube.com/watch?v=$videoId";
+
+    exec($ytDlpCommand, $outputYTDL, $returnYTDL);
+
+    if ($returnYTDL === 0 && !empty($outputYTDL)) {
+        $url = $outputYTDL[0]; // Usamos la URL directamente
+        $mp3File = 'output.mp3'; // Eliminamos escapeshellarg aquí
+        $ffmpegCommand = "ffmpeg -i " . escapeshellarg($url) . " -vn -ar 44100 -ac 2 -ab 192k " . escapeshellarg($mp3File);
+
+        exec($ffmpegCommand, $outputConvert, $returnConvert);
+
+        if ($returnConvert === 0 && file_exists($mp3File)) {
+            $this->sendFileToClient($mp3File);
+        } else {
+            echo "Error en la conversión: " . implode("\n", $outputConvert);
+        }
+    } else {
+        echo "Error obteniendo la URL del video: " . implode("\n", $outputYTDL);
+    }
+}
+
+
 
     // Envía el archivo al cliente de manera segura
     private function sendFileToClient($mp3File)
