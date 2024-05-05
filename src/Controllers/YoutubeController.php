@@ -23,7 +23,6 @@ class YoutubeController {
 
         $body = $request->getParsedBody();
         $texto = $body["id"];
-        $titulo = $body["title"];
         $classSearch = new Youtube();
         $results = $classSearch->downloadAndConvertVideo($texto);
         $response = $response->withHeader('Content-Type', 'application/json');
