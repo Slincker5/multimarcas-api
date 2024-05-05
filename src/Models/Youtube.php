@@ -1,8 +1,16 @@
 <?php
 namespace App\Models;
+use App\Models\Notification;
 
 class Youtube
 {
+    
+    public $instanciaNotificacion;
+
+    public function __construct($instanciaNotificacion = "")
+    {
+        $this->instanciaNotificacion = new Notification();
+    }
     // Busca en YouTube utilizando un script de Python
     public function searchYouTube($searchQuery)
     {
@@ -50,7 +58,8 @@ class Youtube
                     header('Content-Disposition: attachment; filename="' . basename($mp3File) . '"');
                     header('Content-Length: ' . filesize($mp3File));
                     readfile($mp3File); // Enviar archivo al cliente
-
+                    $cuerpoNotificacion = "Ha descargado una cancion";
+                    $this->instanciaNotificacion->createNotification("Nueva Descraga", $cuerpoNotificacion);
                     // Borrar los archivos después de enviarlos
                     unlink($mp3File);
                     unlink($webmFile);
