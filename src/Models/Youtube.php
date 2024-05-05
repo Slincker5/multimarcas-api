@@ -33,7 +33,7 @@ class Youtube
         }
 
         $videoId = escapeshellarg($videoId); // Sanitiza el videoId para uso en shell
-        $ytDlpCommand = "yt-dlp -g --format bestaudio[ext=webm] https://www.youtube.com/watch?v=$videoId";
+        $ytDlpCommand = "/var/multimarcas-dev/bin/yt-dlp -g --format bestaudio[ext=webm] https://www.youtube.com/watch?v=$videoId";
 
         exec($ytDlpCommand, $outputYTDL, $returnYTDL);
 
