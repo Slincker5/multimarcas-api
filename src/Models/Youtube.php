@@ -23,53 +23,50 @@ class Youtube
     }
     
     // Función para descargar y convertir el video a MP3, luego enviar al cliente
-    public function downloadAndConvertVideo($videoId) {
-        $videoId = $this->validateYouTubeVideoId($videoId);
-        if (!$videoId) {
-            echo "ID de video de YouTube inválido.";
-            return;
-        }
-    
-        $ytDlpCommand = escapeshellcmd("/var/multimarcas-dev/bin/yt-dlp -g --format bestaudio[ext=webm] https://www.youtube.com/watch?v=$videoId");
-        exec($ytDlpCommand, $outputYTDL, $returnYTDL);
-    
-        if ($returnYTDL === 0 && !empty($outputYTDL)) {
-            $webmUrl = escapeshellarg($outputYTDL[0]);
-            $webmFile = 'output.webm';
-            $ffmpegDownloadCommand = "/usr/bin/ffmpeg -i $webmUrl -c copy $webmFile";
-            exec($ffmpegDownloadCommand, $outputDownload, $returnDownload);
-    
-            if ($returnDownload === 0 && file_exists($webmFile)) {
-                // Ahora convertir el archivo .webm a .mp3
-                $mp3File = 'output.mp3';
-                $ffmpegConvertCommand = "/usr/bin/ffmpeg -i $webmFile -vn -ar 44100 -ac 2 -ab 192k $mp3File";
-                exec($ffmpegConvertCommand, $outputConvert, $returnConvert);
-    
-                if ($returnConvert === 0 && file_exists($mp3File)) {
-                    // Configurar cabeceras para descarga de archivo
-                    header('Content-Type: audio/mpeg');
-                    header('Content-Disposition: attachment; filename="' . basename($mp3File) . '"');
-                    header('Content-Length: ' . filesize($mp3File));
-    
-                    // Leer y enviar el archivo de forma eficiente
-                    $fp = fopen($mp3File, 'rb');
-                    fpassthru($fp);
-                    fclose($fp);
-    
-                    // Borrar los archivos después de enviarlos
-                    unlink($mp3File);
-                    unlink($webmFile);
-                } else {
-                    echo "Error en la conversión a MP3: " . implode("\n", $outputConvert);
-                }
+public function downloadAndConvertVideo($videoId) {
+    $videoId = $this->validateYouTubeVideoId($videoId);
+    if (!$videoId) {
+        echo "ID de video de YouTube inválido.";
+        return;
+    }
+
+    // Descargar el archivo WEBM directamente con yt-dlp
+    $ytDlpCommand = escapeshellcmd("/var/multimarcas-dev/bin/yt-dlp --format bestaudio[ext=webm] -o \"%(title)s.%(ext)s\" https://www.youtube.com/watch?v=$videoId");
+    exec($ytDlpCommand, $outputYTDL, $returnYTDL);
+
+    if ($returnYTDL === 0 && !empty($outputYTDL)) {
+        $webmFile = trim($outputYTDL[0]); // El nombre del archivo descargado
+
+        if (file_exists($webmFile)) {
+            // Convertir el archivo .webm a .mp3
+            $mp3File = preg_replace('/\.webm$/', '.mp3', $webmFile);
+            $ffmpegConvertCommand = "/usr/bin/ffmpeg -i " . escapeshellarg($webmFile) . " -vn -ar 44100 -ac 2 -ab 192k " . escapeshellarg($mp3File);
+            exec($ffmpegConvertCommand, $outputConvert, $returnConvert);
+
+            if ($returnConvert === 0 && file_exists($mp3File)) {
+                // Configurar cabeceras para descarga de archivo
+                header('Content-Type: audio/mpeg');
+                header('Content-Disposition: attachment; filename="' . basename($mp3File) . '"');
+                header('Content-Length: ' . filesize($mp3File));
+
+                // Leer y enviar el archivo de forma eficiente
+                $fp = fopen($mp3File, 'rb');
+                fpassthru($fp);
+                fclose($fp);
+
+                // Borrar los archivos después de enviarlos
+                unlink($mp3File);
+                unlink($webmFile);
             } else {
-                echo "Error descargando el archivo WEBM: " . implode("\n", $outputDownload);
+                echo "Error en la conversión a MP3: " . implode("\n", $outputConvert);
             }
         } else {
-            echo "Error obteniendo la URL del video: " . implode("\n", $outputYTDL);
+            echo "Error: el archivo WEBM no fue encontrado.";
         }
+    } else {
+        echo "Error ejecutando yt-dlp o archivo no encontrado: " . implode("\n", $outputYTDL);
     }
-    
+}
     
     
 
