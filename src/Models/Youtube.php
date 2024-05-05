@@ -31,7 +31,7 @@ class Youtube
         }
     
         // Comando seguro para obtener la URL del audio del video
-        $ytDlpCommand = escapeshellcmd("yt-dlp -g --format bestaudio[ext=webm] https://www.youtube.com/watch?v=$videoId");
+        $ytDlpCommand = escapeshellcmd("/var/multimarcas-dev/bin/yt-dlp -g --format bestaudio[ext=webm] https://www.youtube.com/watch?v=$videoId");
     
         // Ejecutar yt-dlp para obtener la URL del video
         exec($ytDlpCommand, $outputYTDL, $returnYTDL);
@@ -39,7 +39,7 @@ class Youtube
         if ($returnYTDL === 0 && !empty($outputYTDL)) {
             $url = escapeshellarg($outputYTDL[0]);
             $mp3File = 'output.mp3';
-            $ffmpegCommand = "/var/multimarcas-dev/bin/ffmpeg -i $url -vn -ar 44100 -ac 2 -ab 192k $mp3File";
+            $ffmpegCommand = "ffmpeg -i $url -vn -ar 44100 -ac 2 -ab 192k $mp3File";
     
             // Ejecutar el comando de ffmpeg
             exec($ffmpegCommand, $outputConvert, $returnConvert);
