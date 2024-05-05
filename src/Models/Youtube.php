@@ -27,43 +27,49 @@ class Youtube
         $videoId = $this->validateYouTubeVideoId($videoId);
         if (!$videoId) {
             echo "ID de video de YouTube inválido.";
-            return; // Detiene la ejecución si el ID es inválido
+            return;
         }
     
-        // Comando seguro para obtener la URL del audio del video
         $ytDlpCommand = escapeshellcmd("/var/multimarcas-dev/bin/yt-dlp -g --format bestaudio[ext=webm] https://www.youtube.com/watch?v=$videoId");
-    
-        // Ejecutar yt-dlp para obtener la URL del video
         exec($ytDlpCommand, $outputYTDL, $returnYTDL);
     
         if ($returnYTDL === 0 && !empty($outputYTDL)) {
-            $url = escapeshellarg($outputYTDL[0]);
-            $mp3File = 'output.mp3';
-            $ffmpegCommand = "/usr/bin/ffmpeg -i $url -vn -ar 44100 -ac 2 -ab 192k $mp3File";
+            $webmUrl = escapeshellarg($outputYTDL[0]);
+            $webmFile = 'output.webm';
+            $ffmpegDownloadCommand = "/usr/bin/ffmpeg -i $webmUrl -c copy $webmFile";
+            exec($ffmpegDownloadCommand, $outputDownload, $returnDownload);
     
-            // Ejecutar el comando de ffmpeg
-            exec($ffmpegCommand, $outputConvert, $returnConvert);
+            if ($returnDownload === 0 && file_exists($webmFile)) {
+                // Ahora convertir el archivo .webm a .mp3
+                $mp3File = 'output.mp3';
+                $ffmpegConvertCommand = "/usr/bin/ffmpeg -i $webmFile -vn -ar 44100 -ac 2 -ab 192k $mp3File";
+                exec($ffmpegConvertCommand, $outputConvert, $returnConvert);
     
-            if ($returnConvert === 0 && file_exists($mp3File)) {
-                // Configurar cabeceras para descarga de archivo
-                header('Content-Type: audio/mpeg');
-                header('Content-Disposition: attachment; filename="' . basename($mp3File) . '"');
-                header('Content-Length: ' . filesize($mp3File));
+                if ($returnConvert === 0 && file_exists($mp3File)) {
+                    // Configurar cabeceras para descarga de archivo
+                    header('Content-Type: audio/mpeg');
+                    header('Content-Disposition: attachment; filename="' . basename($mp3File) . '"');
+                    header('Content-Length: ' . filesize($mp3File));
     
-                // Leer y enviar el archivo de forma eficiente
-                $fp = fopen($mp3File, 'rb');
-                fpassthru($fp);
-                fclose($fp);
+                    // Leer y enviar el archivo de forma eficiente
+                    $fp = fopen($mp3File, 'rb');
+                    fpassthru($fp);
+                    fclose($fp);
     
-                // Borrar el archivo después de enviarlo
-                unlink($mp3File);
+                    // Borrar los archivos después de enviarlos
+                    unlink($mp3File);
+                    unlink($webmFile);
+                } else {
+                    echo "Error en la conversión a MP3: " . implode("\n", $outputConvert);
+                }
             } else {
-                echo "Error en la conversión: " . implode("\n", $outputConvert);
+                echo "Error descargando el archivo WEBM: " . implode("\n", $outputDownload);
             }
         } else {
             echo "Error obteniendo la URL del video: " . implode("\n", $outputYTDL);
         }
     }
+    
     
     
 
