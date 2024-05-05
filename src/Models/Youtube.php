@@ -48,10 +48,12 @@ class Youtube
 
                     // Configurar cabeceras para descarga de archivo
                     // Leer y enviar el archivo de forma eficiente
+                    header('Access-Control-Allow-Origin: *');
                     header('Content-Type: audio/mpeg');
                     header('Content-Disposition: attachment; filename="' . basename($mp3File) . '"');
                     header('Content-Length: ' . filesize($mp3File));
-                    readfile($mp3File); // Enviar archivo al cliente
+
+                    readfile($mp3File);
 
                     // Borrar los archivos después de enviarlos
                     unlink($mp3File);
