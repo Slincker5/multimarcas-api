@@ -21,7 +21,7 @@ function downloadAndConvertVideo($videoId) {
     $ytDlpCommand = escapeshellcmd("/var/multimarcas-dev/bin/yt-dlp -g --format bestaudio[ext=webm] https://www.youtube.com/watch?v=$videoId");
 
     // Ejecutar yt-dlp para obtener la URL del video
-    exec($ytDlpCommand, $outputYTDL, $returnYTDL);
+   $test = exec($ytDlpCommand, $outputYTDL, $returnYTDL);
 
     if ($returnYTDL === 0 && !empty($outputYTDL)) {
         $url = escapeshellarg($outputYTDL[0]);
@@ -45,7 +45,7 @@ function downloadAndConvertVideo($videoId) {
             // Borrar el archivo después de enviarlo
             unlink($mp3File);
         } else {
-            echo "Error en la conversión: " . implode("\n", $outputConvert);
+            echo "Error en la conversión: " . $test . implode("\n", $outputConvert);
         }
     } else {
         echo "Error obteniendo la URL del video: " . implode("\n", $outputYTDL);
