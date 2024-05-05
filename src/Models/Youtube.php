@@ -39,7 +39,7 @@ class Youtube
         if ($returnYTDL === 0 && !empty($outputYTDL)) {
             $url = escapeshellarg($outputYTDL[0]);
             $mp3File = 'output.mp3';
-            $ffmpegCommand = "ffmpeg -i $url -vn -ar 44100 -ac 2 -ab 192k $mp3File";
+            $ffmpegCommand = "/usr/bin/ffmpeg -i $url -vn -ar 44100 -ac 2 -ab 192k $mp3File";
     
             // Ejecutar el comando de ffmpeg
             exec($ffmpegCommand, $outputConvert, $returnConvert);
