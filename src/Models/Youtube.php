@@ -42,12 +42,7 @@ class Youtube
                 $ffmpegConvertCommand = "/usr/bin/ffmpeg -i " . escapeshellarg($webmFile) . " -vn -ar 44100 -ac 2 -ab 192k " . escapeshellarg($mp3File);
                 exec($ffmpegConvertCommand, $outputConvert, $returnConvert);
 
-                if ($returnConvert === 0 && file_exists($mp3File)) {
-                    // Limpiar cualquier buffer de salida previo
-                    ob_end_clean();
-
-                    // Configurar cabeceras para descarga de archivo
-                    // Leer y enviar el archivo de forma eficiente
+              
                     header('Access-Control-Allow-Origin: *');
                     header('Content-Type: audio/mpeg');
                     header('Content-Disposition: attachment; filename="' . basename($mp3File) . '"');
@@ -55,14 +50,6 @@ class Youtube
 
                     readfile($mp3File);
 
-                    // Borrar los archivos después de enviarlos
-                    unlink($mp3File);
-                    unlink($webmFile);
-
-                    exit;
-                } else {
-                    echo "Error en la conversión a MP3: " . implode("\n", $outputConvert);
-                }
             } else {
                 echo "Error: el archivo WEBM no fue encontrado.";
             }
