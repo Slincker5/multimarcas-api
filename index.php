@@ -113,6 +113,7 @@ $app->group('/search', function($group) {
 $app->group('/youtube', function($group) {
 
     $group->get('/search/{search}', YoutubeController::class . ':search');
+    $group->post('/download', YoutubeController::class . ':download');
     
 });
 
