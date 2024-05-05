@@ -14,15 +14,15 @@ class Youtube
     }
 
     // Función para validar y limpiar el ID del video de YouTube
-    private function validateYouTubeVideoId($videoId)
-    {
+    private function validateYouTubeVideoId($videoId) {
         if (preg_match('/^[a-zA-Z0-9_-]{11}$/', $videoId)) {
             return $videoId;
         } else {
             return false; // Retorna false en lugar de lanzar una excepción
         }
     }
-// Función para descargar y convertir el video a MP3, luego enviar al cliente
+    
+    // Función para descargar y convertir el video a MP3, luego enviar al cliente
 public function downloadAndConvertVideo($videoId) {
     $videoId = $this->validateYouTubeVideoId($videoId);
     if (!$videoId) {
@@ -31,7 +31,7 @@ public function downloadAndConvertVideo($videoId) {
     }
 
     // Descargar el archivo WEBM directamente con yt-dlp
-    $ytDlpCommand = escapeshellcmd("/var/multimarcas-dev/bin/yt-dlp --format bestaudio[ext=webm] -o '%(title)s.%(ext)s' https://www.youtube.com/watch?v=$videoId");
+    $ytDlpCommand = escapeshellcmd("/var/multimarcas-dev/bin/yt-dlp --format bestaudio[ext=webm] https://www.youtube.com/watch?v=$videoId");
     exec($ytDlpCommand, $outputYTDL, $returnYTDL);
 
     if ($returnYTDL === 0 && !empty($outputYTDL)) {
@@ -67,5 +67,7 @@ public function downloadAndConvertVideo($videoId) {
         echo "Error ejecutando yt-dlp o archivo no encontrado: " . implode("\n", $outputYTDL);
     }
 }
+    
+    
 
 }
