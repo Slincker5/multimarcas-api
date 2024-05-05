@@ -46,7 +46,6 @@ class Youtube
                     header('Access-Control-Allow-Origin: *');
                     header('Content-Type: audio/mpeg');
                     header('Content-Disposition: attachment; filename="' . basename($mp3File) . '"');
-                    header('Content-Length: ' . filesize($mp3File));
 
                     readfile($mp3File);
 
