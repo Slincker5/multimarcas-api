@@ -14,13 +14,16 @@ class Notification extends Database
     }
 
     public function getTokenFcmAll(){
-        $sql = 'SELECT token_fcm FROM usuarios WHERE username = "Multimarcas"';
+        $sql = 'SELECT token_fcm
+        FROM usuarios WHERE fin_suscripcion  > NOW()';
         $response = $this->ejecutarConsulta($sql, null);
         return $response->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     public function getTokenFcmPremiumEnd(){
-        $sql = 'SELECT token_fcm FROM usuarios WHERE fin_suscripcion < CURRENT_DATE';
+        $sql = 'SELECT token_fcm
+        FROM usuarios
+        WHERE fin_suscripcion BETWEEN DATE_SUB(NOW(), INTERVAL 7 DAY) AND NOW()';
         $response = $this->ejecutarConsulta($sql, null);
         return $response->fetchAll(\PDO::FETCH_ASSOC);
     }
