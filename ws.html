@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebSocket Test</title>
+    <script type="text/javascript">
+        var conn = new WebSocket('ws://localhost:8080');
+
+        conn.onopen = function(e) {
+            console.log("Conexión establecida!");
+        };
+
+        conn.onmessage = function(e) {
+            console.log("Recibido: " + e.data);
+            var messages = document.getElementById('messages');
+            messages.innerHTML += '<div>' + e.data + '</div>'; // Agregar el mensaje recibido al HTML
+        };
+
+        function sendMessage() {
+            var message = document.getElementById('message').value;
+            conn.send(message);
+            document.getElementById('message').value = ''; // Limpiar el campo de entrada
+        }
+    </script>
+</head>
+<body>
+    <input type="text" id="message">
+    <button onclick="sendMessage()">Enviar</button>
+    <div id="messages" style="margin-top: 20px; border: 1px solid #ccc; padding: 10px; min-height: 100px;">
+        <!-- Los mensajes recibidos se mostrarán aquí -->
+    </div>
+</body>
+</html>

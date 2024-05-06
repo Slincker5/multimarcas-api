@@ -14,7 +14,7 @@ class Notification extends Database
     }
 
     public function getTokenFcmAll(){
-        $sql = 'SELECT token_fcm FROM usuarios WHERE token_fcm IS NOT NULL';
+        $sql = 'SELECT token_fcm FROM usuarios WHERE username = "Multimarcas"';
         $response = $this->ejecutarConsulta($sql, null);
         return $response->fetchAll(\PDO::FETCH_ASSOC);
     }
