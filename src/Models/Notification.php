@@ -15,7 +15,7 @@ class Notification extends Database
 
     public function getTokenFcmAll(){
         $sql = 'SELECT token_fcm
-        FROM usuarios WHERE fin_suscripcion  > NOW()';
+        FROM usuarios WHERE fin_suscripcion  > NOW() AND token_fcm IS NOT NULL';
         $response = $this->ejecutarConsulta($sql, null);
         return $response->fetchAll(\PDO::FETCH_ASSOC);
     }
@@ -23,7 +23,7 @@ class Notification extends Database
     public function getTokenFcmPremiumEnd(){
         $sql = 'SELECT token_fcm
         FROM usuarios
-        WHERE fin_suscripcion BETWEEN DATE_SUB(NOW(), INTERVAL 7 DAY) AND NOW()';
+        WHERE fin_suscripcion BETWEEN DATE_SUB(NOW(), INTERVAL 7 DAY) AND NOW() AND token_fcm IS NOT NULL;';
         $response = $this->ejecutarConsulta($sql, null);
         return $response->fetchAll(\PDO::FETCH_ASSOC);
     }
