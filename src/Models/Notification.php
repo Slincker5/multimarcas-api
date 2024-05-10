@@ -16,7 +16,17 @@ class Notification extends Database
     public function getTokenFcmAll(){
         $sql = 'SELECT token_fcm
         FROM usuarios WHERE fin_suscripcion  > NOW() AND token_fcm IS NOT NULL';
-        $response = $this->ejecutarConsulta($sql, null);
+        $response = $this->ejecutarConsulta($sql);
+        return $response->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public function getTokenFcmNow() {
+      $sql = 'SELECT token_fcm
+      FROM usuarios
+      WHERE fin_suscripcion > DATE_SUB(NOW(), INTERVAL 1 MINUTE)
+        AND fin_suscripcion <= NOW()
+        AND token_fcm IS NOT NULL';
+        $response = $this->ejecutarConsulta($sql);
         return $response->fetchAll(\PDO::FETCH_ASSOC);
     }
 
@@ -25,7 +35,7 @@ class Notification extends Database
         FROM usuarios
         WHERE fin_suscripcion BETWEEN DATE_SUB(NOW(), INTERVAL 48 HOUR) AND NOW()
           AND token_fcm IS NOT NULL';
-        $response = $this->ejecutarConsulta($sql, null);
+        $response = $this->ejecutarConsulta($sql);
         return $response->fetchAll(\PDO::FETCH_ASSOC);
     }
 
@@ -137,5 +147,42 @@ class Notification extends Database
         }
         return "Se enviaron " . $contador . " notificaciones";
     }
+
+
+    public function cronNotification(){
+      $contador = 0;
+      $token = $this->getTokenFcmNow();
+      $title = "⏰ Suscripción Premium Finalizada";
+      $body = "Tu suscripción premium ha finalizado. Renueva ahora para seguir disfrutando de todos los beneficios exclusivos.";
+      $link = "";
+      foreach ($this->getTokenFcmAll() as $user_token) {
+          $ch = curl_init("https://fcm.googleapis.com/v1/projects/multimarcasapp-2fa97/messages:send");
+      
+          curl_setopt($ch, CURLOPT_HTTPHEADER, [
+              'Content-Type: application/json',
+              'Authorization: Bearer '.$token['access_token']
+          ]);
+      
+          curl_setopt($ch, CURLOPT_POSTFIELDS, '{
+              "message": {
+                "token": "'.$user_token["token_fcm"].'",
+                "data": {
+                  "title": "'. $title .'",
+                  "body": "'. $body .'",
+                  "link": "'. $link .'"
+                }
+              }
+            }');
+      
+          curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+          curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+      
+          curl_exec($ch);
+      
+          curl_close($ch);
+          $contador++;
+      }
+      return "Se enviaron " . $contador . " notificaciones";
+  }
 }
 ?>
