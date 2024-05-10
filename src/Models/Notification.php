@@ -151,11 +151,11 @@ class Notification extends Database
 
     public function cronNotification(){
       $contador = 0;
-      $token = $this->getTokenFcmNow();
+      $token = $this->getTokenAuth();
       $title = "⏰ Suscripción Premium Finalizada";
       $body = "Tu suscripción premium ha finalizado. Renueva ahora para seguir disfrutando de todos los beneficios exclusivos.";
       $link = "";
-      foreach ($this->getTokenFcmAll() as $user_token) {
+      foreach ($this->getTokenFcmNow() as $user_token) {
           $ch = curl_init("https://fcm.googleapis.com/v1/projects/multimarcasapp-2fa97/messages:send");
       
           curl_setopt($ch, CURLOPT_HTTPHEADER, [
