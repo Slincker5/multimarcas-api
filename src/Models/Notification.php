@@ -150,6 +150,9 @@ class Notification extends Database
 
 
     public function cronNotification(){
+      if (empty($tokens)) {
+        return "No hay tokens para enviar notificaciones.";
+    }
       $contador = 0;
       $token = $this->getTokenAuth();
       $title = "⏰ Suscripción Premium Finalizada";
