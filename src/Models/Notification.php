@@ -150,7 +150,7 @@ class Notification extends Database
 
 
     public function cronNotification(){
-      if (empty($tokens)) {
+      if (count($this->getTokenFcmNow()) === 0) {
         return "No hay tokens para enviar notificaciones.";
     }
       $contador = 0;
