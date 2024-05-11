@@ -277,7 +277,7 @@ SQL;
         $token = $this->getTokenAuthCron();
         $title = "Entraste al top semanal";
         $link = "";
-        foreach ($this->getTokenFcmNow() as $user_token) {
+        foreach ($this->getTokenFcmTop() as $user_token) {
 
           if($user_token["token_fcm"] === NULL){
             continue;
