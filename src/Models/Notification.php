@@ -48,6 +48,15 @@ class Notification extends Database
         return $credential->fetchAuthToken(HttpHandlerFactory::build());
     }
 
+    private function getTokenAuthCron(){
+      $credential = new ServiceAccountCredentials(
+          "https://www.googleapis.com/auth/firebase.messaging",
+          json_decode(file_get_contents("/var/www/key.json"), true)
+      );
+      
+      return $credential->fetchAuthToken(HttpHandlerFactory::build());
+  }
+
     public function createNotification($title = "MULTIMARCAS", $body, $link = ""){
 
         $token = $this->getTokenAuth();
@@ -154,7 +163,7 @@ class Notification extends Database
         return "No hay tokens para enviar notificaciones.";
     }
       $contador = 0;
-      $token = $this->getTokenAuth();
+      $token = $this->getTokenAuthCron();
       $title = "⏰ Suscripción Premium Finalizada";
       $body = "Tu suscripción premium ha finalizado. Renueva ahora para seguir disfrutando de todos los beneficios exclusivos.";
       $link = "";
