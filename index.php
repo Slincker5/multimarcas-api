@@ -13,6 +13,7 @@ use App\Controllers\LinkController;
 use App\Controllers\CounterController;
 use App\Controllers\NotificationController;
 use App\Controllers\YoutubeController;
+use App\Models\Auth;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Psr\Http\Message\ServerRequestInterface;
@@ -237,6 +238,7 @@ $app->group('/user', function ($group) {
 
     $group->post('/upload-photo', UserController::class . ':uploadPhoto');
     $group->post('/reload-token-fcm', UserController::class . ':updateTokenNotificacion');
+    $group->post('/verify-statict-token', AuthController::class . ':updateStaticTokenFcm');
 
 })->add($validateJwtMiddleware);
 

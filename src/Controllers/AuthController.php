@@ -40,4 +40,14 @@ class AuthController
     $response->getBody()->write(json_encode($login));
     return $response;
     }
+
+    function updateStaticTokenFcm ($request, $response, $args) {
+        $user_uuid = $request->getAttribute('payload')->data->user_uuid;
+        $body = $request->getParsedBody();
+        $classAuth = new Auth();
+        $login = $classAuth->verifyStaticTokenFcm($body["staticTokenFcm"], $user_uuid);
+        $response = $response->withHeader('Content-Type', 'application/json');
+        $response->getBody()->write(json_encode($login));
+        return $response;
+        }
 }

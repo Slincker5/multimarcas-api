@@ -15,7 +15,7 @@ class Auth extends Database
     private $response;
     private $key = "georginalissethyvladi";
     public $instanciaNotificacion;
-    
+
     public function __construct($instanciaNotificacion = "")
     {
         $this->instanciaNotificacion = new Notification();
@@ -59,11 +59,11 @@ class Auth extends Database
             $this->response['status'] = 'error';
             $this->response['message'] = 'Tu contraseña debe tener al menos 8 caracteres.';
             return $this->response;
-        } else if($this->emailStock($correo)){
+        } else if ($this->emailStock($correo)) {
             $this->response['status'] = 'error';
             $this->response['message'] = 'Este correo ya esta registrado, intenta con uno difrente.';
             return $this->response;
-        } else if(!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
+        } else if (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
             $this->response['status'] = 'error';
             $this->response['message'] = 'Debes ingresar un correo electronico valido.';
             return $this->response;
@@ -256,6 +256,29 @@ class Auth extends Database
                 return $this->response;
             }
         }
+    }
 
+    private function getStaticTokenFcm($user_uuid)
+    {
+        $sql = 'SELECT token_fcm_static FROM usuarios WHERE user_uuid = ?';
+        $res = $this->ejecutarConsulta($sql, [$user_uuid]);
+        $token = $res->fetchAll(\PDO::FETCH_ASSOC);
+        return $token;
+    }
+
+    public function verifyStaticTokenFcm($token, $user_uuid)
+    {
+        $staticTokenFcm = $this->getStaticTokenFcm($user_uuid)[0]["token_fcm_static"];
+        if ($staticTokenFcm === null) {
+            $sql = 'UPDATE usuarios SET token_fcm_static = ? WHERE user_uuid = ?';
+            $this->ejecutarConsulta($sql, [$token, $user_uuid]);
+            $this->response['status'] = 'OK';
+            $this->response["message"] = 'Se actualizo la informacion del token estatico.';
+            return $this->response;
+        }else {
+            $this->response['status'] = 'error';
+            $this->response["message"] = 'EL token no se puede actualizar.';
+            return $this->response;
+        }
     }
 }
