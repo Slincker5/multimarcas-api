@@ -237,6 +237,8 @@ $app->group('/view', function ($group) {
 $app->group('/user', function ($group) {
 
     $group->post('/upload-photo', UserController::class . ':uploadPhoto');
+    $group->post('/edit-profile', UserController::class . ':editProfile');
+    $group->post('/edit-password', UserController::class . ':editPasswordProfile');
     $group->post('/reload-token-fcm', UserController::class . ':updateTokenNotificacion');
     $group->post('/verify-statict-token', AuthController::class . ':updateStaticTokenFcm');
 

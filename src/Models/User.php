@@ -12,6 +12,9 @@ class User extends Database
     private $key = "georginalissethyvladi";
     private $routePhotoProfile;
     private $allowedTypes;
+    private $nombres = '/^[a-zA-ZñÑáéíóúÁÉÍÓÚ]+(?:\s[a-zA-ZñÑáéíóúÁÉÍÓÚ]+){0,2}$/';
+    private $telefonoRegex = '/^\d{8}$/';
+
 
     public function __construct($user_uuid = "")
     {
@@ -98,13 +101,11 @@ class User extends Database
                 $this->response['message'] = 'El temaño de la imagen excede el limite, 6 MB';
                 return $this->response;
             }
-
         } else {
             $this->response['status'] = 'error';
             $this->response['message'] = 'Formato de imagen no valida.';
             return $this->response;
         }
-
     }
 
     public function generatedToken()
@@ -225,5 +226,65 @@ LIMIT 5;
         $tops = $list->fetchAll(\PDO::FETCH_ASSOC);
 
         return $tops;
+    }
+
+    public function editProfile($nombre, $apellido, $telefono)
+    {
+        if (empty($nombre) || empty($apellido) || empty($telefono)) {
+            $this->response['status'] = 'error';
+            $this->response['message'] = 'Debes llenar todos los campos del formulario';
+            return $this->response;
+        } else if (!preg_match($this->nombres, trim($nombre)) || !preg_match($this->nombres, trim($apellido))) {
+            $this->response['status'] = 'error';
+            $this->response['message'] = 'El campo nombre y apellido solo admiten letras.';
+            return $this->response;
+        } else if (strlen($nombre) > 30 || strlen($apellido) > 30) {
+            $this->response['status'] = 'error';
+            $this->response['message'] = 'El nombre o apellido no puede tener mas de 30 caracteres.';
+            return $this->response;
+        } else if (strlen($nombre) < 3 || strlen($apellido) < 3) {
+            $this->response['status'] = 'error';
+            $this->response['message'] = 'El nombre o apellido debe tener al menos 3 caracteres.';
+            return $this->response;
+        } else if (!preg_match($this->telefonoRegex, trim($telefono))) {
+            $this->response['status'] = 'error';
+            $this->response['message'] = 'El número de teléfono debe tener exactamente 8 dígitos';
+            return $this->response;
+        } else {
+            $sql = 'UPDATE usuarios SET username = NULL, nombre = ?, apellido = ?, telefono = ? where user_uuid = ?';
+            $this->ejecutarConsulta($sql, [$nombre, $apellido, $telefono, $this->user_uuid]);
+            $this->response['status'] = 'OK';
+            $this->response['message'] = 'Perfil actualizado correctamente.';
+            return $this->response;
+        }
+    }
+
+    public function editPasswordProfile($passwordNow, $password, $newPassword)
+    {
+        $sql = 'SELECT pass FROM usuarios WHERE user_uuid = ?';
+        $logIn = $this->ejecutarConsulta($sql, [$this->user_uuid]);
+        $accountData = $logIn->fetchAll(\PDO::FETCH_ASSOC);
+        if (count($accountData) === 1) {
+            if (!password_verify($passwordNow, $accountData[0]['pass'])) {
+                $this->response['status'] = 'error';
+                $this->response['message'] = 'La contraseña anterior es incorecta.';
+                return $this->response;
+            } else if ($password !== $newPassword) {
+                $this->response['status'] = 'error';
+                $this->response['message'] = 'La contraseña nueva no coincide. Vuelve a intentarlo.';
+                return $this->response;
+            } else {
+                #ENCRIPTADO DE CLAVE
+                $options = ['cost' => 12];
+                $passwordHash = password_hash($newPassword, PASSWORD_BCRYPT, $options);
+
+                $sql = 'UPDATE usuarios SET pass = ? WHERE user_uuid = ?';
+                $this->ejecutarConsulta($sql, [$passwordHash, $this->user_uuid]);
+
+                $this->response['status'] = 'OK';
+                $this->response['message'] = 'Contraseña actualizado correctamente.';
+                return $this->response;
+            }
+        }
     }
 }

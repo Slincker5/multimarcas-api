@@ -22,7 +22,7 @@ def main():
     except json.JSONDecodeError as e:
         sys.exit(f"Error decoding JSON: {e}")
 
-    wb = load_workbook("public/documentos/PLANTILLA_CINTILLOS.xlsx")
+    wb = load_workbook("public/documentos/PLANTILLA_CINTILLOS_FREE.xlsx")
     ws = wb["DATA"]
 
     for i, resultado in enumerate(resultados):
