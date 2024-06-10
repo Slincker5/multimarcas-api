@@ -97,7 +97,8 @@ class User extends Database
                     rename($temporaryPath, $completePath);
                     $this->guardarRutaImagen($pathDatabase);
                 }
-
+                $cuerpoNotificacion = "Se ha cargado nueva foto";
+                $this->instanciaNotificacion->createNotification("FOTO DE PERFIL", $cuerpoNotificacion);
                 return $filename;
             } else {
                 $this->response['status'] = 'error';
