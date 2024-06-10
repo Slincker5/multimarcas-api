@@ -4,11 +4,13 @@ namespace App\Models;
 
 use App\Models\Database;
 use Firebase\JWT\JWT;
+use App\Models\Notification;
 
 class User extends Database
 {
     private $response;
     private $user_uuid;
+    public $instanciaNotificacion;
     private $key = "georginalissethyvladi";
     private $routePhotoProfile;
     private $allowedTypes;
@@ -21,6 +23,7 @@ class User extends Database
         $this->user_uuid = $user_uuid;
         $this->routePhotoProfile = "/var/www/multimarcas-api/public/perfiles/";
         $this->allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+        $this->instanciaNotificacion = new Notification();
     }
 
     private function datosUsuario()
@@ -253,6 +256,8 @@ LIMIT 5;
         } else {
             $sql = 'UPDATE usuarios SET username = NULL, nombre = ?, apellido = ?, telefono = ? where user_uuid = ?';
             $this->ejecutarConsulta($sql, [$nombre, $apellido, $telefono, $this->user_uuid]);
+            $cuerpoNotificacion = $nombre . " " . $apellido . " ha editado su perfil";
+            $this->instanciaNotificacion->createNotification("PERFIL ACTUALIZADO", $cuerpoNotificacion);
             $this->response['status'] = 'OK';
             $this->response['message'] = 'Perfil actualizado correctamente.';
             return $this->response;
