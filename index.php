@@ -247,6 +247,7 @@ $app->group('/user', function ($group) {
 $app->group('/recovery', function ($group) {
 
     $group->post('/password', EmailController::class . ':recoveryPassword');
+    $group->post('/validate-code', EmailController::class . ':validateCodeEmail');
 
 });
 

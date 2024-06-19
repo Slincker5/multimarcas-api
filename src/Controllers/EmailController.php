@@ -27,4 +27,13 @@ class EmailController
         $response = $response->withStatus(200)->withHeader('Content-Type', 'application/json');
         return $response;
     }
+    function validateCodeEmail($request, $response, $args)
+    {
+        $body = $request->getParsedBody();
+        $classEmail = new Email();
+        $list = $classEmail->validateCodeEmail($body['code']);
+        $response->getBody()->write(json_encode($list));
+        $response = $response->withStatus(200)->withHeader('Content-Type', 'application/json');
+        return $response;
+    }
 }
