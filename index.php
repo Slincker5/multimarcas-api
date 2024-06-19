@@ -14,6 +14,7 @@ use App\Controllers\CounterController;
 use App\Controllers\NotificationController;
 use App\Controllers\YoutubeController;
 use App\Models\Auth;
+use App\Models\User;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Psr\Http\Message\ServerRequestInterface;
@@ -248,6 +249,7 @@ $app->group('/recovery', function ($group) {
 
     $group->post('/password', EmailController::class . ':recoveryPassword');
     $group->post('/validate-code', EmailController::class . ':validateCodeEmail');
+    $group->post('/recovery-password', User::class . ':editPasswordRecovery');
 
 });
 

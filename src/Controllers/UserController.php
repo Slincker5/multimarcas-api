@@ -83,4 +83,13 @@ class UserController
         $response->getBody()->write(json_encode($res));
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
     }
+
+    function editPasswordRecovery($request, $response, $args)
+    {
+        $body = $request->getParsedBody();
+        $classUser = new User('test');
+        $res = $classUser->editPasswordProfile($body["email"], $body["password"], $body["newPassword"]);
+        $response->getBody()->write(json_encode($res));
+        return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
+    }
 }
