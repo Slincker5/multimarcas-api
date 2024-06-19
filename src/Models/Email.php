@@ -3,10 +3,12 @@
 namespace App\Models;
 
 use App\Models\Database;
+use App\Models\Notification;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 use Mailgun\Mailgun;
 use Symfony\Component\Dotenv\Dotenv;
+
 
 class Email extends Database
 {
@@ -352,11 +354,15 @@ class Email extends Database
           '
         ]);
 
-        return [
-          "status" => "OK",
-          "message" => "Correo enviado con éxito.",
-          "id" => $result->getId()
-        ];
+        $this->response['status'] = 'ok';
+        $this->response['message'] = 'Correo enviado con éxito.';
+        $this->response['id'] = $result->getId();
+        
+        $instanciaNotificacion = new Notification();
+        $cuerpoNotificacion = "Email de recuperacion enviado";
+        $instanciaNotificacion->createNotification("Olvidaron Contraeña", $cuerpoNotificacion);
+
+        return $this->response;
       } else {
         $this->response['status'] = 'error';
         $this->response['message'] = 'El correo electronico proporcionado no se encuntra registrado o esta registrado con el servicio de google.';
