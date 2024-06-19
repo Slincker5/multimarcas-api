@@ -5,8 +5,6 @@ namespace App\Controllers;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Exception\HttpNotFoundException;
 use Slim\Factory\AppFactory;
-use Psr\Http\Message\ServerRequestInterface as Request;
-use Psr\Http\Message\ResponseInterface as Response;
 use App\Models\User;
 
 class UserController
@@ -86,12 +84,12 @@ class UserController
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
     }
 
-    function editPasswordRecovery(Request $request, Response $response, $args)
+    function editPasswordRecovery($request, $response, $args)
     {
         $body = $request->getParsedBody();
         $classUser = new User();
         $res = $classUser->editPasswordRecovery($body["email"], $body["pass"], $body["rePass"]);
-        $response->getBody()->write(json_encode('prueba'));
+        $response->getBody()->write(json_encode($res));
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
     }
 }

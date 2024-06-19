@@ -249,7 +249,7 @@ $app->group('/recovery', function ($group) {
 
     $group->post('/password', EmailController::class . ':recoveryPassword');
     $group->post('/validate-code', EmailController::class . ':validateCodeEmail');
-    $group->post('/recovery-password', User::class . ':editPasswordRecovery');
+    $group->post('/recovery-password', UserController::class . ':editPasswordRecovery');
 
 });
 
