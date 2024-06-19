@@ -293,4 +293,33 @@ LIMIT 5;
             }
         }
     }
+
+    public function editPasswordRecovery($email, $passwordNow, $password, $newPassword)
+    {
+        $sql = 'SELECT pass FROM usuarios WHERE email = ?';
+        $logIn = $this->ejecutarConsulta($sql, [$email]);
+        $accountData = $logIn->fetchAll(\PDO::FETCH_ASSOC);
+        if (count($accountData) === 1) {
+            if (!password_verify($passwordNow, $accountData[0]['pass'])) {
+                $this->response['status'] = 'error';
+                $this->response['message'] = 'La contraseña anterior es incorecta.';
+                return $this->response;
+            } else if ($password !== $newPassword) {
+                $this->response['status'] = 'error';
+                $this->response['message'] = 'La contraseña nueva no coincide. Vuelve a intentarlo.';
+                return $this->response;
+            } else {
+                #ENCRIPTADO DE CLAVE
+                $options = ['cost' => 12];
+                $passwordHash = password_hash($newPassword, PASSWORD_BCRYPT, $options);
+
+                $sql = 'UPDATE usuarios SET pass = ? WHERE email = ?';
+                $this->ejecutarConsulta($sql, [$passwordHash, $this->user_uuid]);
+
+                $this->response['status'] = 'OK';
+                $this->response['message'] = 'Contraseña actualizado correctamente.';
+                return $this->response;
+            }
+        }
+    }
 }

@@ -244,6 +244,11 @@ $app->group('/user', function ($group) {
 
 })->add($validateJwtMiddleware);
 
+$app->group('/recovery', function ($group) {
+
+    $group->post('/password', EmailController::class . ':recoveryPassword');
+
+});
 
 $app->group('/detail', function($group) {
 

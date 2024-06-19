@@ -1,4 +1,30 @@
+# Dependencias de Composer
 /vendor
+
+# Directorios específicos
 /public/cintillos
 /public/afiches
+
+# Herramientas locales y entornos de desarrollo
 /phpmyadmin
+
+# Archivos de entorno
+.env
+
+# Cachés y logs
+/storage/*.key
+/storage/logs
+/storage/framework/cache
+/storage/framework/sessions
+/storage/framework/views
+
+# Archivos del IDE (ej. Visual Studio Code)
+.vscode/
+.idea/
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Otros archivos y directorios específicos de tu proyecto que no quieras en el repositorio
+/public/uploads
