@@ -296,15 +296,7 @@ LIMIT 5;
 
     public function editPasswordRecovery($email, $password, $newPassword)
     {
-        if(strlen($password) < 8){
-            $this->response['status'] = 'error';
-            $this->response['message'] = 'La contraseña debe tener al menos 8 caracteres.';
-            return $this->response;
-        } else if(strlen($password) > 16){
-            $this->response['status'] = 'error';
-            $this->response['message'] = 'La contraseña debe ser menor a 17 caracteres.';
-            return $this->response;
-        }else if ($password !== $newPassword) {
+        if ($password !== $newPassword) {
             $this->response['status'] = 'error';
             $this->response['message'] = 'La contraseña nueva no coincide. Vuelve a intentarlo.';
             return $this->response;
