@@ -296,6 +296,29 @@ LIMIT 5;
 
     public function editPasswordRecovery($email, $password, $newPassword)
     {
-        return [$email, $password, $newPassword];
+        if(strlen($password) < 8){
+            $this->response['status'] = 'error';
+            $this->response['message'] = 'La contraseña debe tener al menos 8 caracteres.';
+            return $this->response;
+        } else if(strlen($password) > 16){
+            $this->response['status'] = 'error';
+            $this->response['message'] = 'La contraseña debe ser menor a 17 caracteres.';
+            return $this->response;
+        }else if ($password !== $newPassword) {
+            $this->response['status'] = 'error';
+            $this->response['message'] = 'La contraseña nueva no coincide. Vuelve a intentarlo.';
+            return $this->response;
+        } else {
+            #ENCRIPTADO DE CLAVE
+            $options = ['cost' => 12];
+            $passwordHash = password_hash($newPassword, PASSWORD_BCRYPT, $options);
+
+            $sql = 'UPDATE usuarios SET pass = ? WHERE email = ?';
+            $this->ejecutarConsulta($sql, [$passwordHash, $email]);
+
+            $this->response['status'] = 'OK';
+            $this->response['message'] = 'Contraseña actualizado correctamente.';
+            return $this->response;
+        }
     }
 }

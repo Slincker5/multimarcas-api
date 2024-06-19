@@ -88,7 +88,7 @@ class UserController
     {
         $body = $request->getParsedBody();
         $classUser = new User();
-        $res = $classUser->editPasswordProfile($body["email"], $body["password"], $body["newPassword"]);
+        $res = $classUser->editPasswordRecovery($body["email"], $body["password"], $body["newPassword"]);
         $response->getBody()->write(json_encode($res));
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
     }
