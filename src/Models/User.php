@@ -321,4 +321,9 @@ LIMIT 5;
             return $this->response;
         }
     }
+
+    public function resetAccount(){
+        $sql = 'UPDATE usuarios SET token_fcm_static = NULL';
+        $this->ejecutarConsulta($sql);
+    }
 }
