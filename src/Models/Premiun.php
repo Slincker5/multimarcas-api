@@ -238,7 +238,9 @@ class Premiun extends Database
     {
         foreach ($this->instanceUser->getTopAll() as $user) {
             if($user["premio"] === NULL && $user["suscripcion"] === 1){
-                echo $user["suscripcion"];
+                $fecha_fin = $user["fin_suscripcion"];
+                $fin_suscripcion = date('Y-m-d H:i:s', strtotime($fecha_fin . ' +1 day'));
+                echo  $user["fin_suscripcion"] . "-" . $fin_suscripcion . "<br>";
             }
         }
     }
