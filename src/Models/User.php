@@ -28,7 +28,7 @@ class User extends Database
 
     private function datosUsuario()
     {
-        $sql = 'SELECT user_uuid, username, nombre, apellido, telefono, email, photo, rol, fecha, suscripcion, fin_suscripcion, token_fcm_static FROM usuarios WHERE user_uuid = ?';
+        $sql = 'SELECT user_uuid, username, nombre, apellido, telefono, email, photo, rol, fecha, suscripcion, fin_suscripcion, token_fcm_static, premio FROM usuarios WHERE user_uuid = ?';
         $response = $this->ejecutarConsulta($sql, [$this->user_uuid]);
         $datos = $response->fetchAll(\PDO::FETCH_ASSOC);
         return $datos;

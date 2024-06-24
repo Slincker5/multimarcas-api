@@ -227,7 +227,7 @@ class Premiun extends Database
         $fecha_actual = date("Y-m-d H:i:s");
         if ($fecha_actual > $fin_suscripcion) {
             $sql = "UPDATE usuarios SET suscripcion = 0 WHERE user_uuid = ?";
-            $guardar = $this->ejecutarConsulta($sql, [$this->user_uuid]);
+            $this->ejecutarConsulta($sql, [$this->user_uuid]);
             return true;
         }else{
             return false;
@@ -240,8 +240,12 @@ class Premiun extends Database
             if($user["premio"] === NULL && $user["suscripcion"] === 1){
                 $fecha_fin = $user["fin_suscripcion"];
                 $fin_suscripcion = date('Y-m-d H:i:s', strtotime($fecha_fin . ' +1 day'));
-                echo  $user["fin_suscripcion"] . "-" . $fin_suscripcion . "<br>";
+                $sql = "UPDATE usuarios SET fin_suscripcion = ?, premio = 1 WHERE user_uuid = ?";
+                $this->ejecutarConsulta($sql, [$fin_suscripcion, $user["user_uuid"]]);
             }
         }
+        $this->response['status'] = 'OK';
+        $this->response['message'] = 'Peticion exitosa';
+        return $this->response;
     }
 }

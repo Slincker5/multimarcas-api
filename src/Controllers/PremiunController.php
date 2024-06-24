@@ -45,4 +45,11 @@ class PremiunController
         $response->getBody()->write(json_encode($cupon));
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
     }
+
+    function awardTopWeek($request, $response, $args){
+        $classPremiun = new Premiun();
+        $cupon = $classPremiun->awardTopWeek();
+        $response->getBody()->write(json_encode($cupon));
+        return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
+    }
 }

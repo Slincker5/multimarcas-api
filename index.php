@@ -14,6 +14,7 @@ use App\Controllers\CounterController;
 use App\Controllers\NotificationController;
 use App\Controllers\YoutubeController;
 use App\Models\Auth;
+use App\Models\Premiun;
 use App\Models\User;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
@@ -193,6 +194,7 @@ $app->group('/premiun', function ($group) {
     $group->get('/cupon', PremiunController::class . ':generarCupon');
     $group->post('/nuevo-cupon', PremiunController::class . ':crearCupon');
     $group->post('/canjear-cupon', PremiunController::class . ':canjearCupon');
+    $group->get('/gift-weenkend', PremiunController::class . ':awardTopWeek');
 })->add($validateJwtMiddleware);
 
 $app->group('/pagos', function ($group) {
