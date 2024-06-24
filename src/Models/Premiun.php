@@ -236,8 +236,6 @@ class Premiun extends Database
 
     public function awardTopWeek()
     {
-        foreach ($this->instanceUser->getTopAll() as $user) {
-            echo $user["premio"];
-        }
+        var_dump($this->instanceUser->getTopAll());
     }
 }
