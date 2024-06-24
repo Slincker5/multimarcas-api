@@ -160,6 +160,7 @@ SELECT
     u.photo,
     u.fin_suscripcion,
     u.suscripcion,
+    u.premio,
     u.fecha AS registro,
     COALESCE(rm.total_rotulos_mini, 0) AS total_rotulos_mini,
     COALESCE(c.total_codigos, 0) AS total_codigos,

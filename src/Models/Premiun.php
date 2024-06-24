@@ -237,7 +237,7 @@ class Premiun extends Database
     public function awardTopWeek()
     {
         foreach ($this->instanceUser->getTopAll() as $user) {
-            echo "Fin de suscripción: " . $user["fin_suscripcion"] . "<br>";
+            echo $user["premio"];
         }
     }
 }
