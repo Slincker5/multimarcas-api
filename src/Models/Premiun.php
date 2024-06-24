@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Database;
 use Firebase\JWT\JWT;
 use Ramsey\Uuid\UuidFactory;
+use App\Models\User;
 
 trait Cupones
 {
@@ -22,6 +23,7 @@ class Premiun extends Database
     use Cupones;
     private $secret = '7519b85d-ccaa-42c5-8e2f-0390c23e5d22';
     private $user_uuid;
+    public $instanceUser;
     private $response;
     private $admin_uuid = '2c62e966-63d8-4bfd-832e-89094ae47eec';
     private $key = "georginalissethyvladi";
@@ -29,6 +31,7 @@ class Premiun extends Database
     public function __construct($user_uuid = "")
     {
         $this->user_uuid = $user_uuid;
+        $this->instanceUser = new User();
     }
 
     private function datosUsuario()
@@ -229,5 +232,10 @@ class Premiun extends Database
         }else{
             return false;
         }
+    }
+
+    public function awardTopWeek()
+    {
+        $this->instanceUser->getTopAll();
     }
 }
