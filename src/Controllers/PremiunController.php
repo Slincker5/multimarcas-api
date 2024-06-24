@@ -47,8 +47,11 @@ class PremiunController
     }
 
     function awardTopWeek($request, $response, $args){
+        $user_uuid = $request->getAttribute('payload')->data->user_uuid;
+        $username = $request->getAttribute('payload')->data->username;
+
         $classPremiun = new Premiun();
-        $cupon = $classPremiun->awardTopWeek();
+        $cupon = $classPremiun->awardTopWeek($user_uuid, $username);
         $response->getBody()->write(json_encode($cupon));
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
     }

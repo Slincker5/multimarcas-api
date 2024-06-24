@@ -6,6 +6,7 @@ use App\Models\Database;
 use Firebase\JWT\JWT;
 use Ramsey\Uuid\UuidFactory;
 use App\Models\User;
+use App\Models\Notification;
 
 trait Cupones
 {
@@ -24,6 +25,7 @@ class Premiun extends Database
     private $secret = '7519b85d-ccaa-42c5-8e2f-0390c23e5d22';
     private $user_uuid;
     public $instanceUser;
+    public $instanceNotification;
     private $response;
     private $admin_uuid = '2c62e966-63d8-4bfd-832e-89094ae47eec';
     private $key = "georginalissethyvladi";
@@ -32,6 +34,7 @@ class Premiun extends Database
     {
         $this->user_uuid = $user_uuid;
         $this->instanceUser = new User();
+        $this->instanceNotification = new Notification();
     }
 
     private function datosUsuario()
@@ -234,14 +237,16 @@ class Premiun extends Database
         }
     }
 
-    public function awardTopWeek()
+    public function awardTopWeek($user_uuid, $username)
     {
         foreach ($this->instanceUser->getTopAll() as $user) {
-            if($user["premio"] === NULL && $user["suscripcion"] === 1){
+            if($user["premio"] === NULL && $user["suscripcion"] === 1 && $user["user_uuid"] === $user_uuid){
                 $fecha_fin = $user["fin_suscripcion"];
                 $fin_suscripcion = date('Y-m-d H:i:s', strtotime($fecha_fin . ' +1 day'));
                 $sql = "UPDATE usuarios SET fin_suscripcion = ?, premio = 1 WHERE user_uuid = ?";
-                $this->ejecutarConsulta($sql, [$fin_suscripcion, $user["user_uuid"]]);
+                $this->ejecutarConsulta($sql, [$fin_suscripcion, $user_uuid]);
+                $cuerpoNotificacion = $username . ' top #' . $user["top"] . ' ha recibido recompensa semanal.';
+                $this->instanceNotification->createNotification("RECOMPENSA ENTREGADA", $cuerpoNotificacion);
             }
         }
         $this->response['status'] = 'OK';

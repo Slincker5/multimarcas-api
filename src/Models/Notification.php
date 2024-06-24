@@ -283,7 +283,7 @@ SQL;
             continue;
           }
 
-          $body = "En hora buena!! eres el top # " . $user_token["rank"] . " de la semana.";
+          $body = "🎉 En hora buena!! eres el top # " . $user_token["rank"] . " de la semana, entra ya por tu recompensa.";
             $ch = curl_init("https://fcm.googleapis.com/v1/projects/multimarcasapp-2fa97/messages:send");
 
             curl_setopt($ch, CURLOPT_HTTPHEADER, [

@@ -194,7 +194,7 @@ $app->group('/premiun', function ($group) {
     $group->get('/cupon', PremiunController::class . ':generarCupon');
     $group->post('/nuevo-cupon', PremiunController::class . ':crearCupon');
     $group->post('/canjear-cupon', PremiunController::class . ':canjearCupon');
-    $group->get('/gift-weekend', PremiunController::class . ':awardTopWeek');
+    $group->post('/gift-weekend', PremiunController::class . ':awardTopWeek');
 })->add($validateJwtMiddleware);
 
 $app->group('/pagos', function ($group) {
