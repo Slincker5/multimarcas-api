@@ -237,7 +237,7 @@ class Premiun extends Database
     public function awardTopWeek()
     {
         foreach ($this->instanceUser->getTopAll() as $user) {
-            if($user["premio"] === NULL){
+            if($user["premio"] === NULL && $user["suscripcion"] === 1){
                 echo $user["suscripcion"];
             }
         }
