@@ -103,6 +103,8 @@ $app->group('/label', function ($group) {
     $group->get('/details/{uuid}', LabelController::class . ':detailsLabels');
     $group->post('/build-document', LabelController::class . ':build');
     $group->post('/resend', LabelController::class . ':resend');
+    $group->post('/scanner', LabelController::class . ':cogLabel');
+    
 
 })->add($validateJwtMiddleware);
 

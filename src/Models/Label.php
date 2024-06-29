@@ -245,4 +245,12 @@ class Label extends Database
             return $this->response;
         }
     }
+
+    public function cogLabel($scan, $user_uuid){
+        $sql = 'UPDATE usuarios SET scanner = ? WHERE user_uuid = ?';
+        $response = $this->ejecutarConsulta($sql, [$scan, $user_uuid]);
+        $this->response['status'] = 'OK';
+        $this->response['message'] = 'Escaner se actualizo';
+        return $this->response;
+    }
 }

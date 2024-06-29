@@ -141,4 +141,13 @@ class LabelController
         $response->getBody()->write(json_encode($res));
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
     }
+
+    function cogLabel($request, $response, $args) {
+        $user_uuid = $request->getAttribute('payload')->data->user_uuid;
+        $body = $request->getParsedBody();
+        $classLabel = new Label();
+        $res = $classLabel->cogLabel($body["scanner"], $user_uuid);
+        $response->getBody()->write(json_encode($res));
+        return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
+    }
 }
